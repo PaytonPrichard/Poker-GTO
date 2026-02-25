@@ -1,0 +1,62 @@
+:root {
+  --c-bg:            #0d1117;   --c-bg-sidebar:    #0b1120;
+  --c-bg-header:     #131c2e;   --c-bg-card:       #1a2235;
+  --c-bg-subtle:     #1e2535;   --c-bg-hover:      #1e2840;
+  --c-bg-callout:    #1a2a1e;   --c-bg-nav-active: #1a2e22;
+  --c-bg-tag:        #1e2a3a;
+  --c-border:        #2a3347;   --c-border-soft:   #151f30;
+  --c-border-nav:    #1e2a3a;   --c-border-accent: #2d5a3d;
+  --c-text-h:        #e0e8f0;   --c-text:          #c8d0e0;
+  --c-text-2:        #94a3b8;   --c-text-3:        #8b9bb4;
+  --c-text-4:        #6b7a94;
+  --c-accent:        #52b788;   --c-accent-hover:  #74c69d;
+  --c-accent-dark:   #40916c;
+}
+[data-theme="light"] {
+  --c-bg:            #f4f6f9;   --c-bg-sidebar:    #e8ecf2;
+  --c-bg-header:     #dde2ec;   --c-bg-card:       #ffffff;
+  --c-bg-subtle:     #f0f2f7;   --c-bg-hover:      #e4e9f3;
+  --c-bg-callout:    #eaf4ee;   --c-bg-nav-active: #d4ede1;
+  --c-bg-tag:        #e2e8f5;
+  --c-border:        #c8d0e0;   --c-border-soft:   #dde2ec;
+  --c-border-nav:    #c8d0e0;   --c-border-accent: #74c69d;
+  --c-text-h:        #0d1117;   --c-text:          #1a2235;
+  --c-text-2:        #4a5568;   --c-text-3:        #5a6a84;
+  --c-text-4:        #6b7a94;
+  --c-accent:        #2d6a4f;   --c-accent-hover:  #40916c;
+  --c-accent-dark:   #2d6a4f;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--c-bg); }
+::-webkit-scrollbar-thumb  { background: var(--c-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4459; }
+
+button { font-family: inherit; }
+
+a { color: var(--c-accent); text-decoration: none; }
+a:hover { color: var(--c-accent-hover); }
+
+@media print {
+  .sidebar, .print-btn { display: none !important; }
+  .content { padding: 16px; position: static; }
+  body { background: white !important; color: black !important; }
+}
