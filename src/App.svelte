@@ -6,6 +6,7 @@
   import EquitySection     from './lib/EquitySection.svelte';
   import MultiwaySection   from './lib/MultiwaySection.svelte';
   import QuizSection       from './lib/QuizSection.svelte';
+  import ChatAssistant     from './lib/ChatAssistant.svelte';
 
   let activeSection = $state('preflop');
 
@@ -133,6 +134,8 @@
       </div>
     {/if}
   </main>
+
+  <ChatAssistant />
 
   <!-- Global floating tooltip -->
   {#if tip.visible && tip.text}
