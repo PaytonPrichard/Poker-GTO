@@ -7,6 +7,9 @@
   } from './data/multiway.js';
 
   let activeTab = $state('preflop');
+  let sectionEl;
+  let allOpen = $state(false);
+  function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
   const tabs = ['preflop', 'flop', 'turnriver', 'concepts'];
   const tabLabels = { preflop: 'Preflop', flop: 'Flop', turnriver: 'Turn / River', concepts: 'Concepts' };
@@ -18,7 +21,7 @@
   }
 </script>
 
-<div class="multiway">
+<div class="multiway" bind:this={sectionEl}>
   <h2>Multiway Pots</h2>
   <p class="intro">
     When three or more players see a flop, GTO strategy adjusts significantly. Bluffing becomes unprofitable,
@@ -26,16 +29,21 @@
   </p>
 
   <!-- Tabs -->
-  <div class="tabs">
-    {#each tabs as tab}
-      <button
-        class="tab-btn"
-        class:active={activeTab === tab}
-        onclick={() => activeTab = tab}
-      >
-        {tabLabels[tab]}
-      </button>
-    {/each}
+  <div class="tabs-row">
+    <div class="tabs">
+      {#each tabs as tab}
+        <button
+          class="tab-btn"
+          class:active={activeTab === tab}
+          onclick={() => activeTab = tab}
+        >
+          {tabLabels[tab]}
+        </button>
+      {/each}
+    </div>
+    <button class="toggle-all-btn" onclick={toggleAll}>
+      {allOpen ? 'Close All' : 'Open All'}
+    </button>
   </div>
 
   <!-- ── PREFLOP ── -->
@@ -135,11 +143,11 @@
     </div>
     <div class="guide-cards">
       {#each turnRiverGuide as item}
-        <div class="guide-card">
-          <div class="guide-header">
+        <details class="guide-card">
+          <summary class="guide-header">
             <span class="situation">{item.situation}</span>
             <span class="action-badge">{item.action}</span>
-          </div>
+          </summary>
           <div class="guide-body">
             <div class="guide-row">
               <span class="guide-label">Hands</span>
@@ -157,7 +165,7 @@
             {/if}
             <div class="guide-notes">{item.notes}</div>
           </div>
-        </div>
+        </details>
       {/each}
     </div>
 
@@ -169,10 +177,10 @@
     </div>
     <div class="concepts-grid">
       {#each multiwayPrinciples as p}
-        <div class="concept-card">
-          <div class="concept-title">{p.title}</div>
+        <details class="concept-card">
+          <summary class="concept-title">{p.title}</summary>
           <p class="concept-body">{p.body}</p>
-        </div>
+        </details>
       {/each}
     </div>
   {/if}
@@ -181,27 +189,30 @@
 <style>
   .multiway { display: flex; flex-direction: column; gap: 20px; }
 
-  h2 { font-size: 20px; font-weight: 700; color: var(--c-text-h); margin: 0; }
-  h3 { font-size: 16px; font-weight: 600; color: var(--c-text); margin: 0; }
+  h2 { font-size: 22px; font-weight: 700; color: var(--c-text-h); margin: 0; }
+  h3 { font-size: 17px; font-weight: 600; color: var(--c-text); margin: 0; }
 
-  .intro { color: var(--c-text-3); font-size: 13px; margin: 0; line-height: 1.6; }
+  .intro { color: var(--c-text-2); font-size: 14px; margin: 0; line-height: 1.6; }
 
   /* Tabs */
+  .tabs-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .toggle-all-btn { padding: 5px 14px; border-radius: 5px; border: 1px solid var(--c-border); background: transparent; color: var(--c-text-4); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .toggle-all-btn:hover { background: var(--c-bg-card); color: var(--c-text); }
   .tab-btn {
     padding: 7px 20px;
     border-radius: 5px;
     border: 1px solid var(--c-border);
     background: var(--c-bg-card);
     color: var(--c-text-3);
-    font-size: 13px; font-weight: 600;
+    font-size: 14px; font-weight: 600;
     cursor: pointer; transition: all 0.15s;
   }
   .tab-btn:hover  { border-color: var(--c-accent-dark); color: var(--c-text); }
   .tab-btn.active { background: var(--c-accent-dark); border-color: var(--c-accent-dark); color: #fff; }
 
   .section-header { display: flex; flex-direction: column; gap: 8px; }
-  .section-note   { font-size: 12px; color: var(--c-text-4); margin: 0; line-height: 1.5; }
+  .section-note   { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
 
   /* Data table */
   .data-table {
@@ -210,7 +221,7 @@
     border: 1px solid var(--c-border);
     border-radius: 8px;
     overflow: hidden;
-    font-size: 12px;
+    font-size: 13px;
   }
   .table-header {
     display: grid;
@@ -218,7 +229,7 @@
     padding: 8px 14px;
     background: var(--c-bg-header);
     color: var(--c-text-4);
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.06em;
     border-bottom: 1px solid var(--c-border);
   }
@@ -234,7 +245,7 @@
     padding: 4px 14px 10px;
     background: var(--c-bg-card);
     color: var(--c-text-4);
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.5;
     border-bottom: 1px solid var(--c-border);
   }
@@ -242,16 +253,16 @@
 
   /* Preflop adjustment cells */
   .aspect-label { color: var(--c-text); font-weight: 500; }
-  .adj-cell { font-size: 11px; line-height: 1.4; text-align: center; }
+  .adj-cell { font-size: 12px; line-height: 1.4; text-align: center; }
   .adj-cell.neutral { color: var(--c-text-2); }
   .adj-cell.caution { color: #f59e0b; }
   .adj-cell.tight   { color: #ef4444; }
 
   /* Flop table */
   .texture-name { color: var(--c-text); font-weight: 600; }
-  .freq-pill    { font-weight: 700; font-size: 12px; }
-  .size-text    { color: var(--c-text-2); font-size: 11px; text-align: center; }
-  .hands-text   { color: var(--c-text-3); font-size: 11px; }
+  .freq-pill    { font-weight: 700; font-size: 13px; }
+  .size-text    { color: var(--c-text-2); font-size: 12px; text-align: center; }
+  .hands-text   { color: var(--c-text-3); font-size: 12px; }
 
   /* Callout */
   .callout {
@@ -263,15 +274,15 @@
     border-radius: 8px;
     align-items: flex-start;
   }
-  .callout-icon { font-size: 20px; color: var(--c-accent); line-height: 1.4; flex-shrink: 0; }
-  .callout strong { display: block; color: var(--c-text); font-size: 13px; margin-bottom: 6px; }
-  .callout-body { font-size: 12px; color: var(--c-text-3); margin: 0; line-height: 1.6; }
+  .callout-icon { font-size: 22px; color: var(--c-accent); line-height: 1.4; flex-shrink: 0; }
+  .callout strong { display: block; color: var(--c-text); font-size: 14px; margin-bottom: 6px; }
+  .callout-body { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.6; }
 
   .check-list {
     margin: 0; padding-left: 0; list-style: none;
     display: flex; flex-direction: column; gap: 4px;
   }
-  .check-list li { font-size: 12px; color: var(--c-text-3); line-height: 1.5; }
+  .check-list li { font-size: 13px; color: var(--c-text-3); line-height: 1.5; }
 
   /* Guide cards (Turn/River) */
   .guide-cards { display: flex; flex-direction: column; gap: 12px; }
@@ -291,9 +302,9 @@
     gap: 12px;
     flex-wrap: wrap;
   }
-  .situation { font-size: 13px; color: var(--c-text); font-weight: 600; }
+  .situation { font-size: 14px; color: var(--c-text); font-weight: 600; }
   .action-badge {
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     padding: 3px 10px; border-radius: 4px;
     background: #2d6a4f; color: #b7e4c7;
     text-transform: uppercase; letter-spacing: 0.05em;
@@ -302,18 +313,18 @@
   .guide-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
   .guide-row  { display: flex; gap: 10px; align-items: baseline; }
   .guide-label {
-    font-size: 10px; font-weight: 700;
+    font-size: 11px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.07em;
     color: var(--c-text-4); min-width: 72px;
   }
-  .guide-val { font-size: 12px; color: var(--c-text-2); }
+  .guide-val { font-size: 13px; color: var(--c-text-2); }
   .guide-val.highlight { color: var(--c-accent); font-weight: 700; }
-  .guide-notes { font-size: 12px; color: var(--c-text-4); line-height: 1.6; margin-top: 4px; }
+  .guide-notes { font-size: 13px; color: var(--c-text-2); line-height: 1.6; margin-top: 4px; }
 
   /* Concepts grid */
   .concepts-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
   .concept-card {
@@ -323,8 +334,18 @@
     padding: 14px 16px;
   }
   .concept-title {
-    font-size: 13px; font-weight: 700;
+    font-size: 14px; font-weight: 700;
     color: var(--c-accent); margin-bottom: 8px;
+    display: flex; align-items: center;
   }
-  .concept-body { font-size: 12px; color: var(--c-text-3); line-height: 1.6; margin: 0; }
+  .concept-body { font-size: 13px; color: var(--c-text-2); line-height: 1.6; margin: 0; }
+
+  /* Collapsible cards */
+  summary { cursor: pointer; list-style: none; user-select: none; }
+  summary::-webkit-details-marker { display: none; }
+  .concept-title::after, .guide-header::after { content: '›'; font-size: 18px; font-weight: 400; color: var(--c-text-4); transition: transform 0.2s; flex-shrink: 0; margin-left: auto; padding-left: 8px; }
+  details[open] > summary::after { transform: rotate(90deg); }
+  details.concept-card:not([open]) > .concept-title { margin-bottom: 0; }
+  details:hover:not([open]) { border-color: var(--c-accent-dark); }
+  details.guide-card:not([open]) > .guide-header { border-bottom: none; }
 </style>

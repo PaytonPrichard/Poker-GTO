@@ -44,7 +44,27 @@
 
   function setPlayerCount(n) {
     playerCount = n;
-    setScenario(scenario);
+    const rfi = positionsByCount[n];
+    const order = positionOrder[n];
+
+    if (scenario === 'rfi') {
+      // Keep yourPos if it still exists, otherwise pick closest valid
+      if (!rfi.includes(yourPos)) yourPos = rfi[rfi.length - 1];
+    } else if (scenario === 'vs-open') {
+      // Keep raiserPos if valid, otherwise pick first opener
+      if (!rfi.includes(raiserPos)) raiserPos = rfi[0];
+      // Recalc valid defenders from raiser's position
+      const ri = order.indexOf(raiserPos);
+      const defenders = order.slice(ri + 1);
+      if (!defenders.includes(yourPos)) yourPos = defenders[defenders.length - 1] ?? 'BB';
+    } else if (scenario === 'vs-3bet') {
+      // Keep yourPos (opener) if valid
+      if (!rfi.includes(yourPos)) yourPos = rfi[rfi.length - 1];
+      // Recalc valid 3-bettors from your position
+      const oi = order.indexOf(yourPos);
+      const possible = order.slice(oi + 1);
+      if (!possible.includes(threePos)) threePos = possible[possible.length - 1] ?? 'BB';
+    }
   }
 
   // Valid "your position" slots when facing a raise
@@ -270,6 +290,27 @@
     <HandBreakdown hand={selectedHand} onClose={() => selectedHand = null} />
   {/if}
 
+  <!-- Mixed strategy note -->
+  <div class="callout">
+    <span class="callout-icon">♠</span>
+    <div>
+      <strong>Pure vs mixed strategies</strong>
+      <p class="callout-body">
+        The chart above shows <em>pure strategies</em> — each hand is always raise, call, or fold.
+        In reality, GTO solvers use <em>mixed strategies</em> for borderline hands. For example, a
+        solver might say "raise KTo from the CO 65% of the time, fold 35%" — this is a
+        <strong>mixed frequency</strong>, where the same hand splits between two actions. Hands in
+        the core of a range (like AA) are always 100% one action, but hands at the edges mix.
+      </p>
+      <p class="callout-body" style="margin-top: 6px;">
+        <strong>In practice:</strong> Pure strategies are easier to execute and lose very little EV
+        vs perfect mixed strategies. If a hand is close to the border, pick one action and stick with
+        it — the EV difference between raising and folding a marginal hand is tiny. Focus on never
+        making large mistakes (folding premiums, opening trash) rather than nailing exact frequencies.
+      </p>
+    </div>
+  </div>
+
   <!-- Pot sizing reference -->
   <div class="sizing-notes">
     <h3>Pot Sizing Reference</h3>
@@ -307,13 +348,13 @@
 <style>
   .preflop { display: flex; flex-direction: column; gap: 20px; }
 
-  h2 { font-size: 20px; font-weight: 700; color: var(--c-text-h); margin: 0; }
+  h2 { font-size: 22px; font-weight: 700; color: var(--c-text-h); margin: 0; }
   h3 { font-size: 15px; font-weight: 600; color: var(--c-text); margin: 0 0 12px; }
 
   .selector-group { display: flex; flex-direction: column; gap: 8px; }
 
   .group-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -328,7 +369,7 @@
     border: 1px solid var(--c-border);
     background: var(--c-bg-card);
     color: var(--c-text-3);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s;
@@ -364,11 +405,11 @@
   }
   .info-item   { display: flex; flex-direction: column; gap: 2px; }
   .info-label  {
-    font-size: 10px; font-weight: 700;
+    font-size: 11px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.08em; color: var(--c-text-3);
   }
-  .info-value  { font-size: 13px; color: var(--c-text); }
-  .info-value.highlight { color: var(--c-accent); font-weight: 700; font-size: 16px; }
+  .info-value  { font-size: 14px; color: var(--c-text); }
+  .info-value.highlight { color: var(--c-accent); font-weight: 700; font-size: 17px; }
 
   .no-data {
     display: flex;
@@ -381,10 +422,10 @@
     border: 1px dashed var(--c-border);
     border-radius: 8px;
     color: var(--c-text-3);
-    font-size: 14px;
-    max-width: 580px;
+    font-size: 15px;
+    max-width: 560px;
   }
-  .no-data-sub { font-size: 12px; color: #4a5568; text-align: center; }
+  .no-data-sub { font-size: 13px; color: #4a5568; text-align: center; }
 
   .sizing-notes {
     padding: 16px;
@@ -404,12 +445,27 @@
     padding: 12px 14px;
   }
   .sizing-title {
-    font-size: 12px; font-weight: 700;
+    font-size: 13px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.07em;
     color: var(--c-accent); margin-bottom: 8px;
   }
   ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 4px; }
-  li { font-size: 12px; color: var(--c-text-3); line-height: 1.5; }
+  li { font-size: 13px; color: var(--c-text-3); line-height: 1.5; }
   li strong { color: var(--c-text); }
   li em { color: var(--c-text-4); }
+
+  /* ── Callout ── */
+  .callout {
+    display: flex;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--c-bg-callout);
+    border: 1px solid var(--c-border-accent);
+    border-radius: 8px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 20px; color: var(--c-accent); line-height: 1.4; flex-shrink: 0; }
+  .callout > div > strong { display: block; color: var(--c-text); font-size: 14px; margin-bottom: 6px; }
+  .callout-body { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.6; }
+  .callout-body strong { color: var(--c-text); font-size: inherit; }
 </style>

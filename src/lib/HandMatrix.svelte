@@ -46,33 +46,38 @@
 </script>
 
 <div class="matrix-wrap">
-  <div class="matrix">
-    <div class="corner"></div>
-    {#each ranks as rank}
-      <div class="hdr">{rank}</div>
-    {/each}
-
-    {#each ranks as _rowRank, row}
-      <div class="hdr">{ranks[row]}</div>
-      {#each ranks as _colRank, col}
-        {@const hand   = getHandName(row, col)}
-        {@const action = getAction(row, col)}
-        <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-        <div
-          class="cell {action}"
-          class:selected={hand === selectedHand}
-          onmouseenter={() => hoveredHand = hand}
-          onmouseleave={() => hoveredHand = null}
-          onclick={() => onCellClick?.(hand)}
-          onkeydown={e => (e.key === 'Enter' || e.key === ' ') && onCellClick?.(hand)}
-          role="gridcell"
-          aria-label={hand}
-          tabindex={onCellClick ? 0 : -1}
-        >
-          <span class="label">{hand}</span>
-        </div>
+  <div class="matrix-container">
+    <div class="axis-suited">Suited ↗</div>
+    <div class="axis-offsuit">↙ Offsuit</div>
+    <div class="axis-pairs">Pairs ↘</div>
+    <div class="matrix">
+      <div class="corner"></div>
+      {#each ranks as rank}
+        <div class="hdr">{rank}</div>
       {/each}
-    {/each}
+
+      {#each ranks as _rowRank, row}
+        <div class="hdr">{ranks[row]}</div>
+        {#each ranks as _colRank, col}
+          {@const hand   = getHandName(row, col)}
+          {@const action = getAction(row, col)}
+          <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+          <div
+            class="cell {action}"
+            class:selected={hand === selectedHand}
+            onmouseenter={() => hoveredHand = hand}
+            onmouseleave={() => hoveredHand = null}
+            onclick={() => onCellClick?.(hand)}
+            onkeydown={e => (e.key === 'Enter' || e.key === ' ') && onCellClick?.(hand)}
+            role="gridcell"
+            aria-label={hand}
+            tabindex={onCellClick ? 0 : -1}
+          >
+            <span class="label">{hand}</span>
+          </div>
+        {/each}
+      {/each}
+    </div>
   </div>
 
   <div class="matrix-footer">
@@ -105,15 +110,21 @@
   .matrix-wrap {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 10px;
+  }
+
+  .matrix-container {
+    position: relative;
+    width: 100%;
+    max-width: 560px;
   }
 
   .matrix {
     display: grid;
-    grid-template-columns: 22px repeat(13, 1fr);
+    grid-template-columns: 24px repeat(13, 1fr);
     gap: 2px;
     width: 100%;
-    max-width: 580px;
   }
 
   .corner, .hdr {
@@ -123,7 +134,36 @@
     font-size: 11px;
     font-weight: 700;
     color: var(--c-text-3);
-    height: 22px;
+    height: 24px;
+  }
+
+  /* ── Axis labels ── */
+  .axis-suited {
+    position: absolute;
+    top: -20px;
+    right: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-text-4);
+    letter-spacing: 0.04em;
+  }
+  .axis-offsuit {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-text-4);
+    letter-spacing: 0.04em;
+  }
+  .axis-pairs {
+    position: absolute;
+    top: -20px;
+    left: 28px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-text-4);
+    letter-spacing: 0.04em;
   }
 
   .cell {
@@ -154,13 +194,14 @@
   }
 
   .label {
-    font-size: 9px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.75);
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
     pointer-events: none;
     white-space: nowrap;
+    letter-spacing: 0.02em;
   }
-  .cell.fold .label { color: rgba(255,255,255,0.22); }
+  .cell.fold .label { color: rgba(255,255,255,0.28); }
 
   .matrix-footer {
     display: flex;
@@ -168,9 +209,11 @@
     justify-content: space-between;
     font-size: 12px;
     color: var(--c-text-3);
-    max-width: 580px;
+    width: 100%;
+    max-width: 560px;
     flex-wrap: wrap;
     gap: 6px;
+    margin-top: 8px;
   }
 
   .legend {

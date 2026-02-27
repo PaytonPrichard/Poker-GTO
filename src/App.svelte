@@ -5,10 +5,19 @@
   import BetSizingSection  from './lib/BetSizingSection.svelte';
   import EquitySection     from './lib/EquitySection.svelte';
   import MultiwaySection   from './lib/MultiwaySection.svelte';
-  import QuizSection       from './lib/QuizSection.svelte';
-  import ChatAssistant     from './lib/ChatAssistant.svelte';
+  import BluffingSection   from './lib/BluffingSection.svelte';
+  import TournamentSection from './lib/TournamentSection.svelte';
+  import HandReadingSection from './lib/HandReadingSection.svelte';
+  import PositionSection    from './lib/PositionSection.svelte';
+  import BankrollSection    from './lib/BankrollSection.svelte';
+  import MistakesSection    from './lib/MistakesSection.svelte';
+  import SolverSection      from './lib/SolverSection.svelte';
+  import SessionNotes       from './lib/SessionNotes.svelte';
+  import QuizSection        from './lib/QuizSection.svelte';
+  import ChatAssistant      from './lib/ChatAssistant.svelte';
 
-  let activeSection = $state('preflop');
+  let activeSection = $state(localStorage.getItem('activeSection') ?? 'preflop');
+  $effect(() => { localStorage.setItem('activeSection', activeSection); });
 
   const sections = [
     { id: 'preflop',  label: 'Preflop Ranges',   icon: '♠', ready: true  },
@@ -17,7 +26,15 @@
     { id: 'sizing',   label: 'Bet Sizing Theory', icon: '◈', ready: true  },
     { id: 'equity',   label: 'Hand Equity',        icon: '♦', ready: true  },
     { id: 'multiway', label: 'Multiway Pots',      icon: '♣', ready: true  },
-    { id: 'quiz',     label: 'Quiz Mode',          icon: '?', ready: true  },
+    { id: 'bluffing',     label: 'Bluffing & Reads',    icon: '🎭', ready: true  },
+    { id: 'tournament',  label: 'Tournament Play',    icon: '🏆', ready: true  },
+    { id: 'handreading', label: 'Hand Reading',        icon: '🔍', ready: true  },
+    { id: 'position',    label: 'Position Strategy',   icon: '⊞', ready: true  },
+    { id: 'bankroll',    label: 'Bankroll Mgmt',       icon: '💰', ready: true  },
+    { id: 'mistakes',    label: 'Common Mistakes',     icon: '⚠', ready: true  },
+    { id: 'solver',      label: 'Solver Guide',        icon: '⚙', ready: true  },
+    { id: 'quiz',        label: 'Quiz Mode',           icon: '?', ready: true  },
+    { id: 'notes',       label: 'Session Notes',       icon: '📝', ready: true  },
   ];
 
   // ── Global tooltip ────────────────────────────────────────────────────────
@@ -60,6 +77,13 @@
   });
   function toggleTheme() { theme = theme === 'dark' ? 'light' : 'dark'; }
 
+  let a11y = $state(localStorage.getItem('a11y') === 'true');
+  $effect(() => {
+    document.documentElement.setAttribute('data-a11y', a11y ? 'true' : '');
+    localStorage.setItem('a11y', a11y);
+  });
+  function toggleA11y() { a11y = !a11y; }
+
   // Flip tooltip left if near right edge of viewport
   let tipLeft = $derived(() => {
     if (typeof window === 'undefined') return tip.x + 14;
@@ -85,7 +109,7 @@
   <aside class="sidebar">
     <div class="brand">
       <span class="brand-icon">♠</span>
-      <span class="brand-text">GTO Reference</span>
+      <span class="brand-text">FeltTheory</span>
     </div>
     <nav>
       {#each sections as sec}
@@ -107,10 +131,13 @@
       <button class="theme-toggle" onclick={toggleTheme}>
         {theme === 'dark' ? '☀ Light mode' : '☾ Dark mode'}
       </button>
+      <button class="theme-toggle a11y-toggle" onclick={toggleA11y}>
+        {a11y ? '⊘ Standard view' : '⊕ Accessibility mode'}
+      </button>
     </div>
   </aside>
 
-  <main class="content">
+  <main class="content" style:zoom={a11y ? 1.15 : 1} style:line-height={a11y ? '1.75' : null} style:letter-spacing={a11y ? '0.01em' : null}>
     <button class="print-btn" onclick={() => window.print()}>⎙ Print</button>
     {#if activeSection === 'preflop'}
       <PreflopSection />
@@ -124,8 +151,24 @@
       <EquitySection />
     {:else if activeSection === 'multiway'}
       <MultiwaySection />
+    {:else if activeSection === 'bluffing'}
+      <BluffingSection />
+    {:else if activeSection === 'tournament'}
+      <TournamentSection />
+    {:else if activeSection === 'handreading'}
+      <HandReadingSection />
+    {:else if activeSection === 'position'}
+      <PositionSection />
+    {:else if activeSection === 'bankroll'}
+      <BankrollSection />
+    {:else if activeSection === 'mistakes'}
+      <MistakesSection />
+    {:else if activeSection === 'solver'}
+      <SolverSection />
     {:else if activeSection === 'quiz'}
       <QuizSection />
+    {:else if activeSection === 'notes'}
+      <SessionNotes />
     {:else}
       <div class="coming-soon">
         <div class="cs-icon">🃏</div>
@@ -212,6 +255,9 @@
     margin-top: auto;
     padding: 12px 10px;
     border-top: 1px solid var(--c-border-nav);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .theme-toggle {

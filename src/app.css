@@ -35,8 +35,8 @@ html, body {
   background: var(--c-bg);
   color: var(--c-text);
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -54,6 +54,28 @@ button { font-family: inherit; }
 
 a { color: var(--c-accent); text-decoration: none; }
 a:hover { color: var(--c-accent-hover); }
+
+/* ── Accessibility mode ────────────────────────────────────────────────────── */
+[data-a11y="true"] {
+  --c-text:   #dbe4f0;
+  --c-text-2: #b0bdd0;
+  --c-text-3: #9cafc8;
+  --c-text-4: #8294b0;
+}
+[data-a11y="true"][data-theme="light"] {
+  --c-text:   #111827;
+  --c-text-2: #374151;
+  --c-text-3: #475569;
+  --c-text-4: #52607a;
+}
+
+/* Focus outlines for keyboard navigation */
+[data-a11y="true"] button:focus-visible,
+[data-a11y="true"] input:focus-visible,
+[data-a11y="true"] select:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
 
 @media print {
   .sidebar, .print-btn { display: none !important; }

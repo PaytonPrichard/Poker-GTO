@@ -118,9 +118,9 @@
 <style>
   .glossary { display: flex; flex-direction: column; gap: 18px; }
 
-  h2 { font-size: 20px; font-weight: 700; color: var(--c-text-h); margin: 0; }
+  h2 { font-size: 22px; font-weight: 700; color: var(--c-text-h); margin: 0; }
 
-  .intro { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
+  .intro { font-size: 14px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
 
   /* ── Controls ── */
   .controls { display: flex; flex-direction: column; gap: 10px; }
@@ -134,7 +134,7 @@
     position: absolute;
     left: 10px;
     color: var(--c-text-4);
-    font-size: 16px;
+    font-size: 17px;
     pointer-events: none;
   }
   .search {
@@ -145,7 +145,7 @@
     border: 1px solid var(--c-border);
     border-radius: 6px;
     color: var(--c-text);
-    font-size: 13px;
+    font-size: 14px;
     font-family: inherit;
     outline: none;
     transition: border-color 0.15s;
@@ -159,7 +159,7 @@
     background: none;
     border: none;
     color: var(--c-text-4);
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
     padding: 2px 4px;
   }
@@ -173,14 +173,14 @@
     border: 1px solid var(--c-border);
     background: var(--c-bg-card);
     color: var(--c-text-4);
-    font-size: 12px; font-weight: 600;
+    font-size: 13px; font-weight: 600;
     cursor: pointer; transition: all 0.15s;
   }
   .cat-btn:hover  { color: var(--c-text); border-color: #3a4459; }
   .cat-btn.active { background: var(--c-bg-nav-active); border-color: var(--c-accent-dark); color: var(--c-accent); }
 
   .result-count {
-    font-size: 11px; color: #4a5568;
+    font-size: 12px; color: #4a5568;
   }
 
   /* ── Term cards ── */
@@ -220,42 +220,42 @@
   }
 
   .term-abbr {
-    font-size: 14px; font-weight: 800;
+    font-size: 15px; font-weight: 800;
     color: var(--c-text-h);
     white-space: nowrap;
   }
 
   .term-full {
-    font-size: 11px; color: var(--c-text-4);
+    font-size: 12px; color: var(--c-text-4);
     white-space: nowrap; overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .cat-label {
-    font-size: 10px; font-weight: 700;
+    font-size: 11px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.06em;
   }
 
   .expand-icon {
-    font-size: 16px; color: var(--c-text-4);
+    font-size: 17px; color: var(--c-text-4);
     width: 16px; text-align: center;
     line-height: 1;
   }
 
   .term-preview {
-    font-size: 12px; color: var(--c-text-3);
+    font-size: 13px; color: var(--c-text-3);
     margin: 0; line-height: 1.5;
   }
 
   .term-full-def {
-    font-size: 12px; color: #a0aec0;
+    font-size: 13px; color: #a0aec0;
     margin: 8px 0 0; line-height: 1.6;
     border-top: 1px solid var(--c-border);
     padding-top: 8px;
   }
 
   .empty {
-    color: #4a5568; font-size: 14px;
+    color: #4a5568; font-size: 15px;
     padding: 40px; text-align: center;
   }
 </style>

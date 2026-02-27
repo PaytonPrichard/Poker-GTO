@@ -11,7 +11,7 @@ import { preflopAdjustments, flopCbetMultiway, multiwayPrinciples } from './mult
 
 // ── Alias map for alternate spellings / abbreviations ─────────────────────────
 const aliasMap = {
-  'pfr':       'rfi',
+  'pfr':       'preflop raiser',
   'cbet':      'c-bet',
   'c bet':     'c-bet',
   'continuation bet': 'c-bet',
@@ -380,6 +380,13 @@ const generalEntries = [
     'What is fold equity and when should I fold?',
     `**Fold Equity** — The portion of a bet's EV from making opponents fold. High fold equity = villain folds often enough that even weak hands profit from betting.\n\n**When to fold:** Compare your equity to the pot odds being offered. If you need 25% equity to call and you estimate you have 20%, fold.\n\n**Key insight**: Fold equity diminishes on later streets with short stacks. On the river, you can only win by showing down the best hand or bluffing — choose wisely.`,
     2,
+  ),
+  entry(
+    ['pfr', 'preflop raiser', 'pre-flop raiser', 'preflop aggressor', 'who raised preflop'],
+    'General',
+    'What is a PFR (Preflop Raiser)?',
+    `**PFR (Preflop Raiser)** — The player who made the last raise preflop (the aggressor entering the flop). This is different from RFI (Raise First In) — RFI specifically means opening the pot, while PFR refers to whoever holds the preflop initiative going into the flop, whether they open-raised, 3-bet, or 4-bet.\n\n**Why it matters postflop:**\n- The PFR typically has a stronger, more defined range than callers\n- The PFR has **range advantage** on boards that favor premium hands (A-high, K-high, broadway)\n- C-bet frequencies in the Postflop Play section are from the PFR's perspective — e.g. "IP Freq 80%" means the PFR bets 80% of their range\n- Callers have the advantage on low, connected boards where the PFR's overcards miss\n\n**PFR vs RFI:** If UTG opens (RFI) and BTN 3-bets, the BTN is the PFR going to the flop — they made the last raise. UTG was the RFI but is no longer the preflop aggressor.`,
+    1,
   ),
 ];
 

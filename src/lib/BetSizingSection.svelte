@@ -9,6 +9,9 @@
   } from './data/betSizing.js';
 
   let activeTab = $state('overview');
+  let sectionEl;
+  let allOpen = $state(false);
+  function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
   const tabs = ['overview', 'preflop', 'postflop', 'potodds'];
   const tabLabels = { overview: 'Overview', preflop: 'Preflop', postflop: 'Postflop', potodds: 'Pot Odds' };
@@ -31,23 +34,28 @@
   }
 </script>
 
-<div class="sizing">
+<div class="sizing" bind:this={sectionEl}>
   <h2>Bet Sizing Theory</h2>
   <p class="intro">
     GTO bet sizing balances polarization, range advantage, and pot odds. Correct sizing extracts maximum value while keeping your range unexploitable.
   </p>
 
   <!-- Tabs -->
-  <div class="tabs">
-    {#each tabs as tab}
-      <button
-        class="tab-btn"
-        class:active={activeTab === tab}
-        onclick={() => activeTab = tab}
-      >
-        {tabLabels[tab]}
-      </button>
-    {/each}
+  <div class="tabs-row">
+    <div class="tabs">
+      {#each tabs as tab}
+        <button
+          class="tab-btn"
+          class:active={activeTab === tab}
+          onclick={() => activeTab = tab}
+        >
+          {tabLabels[tab]}
+        </button>
+      {/each}
+    </div>
+    <button class="toggle-all-btn" onclick={toggleAll}>
+      {allOpen ? 'Close All' : 'Open All'}
+    </button>
   </div>
 
   <!-- ── OVERVIEW ── -->
@@ -58,10 +66,10 @@
     </div>
     <div class="concepts-grid">
       {#each sizingPrinciples as p}
-        <div class="concept-card">
-          <div class="concept-title">{p.title}</div>
+        <details class="concept-card">
+          <summary class="concept-title">{p.title}</summary>
           <p class="concept-body">{p.body}</p>
-        </div>
+        </details>
       {/each}
     </div>
 
@@ -96,10 +104,10 @@
     <h3 style="margin-top: 8px;">Stack Depth Adjustments</h3>
     <div class="concepts-grid">
       {#each stackDepthNotes as d}
-        <div class="concept-card">
-          <div class="concept-title">{d.depth}</div>
+        <details class="concept-card">
+          <summary class="concept-title">{d.depth}</summary>
           <p class="concept-body">{d.adjustments}</p>
-        </div>
+        </details>
       {/each}
     </div>
 
@@ -193,12 +201,16 @@
 <style>
   .sizing { display: flex; flex-direction: column; gap: 20px; }
 
-  h2 { font-size: 20px; font-weight: 700; color: var(--c-text-h); margin: 0; }
-  h3 { font-size: 16px; font-weight: 600; color: var(--c-text); margin: 0; }
+  h2 { font-size: 22px; font-weight: 700; color: var(--c-text-h); margin: 0; }
+  h3 { font-size: 17px; font-weight: 600; color: var(--c-text); margin: 0; }
 
-  .intro { color: var(--c-text-3); font-size: 13px; margin: 0; line-height: 1.6; }
+  .intro { color: var(--c-text-2); font-size: 14px; margin: 0; line-height: 1.6; }
 
   /* Tabs */
+  .tabs-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .toggle-all-btn { padding: 5px 14px; border-radius: 5px; border: 1px solid var(--c-border); background: transparent; color: var(--c-text-4); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .toggle-all-btn:hover { background: var(--c-bg-card); color: var(--c-text); }
+
   .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
   .tab-btn {
     padding: 7px 20px;
@@ -206,14 +218,14 @@
     border: 1px solid var(--c-border);
     background: var(--c-bg-card);
     color: var(--c-text-3);
-    font-size: 13px; font-weight: 600;
+    font-size: 14px; font-weight: 600;
     cursor: pointer; transition: all 0.15s;
   }
   .tab-btn:hover  { border-color: var(--c-accent-dark); color: var(--c-text); }
   .tab-btn.active { background: var(--c-accent-dark); border-color: var(--c-accent-dark); color: #fff; }
 
   .section-header { display: flex; flex-direction: column; gap: 8px; }
-  .section-note   { font-size: 12px; color: var(--c-text-4); margin: 0; line-height: 1.5; }
+  .section-note   { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
 
   /* Generic table */
   .data-table {
@@ -222,7 +234,7 @@
     border: 1px solid var(--c-border);
     border-radius: 8px;
     overflow: hidden;
-    font-size: 12px;
+    font-size: 13px;
   }
   .table-header {
     display: grid;
@@ -230,7 +242,7 @@
     padding: 8px 14px;
     background: var(--c-bg-header);
     color: var(--c-text-4);
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.06em;
     border-bottom: 1px solid var(--c-border);
   }
@@ -246,7 +258,7 @@
     padding: 4px 14px 10px;
     background: var(--c-bg-card);
     color: var(--c-text-4);
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.5;
     border-bottom: 1px solid var(--c-border);
   }
@@ -256,7 +268,7 @@
 
   .size-chip {
     display: inline-block;
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     padding: 2px 8px; border-radius: 4px;
     background: var(--c-bg-tag); color: var(--c-accent);
     font-family: 'Courier New', monospace;
@@ -264,17 +276,17 @@
   }
 
   .street-tag {
-    font-size: 10px; font-weight: 700;
+    font-size: 11px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.06em;
     color: #f59e0b;
   }
 
-  .freq-text { color: var(--c-text-2); font-size: 11px; }
+  .freq-text { color: var(--c-text-2); font-size: 12px; }
 
   /* Pot odds */
   .po-row { border-bottom: 1px solid var(--c-bg-subtle); }
-  .bet-size-label { color: var(--c-text); font-weight: 600; font-family: 'Courier New', monospace; font-size: 12px; }
-  .pct-chip { font-weight: 700; font-size: 13px; }
+  .bet-size-label { color: var(--c-text); font-weight: 600; font-family: 'Courier New', monospace; font-size: 13px; }
+  .pct-chip { font-weight: 700; font-size: 14px; }
 
   /* Callout */
   .callout {
@@ -286,9 +298,9 @@
     border-radius: 8px;
     align-items: flex-start;
   }
-  .callout-icon { font-size: 20px; color: var(--c-accent); line-height: 1.4; flex-shrink: 0; }
-  .callout strong { display: block; color: var(--c-text); font-size: 13px; margin-bottom: 6px; }
-  .callout-body { font-size: 12px; color: var(--c-text-3); margin: 0; line-height: 1.6; }
+  .callout-icon { font-size: 22px; color: var(--c-accent); line-height: 1.4; flex-shrink: 0; }
+  .callout strong { display: block; color: var(--c-text); font-size: 14px; margin-bottom: 6px; }
+  .callout-body { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.6; }
 
   /* SPR cards */
   .spr-grid {
@@ -314,20 +326,20 @@
     font-family: 'Courier New', monospace;
   }
   .spr-label {
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     text-transform: uppercase; letter-spacing: 0.05em;
     color: var(--c-text-4);
   }
-  .spr-strategy { font-size: 12px; color: var(--c-text-3); line-height: 1.6; margin: 0 0 8px; }
+  .spr-strategy { font-size: 13px; color: var(--c-text-3); line-height: 1.6; margin: 0 0 8px; }
   .spr-hands {
-    font-size: 11px; color: var(--c-text-4);
+    font-size: 12px; color: var(--c-text-4);
   }
   .spr-hands span { color: var(--c-text-2); }
 
   /* Concepts grid */
   .concepts-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
   .concept-card {
@@ -337,8 +349,17 @@
     padding: 14px 16px;
   }
   .concept-title {
-    font-size: 13px; font-weight: 700;
+    font-size: 14px; font-weight: 700;
     color: var(--c-accent); margin-bottom: 8px;
+    display: flex; align-items: center;
   }
-  .concept-body { font-size: 12px; color: var(--c-text-3); line-height: 1.6; margin: 0; }
+  .concept-body { font-size: 13px; color: var(--c-text-2); line-height: 1.6; margin: 0; }
+
+  /* Collapsible cards */
+  summary { cursor: pointer; list-style: none; user-select: none; }
+  summary::-webkit-details-marker { display: none; }
+  .concept-title::after { content: '›'; font-size: 18px; font-weight: 400; color: var(--c-text-4); transition: transform 0.2s; flex-shrink: 0; margin-left: auto; padding-left: 8px; }
+  details[open] > summary::after { transform: rotate(90deg); }
+  details.concept-card:not([open]) > .concept-title { margin-bottom: 0; }
+  details:hover:not([open]) { border-color: var(--c-accent-dark); }
 </style>
