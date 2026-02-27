@@ -30,12 +30,14 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -48,6 +50,7 @@
 
   <!-- ── RANGE NARROWING ── -->
   {#if activeTab === 'narrowing'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Narrowing Opponent Ranges</h3>
       <p class="section-note">
@@ -63,9 +66,11 @@
         </details>
       {/each}
     </div>
+    </div>
 
   <!-- ── BOARD TEXTURE ── -->
   {:else if activeTab === 'boards'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Board Texture & Range Interaction</h3>
       <p class="section-note">
@@ -92,9 +97,11 @@
         </div>
       {/each}
     </div>
+    </div>
 
   <!-- ── SIZING TELLS ── -->
   {:else if activeTab === 'sizing'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>What Bet Sizes Reveal</h3>
       <p class="section-note">
@@ -110,9 +117,11 @@
         </details>
       {/each}
     </div>
+    </div>
 
   <!-- ── STREET-BY-STREET ── -->
   {:else if activeTab === 'examples'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Street-by-Street Range Narrowing</h3>
       <p class="section-note">
@@ -148,6 +157,7 @@
           </div>
         </details>
       {/each}
+    </div>
     </div>
   {/if}
 </div>

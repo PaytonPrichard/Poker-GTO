@@ -53,12 +53,14 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -71,6 +73,7 @@
 
   <!-- ── WHEN TO BLUFF ── -->
   {#if activeTab === 'when'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Conditions That Make Bluffs Profitable</h3>
       <p class="section-note">
@@ -111,9 +114,11 @@
         </ul>
       </div>
     </div>
+    </div>
 
   <!-- ── BLOCKER THEORY ── -->
   {:else if activeTab === 'blockers'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Blocker Theory: Why the Cards You Hold Matter</h3>
       <p class="section-note">
@@ -158,9 +163,11 @@
         </p>
       </div>
     </div>
+    </div>
 
   <!-- ── PLAYER PROFILES ── -->
   {:else if activeTab === 'profiles'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Player Profiling: Adjust Your Bluffs to the Opponent</h3>
       <p class="section-note">
@@ -201,9 +208,11 @@
         </div>
       {/each}
     </div>
+    </div>
 
   <!-- ── COMMON SPOTS ── -->
   {:else if activeTab === 'spots'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Common Bluffing Spots</h3>
       <p class="section-note">
@@ -265,6 +274,7 @@
           <p class="concept-body">{p.body}</p>
         </details>
       {/each}
+    </div>
     </div>
   {/if}
 </div>

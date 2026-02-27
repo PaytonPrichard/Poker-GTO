@@ -25,12 +25,14 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -43,6 +45,7 @@
 
   <!-- ── FUNDAMENTALS ── -->
   {#if activeTab === 'fundamentals'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>How Tournaments Differ from Cash Games</h3>
       <p class="section-note">
@@ -57,9 +60,11 @@
         </details>
       {/each}
     </div>
+    </div>
 
   <!-- ── STAGE STRATEGY ── -->
   {:else if activeTab === 'stages'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Strategy by Tournament Stage</h3>
       <p class="section-note">
@@ -91,9 +96,11 @@
         </details>
       {/each}
     </div>
+    </div>
 
   <!-- ── ICM & BUBBLE ── -->
   {:else if activeTab === 'icm'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>ICM & Bubble Play</h3>
       <p class="section-note">
@@ -121,9 +128,11 @@
         </p>
       </div>
     </div>
+    </div>
 
   <!-- ── PUSH/FOLD ── -->
   {:else if activeTab === 'pushfold'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Push/Fold Strategy</h3>
       <p class="section-note">
@@ -152,6 +161,7 @@
           <li>✗ Do not min-raise from SB/BTN at 10 BB — shove or fold</li>
         </ul>
       </div>
+    </div>
     </div>
   {/if}
 </div>

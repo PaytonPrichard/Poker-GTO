@@ -23,12 +23,14 @@
   </p>
 
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -41,86 +43,94 @@
 
   <!-- ── READING OUTPUT ── -->
   {#if activeTab === 'reading'}
-    <div class="section-header">
-      <h3>How to Read Solver Results</h3>
-      <p class="section-note">
-        Understanding what a solver is telling you is the first step to using it effectively.
-        These concepts will help you interpret any solver's output.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each readingOutput as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>How to Read Solver Results</h3>
+        <p class="section-note">
+          Understanding what a solver is telling you is the first step to using it effectively.
+          These concepts will help you interpret any solver's output.
+        </p>
+      </div>
+      <div class="concepts-grid">
+        {#each readingOutput as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── FREQUENCIES ── -->
   {:else if activeTab === 'frequencies'}
-    <div class="section-header">
-      <h3>Understanding Mixed Strategies & Frequencies</h3>
-      <p class="section-note">
-        Solvers often recommend mixing actions with specific frequencies. Understanding why they mix
-        and how to implement this in practice is crucial for applying solver work at the table.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each frequencyConcepts as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
-    </div>
-
-    <div class="callout" style="margin-top:4px;">
-      <span class="callout-icon">♣</span>
-      <div>
-        <strong>Practical frequency tip</strong>
-        <p class="callout-body">
-          Don't try to randomize at the table. Instead, convert solver frequencies into simple rules:
-          "If the solver says bet 70% and check 30%, I'll bet everything except my weakest hands in the
-          betting range." This captures most of the EV without the mental overhead.
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Understanding Mixed Strategies & Frequencies</h3>
+        <p class="section-note">
+          Solvers often recommend mixing actions with specific frequencies. Understanding why they mix
+          and how to implement this in practice is crucial for applying solver work at the table.
         </p>
+      </div>
+      <div class="concepts-grid">
+        {#each frequencyConcepts as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
+
+      <div class="callout" style="margin-top:4px;">
+        <span class="callout-icon">♣</span>
+        <div>
+          <strong>Practical frequency tip</strong>
+          <p class="callout-body">
+            Don't try to randomize at the table. Instead, convert solver frequencies into simple rules:
+            "If the solver says bet 70% and check 30%, I'll bet everything except my weakest hands in the
+            betting range." This captures most of the EV without the mental overhead.
+          </p>
+        </div>
       </div>
     </div>
 
   <!-- ── WHEN TO DEVIATE ── -->
   {:else if activeTab === 'deviate'}
-    <div class="section-header">
-      <h3>When to Deviate from Solver Play</h3>
-      <p class="section-note">
-        GTO is the baseline, but real-world poker has exploitable opponents, ICM, and imperfect information.
-        Knowing when to deviate is what makes solver study truly profitable.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each whenToDeviate as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>When to Deviate from Solver Play</h3>
+        <p class="section-note">
+          GTO is the baseline, but real-world poker has exploitable opponents, ICM, and imperfect information.
+          Knowing when to deviate is what makes solver study truly profitable.
+        </p>
+      </div>
+      <div class="concepts-grid">
+        {#each whenToDeviate as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── PRACTICAL TIPS ── -->
   {:else if activeTab === 'practical'}
-    <div class="section-header">
-      <h3>Practical Application</h3>
-      <p class="section-note">
-        Solver study is only valuable if you can apply it at the table. These tips will help you
-        translate solver output into actionable strategies you can use in real games.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each practicalTips as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Practical Application</h3>
+        <p class="section-note">
+          Solver study is only valuable if you can apply it at the table. These tips will help you
+          translate solver output into actionable strategies you can use in real games.
+        </p>
+      </div>
+      <div class="concepts-grid">
+        {#each practicalTips as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
   {/if}
 </div>

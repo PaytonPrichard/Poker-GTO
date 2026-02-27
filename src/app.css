@@ -78,7 +78,24 @@ a:hover { color: var(--c-accent-hover); }
 }
 
 @media print {
-  .sidebar, .print-btn { display: none !important; }
+  .sidebar, .print-btn, .hamburger { display: none !important; }
   .content { padding: 16px; position: static; }
   body { background: white !important; color: black !important; }
+}
+
+/* ── Global responsive helpers ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Make all data tables horizontally scrollable */
+  .data-table { overflow-x: auto; }
+
+  /* Collapse 2-col grids to 1-col */
+  .options-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

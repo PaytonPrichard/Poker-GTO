@@ -42,12 +42,14 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -60,6 +62,7 @@
 
   <!-- ── OVERVIEW ── -->
   {#if activeTab === 'overview'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Core Sizing Principles</h3>
       <p class="section-note">Six foundational rules that govern GTO bet sizing on all streets.</p>
@@ -72,9 +75,11 @@
         </details>
       {/each}
     </div>
+    </div>
 
   <!-- ── PREFLOP ── -->
   {:else if activeTab === 'preflop'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Preflop Open & 3-Bet Sizes</h3>
       <p class="section-note">
@@ -110,9 +115,11 @@
         </details>
       {/each}
     </div>
+    </div>
 
   <!-- ── POSTFLOP ── -->
   {:else if activeTab === 'postflop'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Postflop Sizing by Street & Situation</h3>
       <p class="section-note">
@@ -137,9 +144,11 @@
         <div class="table-notes">{row.notes}</div>
       {/each}
     </div>
+    </div>
 
   <!-- ── POT ODDS ── -->
   {:else if activeTab === 'potodds'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3><span data-tooltip-title="Pot Odds" data-tooltip="The ratio of the current pot size to the cost of a call. If pot is $100 and call is $25, pot odds are 4:1 (you need 20% equity to break even).">Pot Odds</span> & Minimum Defense Frequency</h3>
       <p class="section-note">
@@ -194,6 +203,7 @@
           <div class="spr-hands">Stack off with: <span>{tier.hands}</span></div>
         </div>
       {/each}
+    </div>
     </div>
   {/if}
 </div>

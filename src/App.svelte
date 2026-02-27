@@ -15,6 +15,9 @@
   import SessionNotes       from './lib/SessionNotes.svelte';
   import QuizSection        from './lib/QuizSection.svelte';
   import ChatAssistant      from './lib/ChatAssistant.svelte';
+  import CheatSheet         from './lib/CheatSheet.svelte';
+  import RangeBuilder       from './lib/RangeBuilder.svelte';
+  import { buildSearchIndex, sectionLabels } from './lib/data/searchIndex.js';
 
   let activeSection = $state(localStorage.getItem('activeSection') ?? 'preflop');
   $effect(() => { localStorage.setItem('activeSection', activeSection); });
@@ -33,14 +36,84 @@
     { id: 'bankroll',    label: 'Bankroll Mgmt',       icon: '$',  color: '#22c55e', ready: true },
     { id: 'mistakes',    label: 'Common Mistakes',     icon: '⚠',  color: '#f97316', ready: true },
     { id: 'solver',      label: 'Solver Guide',        icon: '⚙',  color: '#60a5fa', ready: true },
+    { id: 'cheatsheet',  label: 'Cheat Sheet',         icon: '▤',  color: '#10b981', ready: true },
+    { id: 'range-builder', label: 'Range Builder',     icon: '▦',  color: '#6366f1', ready: true },
     { id: 'quiz',        label: 'Quiz Mode',           icon: '✧',  color: '#c084fc', ready: true },
     { id: 'notes',       label: 'Session Notes',       icon: '✎',  color: '#a8a29e', ready: true },
   ];
 
-  // ── Global tooltip ────────────────────────────────────────────────────────
-  // Any element in the app can show a tooltip by setting data-tooltip="text"
-  // (and optionally data-tooltip-title="Title") on itself or an ancestor.
+  // ── Mobile sidebar ─────────────────────────────────────────────────────────
+  let sidebarOpen = $state(false);
 
+  function navigateTo(id) {
+    activeSection = id;
+    sidebarOpen = false;
+    searchQuery = '';
+  }
+
+  // ── Global search ───────────────────────────────────────────────────────────
+  let searchQuery = $state('');
+  let searchIndex = $state([]);
+  let searchInputEl = $state(null);
+
+  $effect(() => {
+    searchIndex = buildSearchIndex();
+  });
+
+  let searchResults = $derived(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return searchIndex.filter(item => item.text.includes(q)).slice(0, 8);
+  });
+
+  // ── Keyboard shortcuts ──────────────────────────────────────────────────────
+  let showHelp = $state(false);
+
+  function handleKeydown(e) {
+    const tag = e.target?.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+    if (e.key === '?') {
+      e.preventDefault();
+      showHelp = !showHelp;
+      return;
+    }
+    if (e.key === 'Escape') {
+      if (showHelp) { showHelp = false; return; }
+      if (sidebarOpen) { sidebarOpen = false; return; }
+      if (searchQuery) { searchQuery = ''; return; }
+      return;
+    }
+    if (e.key === '/') {
+      e.preventDefault();
+      searchInputEl?.focus();
+      sidebarOpen = true;
+      return;
+    }
+    if (e.key === '[') {
+      e.preventDefault();
+      const idx = sections.findIndex(s => s.id === activeSection);
+      if (idx > 0) activeSection = sections[idx - 1].id;
+      return;
+    }
+    if (e.key === ']') {
+      e.preventDefault();
+      const idx = sections.findIndex(s => s.id === activeSection);
+      if (idx < sections.length - 1) activeSection = sections[idx + 1].id;
+      return;
+    }
+    // Number keys 1-9 → sections 0-8, 0 → section 9
+    const num = parseInt(e.key);
+    if (!isNaN(num) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const idx = num === 0 ? 9 : num - 1;
+      if (idx < sections.length && sections[idx].ready) {
+        e.preventDefault();
+        activeSection = sections[idx].id;
+      }
+    }
+  }
+
+  // ── Global tooltip ────────────────────────────────────────────────────────
   let tip = $state({ visible: false, title: '', text: '', x: 0, y: 0 });
 
   function onMouseOver(e) {
@@ -94,6 +167,15 @@
     if (typeof window === 'undefined') return tip.y - 8;
     return tip.y + 120 > window.innerHeight ? tip.y - 120 : tip.y - 8;
   });
+
+  const shortcuts = [
+    { key: '1 – 9',  desc: 'Jump to section 1–9' },
+    { key: '0',      desc: 'Jump to section 10' },
+    { key: '[ / ]',  desc: 'Previous / next section' },
+    { key: '/',      desc: 'Focus search' },
+    { key: '?',      desc: 'Toggle this help' },
+    { key: 'Esc',    desc: 'Close overlay / sidebar / search' },
+  ];
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -105,22 +187,64 @@
   onmousemove={onMouseMove}
   onmouseout={onMouseOut}
   onblur={() => (tip = { ...tip, visible: false })}
+  onkeydown={handleKeydown}
 >
-  <aside class="sidebar">
+  <!-- Skip-to-content link for screen readers -->
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <!-- Mobile hamburger -->
+  <button class="hamburger" onclick={() => sidebarOpen = !sidebarOpen} aria-label="Toggle navigation">
+    {sidebarOpen ? '✕' : '☰'}
+  </button>
+
+  <!-- Mobile backdrop -->
+  {#if sidebarOpen}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div class="sidebar-backdrop" onclick={() => sidebarOpen = false}></div>
+  {/if}
+
+  <aside class="sidebar" class:open={sidebarOpen}>
     <div class="brand">
       <span class="brand-icon">♠</span>
       <span class="brand-text">FeltTheory</span>
     </div>
+
+    <!-- Global search -->
+    <div class="search-wrap">
+      <input
+        bind:this={searchInputEl}
+        bind:value={searchQuery}
+        class="search-input"
+        type="text"
+        placeholder="Search... ( / )"
+        aria-label="Search all sections"
+      />
+      {#if searchResults().length > 0}
+        <div class="search-results">
+          {#each searchResults() as result}
+            <button class="search-result-item" onclick={() => { navigateTo(result.section); }}>
+              <span class="sr-section">{sectionLabels[result.section] ?? result.section}</span>
+              <span class="sr-label">{result.label}</span>
+            </button>
+          {/each}
+        </div>
+      {/if}
+    </div>
+
     <nav>
-      {#each sections as sec}
+      {#each sections as sec, i}
         <button
           class="nav-item"
           class:active={activeSection === sec.id}
           class:disabled={!sec.ready}
-          onclick={() => sec.ready && (activeSection = sec.id)}
+          onclick={() => sec.ready && navigateTo(sec.id)}
         >
           <span class="nav-icon" style="color:{sec.color}">{sec.icon}</span>
           <span class="nav-label">{sec.label}</span>
+          {#if i < 10}
+            <span class="nav-shortcut">{i === 9 ? '0' : i + 1}</span>
+          {/if}
           {#if !sec.ready}
             <span class="soon">soon</span>
           {/if}
@@ -134,10 +258,13 @@
       <button class="theme-toggle a11y-toggle" onclick={toggleA11y}>
         {a11y ? '⊘ Standard view' : '⊕ Accessibility mode'}
       </button>
+      <button class="theme-toggle" onclick={() => showHelp = !showHelp}>
+        ? Keyboard shortcuts
+      </button>
     </div>
   </aside>
 
-  <main class="content" style:zoom={a11y ? 1.15 : 1} style:line-height={a11y ? '1.75' : null} style:letter-spacing={a11y ? '0.01em' : null}>
+  <main id="main-content" class="content" style:zoom={a11y ? 1.15 : 1} style:line-height={a11y ? '1.75' : null} style:letter-spacing={a11y ? '0.01em' : null}>
     <button class="print-btn" onclick={() => window.print()}>⎙ Print</button>
     {#if activeSection === 'preflop'}
       <PreflopSection />
@@ -165,6 +292,10 @@
       <MistakesSection />
     {:else if activeSection === 'solver'}
       <SolverSection />
+    {:else if activeSection === 'cheatsheet'}
+      <CheatSheet />
+    {:else if activeSection === 'range-builder'}
+      <RangeBuilder />
     {:else if activeSection === 'quiz'}
       <QuizSection />
     {:else if activeSection === 'notes'}
@@ -179,6 +310,28 @@
   </main>
 
   <ChatAssistant />
+
+  <!-- Keyboard shortcuts help overlay -->
+  {#if showHelp}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div class="help-backdrop" onclick={() => showHelp = false}>
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <!-- svelte-ignore a11y_click_events_have_key_events -->
+      <div class="help-modal" onclick={e => e.stopPropagation()}>
+        <h3>Keyboard Shortcuts</h3>
+        <div class="shortcut-list">
+          {#each shortcuts as s}
+            <div class="shortcut-row">
+              <kbd>{s.key}</kbd>
+              <span>{s.desc}</span>
+            </div>
+          {/each}
+        </div>
+        <button class="help-close" onclick={() => showHelp = false}>Close</button>
+      </div>
+    </div>
+  {/if}
 
   <!-- Global floating tooltip -->
   {#if tip.visible && tip.text}
@@ -205,6 +358,53 @@
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
   }
 
+  /* ── Skip-to-content link ── */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    z-index: 10000;
+    padding: 8px 16px;
+    background: var(--c-accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    left: 10px;
+    top: 10px;
+  }
+
+  /* ── Hamburger (mobile only) ── */
+  .hamburger {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 1100;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--c-border);
+    background: var(--c-bg-sidebar);
+    color: var(--c-text);
+    font-size: 20px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Mobile backdrop ── */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+  }
+
   /* ── Sidebar ── */
   .sidebar {
     width: 290px;
@@ -216,6 +416,7 @@
     position: sticky;
     top: 0;
     height: 100vh;
+    overflow-y: auto;
   }
 
   .brand {
@@ -225,6 +426,71 @@
   }
   .brand-icon { font-size: 28px; color: var(--c-accent); line-height: 1; }
   .brand-text { font-size: 17px; font-weight: 700; color: var(--c-text-h); letter-spacing: 0.03em; }
+
+  /* ── Search ── */
+  .search-wrap {
+    padding: 10px 10px 0;
+    position: relative;
+  }
+  .search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--c-border);
+    background: var(--c-bg-subtle);
+    color: var(--c-text);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input::placeholder { color: var(--c-text-4); }
+  .search-input:focus { border-color: var(--c-accent); }
+
+  .search-results {
+    position: absolute;
+    top: 100%;
+    left: 10px;
+    right: 10px;
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 100;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .search-result-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: var(--c-text);
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    border-bottom: 1px solid var(--c-border-soft);
+    transition: background 0.1s;
+  }
+  .search-result-item:last-child { border-bottom: none; }
+  .search-result-item:hover { background: var(--c-bg-hover); }
+  .sr-section {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--c-accent);
+  }
+  .sr-label {
+    font-size: 13px;
+    color: var(--c-text-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   nav { display: flex; flex-direction: column; padding: 14px 10px; gap: 4px; }
 
@@ -243,6 +509,17 @@
 
   .nav-icon  { font-size: 18px; width: 22px; text-align: center; }
   .nav-label { flex: 1; }
+
+  .nav-shortcut {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--c-text-4);
+    background: var(--c-bg-subtle);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    opacity: 0.6;
+  }
 
   .soon {
     font-size: 9px; font-weight: 700;
@@ -313,6 +590,69 @@
   .coming-soon h2 { font-size: 22px; color: var(--c-text); margin: 0; }
   .coming-soon p  { font-size: 14px; margin: 0; }
 
+  /* ── Help overlay ── */
+  .help-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .help-modal {
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    min-width: 320px;
+    max-width: 420px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+  .help-modal h3 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    color: var(--c-text-h);
+  }
+  .shortcut-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .shortcut-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+    color: var(--c-text-2);
+  }
+  .shortcut-row kbd {
+    display: inline-block;
+    min-width: 50px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--c-border);
+    background: var(--c-bg-subtle);
+    color: var(--c-text);
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+  }
+  .help-close {
+    margin-top: 16px;
+    padding: 7px 20px;
+    border-radius: 6px;
+    border: 1px solid var(--c-border);
+    background: transparent;
+    color: var(--c-text-3);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .help-close:hover { background: var(--c-bg-hover); color: var(--c-text); }
+
   /* ── Global tooltip ── */
   .g-tooltip {
     position: fixed;
@@ -340,5 +680,49 @@
   .g-tip-body {
     font-size: 12px; color: var(--c-text-2);
     line-height: 1.55;
+  }
+
+  /* ── Mobile responsive ── */
+  @media (max-width: 768px) {
+    .hamburger {
+      display: flex;
+    }
+
+    .sidebar-backdrop {
+      display: block;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      width: 290px;
+      min-width: 290px;
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+
+    .content {
+      padding: 60px 16px 16px;
+    }
+
+    .print-btn {
+      top: 14px;
+      right: 16px;
+    }
+
+    .nav-shortcut {
+      display: none;
+    }
+
+    .help-modal {
+      margin: 16px;
+      min-width: auto;
+    }
   }
 </style>

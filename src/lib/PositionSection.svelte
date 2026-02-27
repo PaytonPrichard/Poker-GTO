@@ -30,12 +30,14 @@
   </p>
 
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -48,108 +50,116 @@
 
   <!-- ── BASICS ── -->
   {#if activeTab === 'basics'}
-    <div class="section-header">
-      <h3>The Power of Position</h3>
-      <p class="section-note">
-        Position in poker means acting after your opponents. This advantage is so powerful that
-        it should influence every decision from preflop hand selection to river bluffs.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each positionBasics as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>The Power of Position</h3>
+        <p class="section-note">
+          Position in poker means acting after your opponents. This advantage is so powerful that
+          it should influence every decision from preflop hand selection to river bluffs.
+        </p>
+      </div>
+      <div class="concepts-grid">
+        {#each positionBasics as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── EV BY SEAT ── -->
   {:else if activeTab === 'ev'}
-    <div class="section-header">
-      <h3>Expected Value by Position (6-Max)</h3>
-      <p class="section-note">
-        These approximate win rates show how much each position contributes to (or costs) your overall results.
-        The button is the most profitable seat; the blinds lose money even for winning players.
-      </p>
-    </div>
-    <div class="data-table">
-      <div class="table-header" style="grid-template-columns: 0.8fr 0.8fr 0.7fr 0.7fr 2fr;">
-        <span>Position</span>
-        <span class="center">BB/100</span>
-        <span class="center">VPIP</span>
-        <span class="center">PFR</span>
-        <span>Notes</span>
-      </div>
-      {#each evBySeat as row}
-        <div class="table-row" style="grid-template-columns: 0.8fr 0.8fr 0.7fr 0.7fr 2fr;">
-          <span class="pos-name">{row.position}</span>
-          <span class="center">
-            <span class="ev-val" style="color:{evColor(row.bbPer100)}">{row.bbPer100}</span>
-          </span>
-          <span class="center stat">{row.vpip}</span>
-          <span class="center stat">{row.pfr}</span>
-          <span class="desc-text">{row.description}</span>
-        </div>
-      {/each}
-    </div>
-
-    <div class="callout" style="margin-top:4px;">
-      <span class="callout-icon">♣</span>
-      <div>
-        <strong>Key takeaway</strong>
-        <p class="callout-body">
-          The BTN wins ~3-5x more than any other position. If you could only improve one aspect of your game,
-          play more hands on the button and fewer from early position and the blinds.
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Expected Value by Position (6-Max)</h3>
+        <p class="section-note">
+          These approximate win rates show how much each position contributes to (or costs) your overall results.
+          The button is the most profitable seat; the blinds lose money even for winning players.
         </p>
+      </div>
+      <div class="data-table">
+        <div class="table-header" style="grid-template-columns: 0.8fr 0.8fr 0.7fr 0.7fr 2fr;">
+          <span>Position</span>
+          <span class="center">BB/100</span>
+          <span class="center">VPIP</span>
+          <span class="center">PFR</span>
+          <span>Notes</span>
+        </div>
+        {#each evBySeat as row}
+          <div class="table-row" style="grid-template-columns: 0.8fr 0.8fr 0.7fr 0.7fr 2fr;">
+            <span class="pos-name">{row.position}</span>
+            <span class="center">
+              <span class="ev-val" style="color:{evColor(row.bbPer100)}">{row.bbPer100}</span>
+            </span>
+            <span class="center stat">{row.vpip}</span>
+            <span class="center stat">{row.pfr}</span>
+            <span class="desc-text">{row.description}</span>
+          </div>
+        {/each}
+      </div>
+
+      <div class="callout" style="margin-top:4px;">
+        <span class="callout-icon">♣</span>
+        <div>
+          <strong>Key takeaway</strong>
+          <p class="callout-body">
+            The BTN wins ~3-5x more than any other position. If you could only improve one aspect of your game,
+            play more hands on the button and fewer from early position and the blinds.
+          </p>
+        </div>
       </div>
     </div>
 
   <!-- ── POSITIONAL PLAYS ── -->
   {:else if activeTab === 'plays'}
-    <div class="section-header">
-      <h3>Plays That Leverage Position</h3>
-      <p class="section-note">
-        These are specific tactical plays that are only possible (or much more profitable) when you have position on your opponent.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each positionalPlays as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Plays That Leverage Position</h3>
+        <p class="section-note">
+          These are specific tactical plays that are only possible (or much more profitable) when you have position on your opponent.
+        </p>
+      </div>
+      <div class="concepts-grid">
+        {#each positionalPlays as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── EXPLOITING POSITION ── -->
   {:else if activeTab === 'exploiting'}
-    <div class="section-header">
-      <h3>IP vs OOP: How Strategy Changes</h3>
-      <p class="section-note">
-        The same hand plays very differently in position vs out of position. These comparisons show
-        how to adjust your strategy based on where you're sitting.
-      </p>
-    </div>
-    <div class="comparison-cards">
-      {#each exploitingPosition as item}
-        <details class="comparison-card">
-          <summary class="comp-header">{item.situation}</summary>
-          <div class="comp-body">
-            <div class="comp-col">
-              <span class="comp-label ip">In Position</span>
-              <p class="comp-text">{item.inPosition}</p>
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>IP vs OOP: How Strategy Changes</h3>
+        <p class="section-note">
+          The same hand plays very differently in position vs out of position. These comparisons show
+          how to adjust your strategy based on where you're sitting.
+        </p>
+      </div>
+      <div class="comparison-cards">
+        {#each exploitingPosition as item}
+          <details class="comparison-card">
+            <summary class="comp-header">{item.situation}</summary>
+            <div class="comp-body">
+              <div class="comp-col">
+                <span class="comp-label ip">In Position</span>
+                <p class="comp-text">{item.inPosition}</p>
+              </div>
+              <div class="comp-col">
+                <span class="comp-label oop">Out of Position</span>
+                <p class="comp-text">{item.outOfPosition}</p>
+              </div>
+              {#if item.notes}
+                <div class="comp-notes">{item.notes}</div>
+              {/if}
             </div>
-            <div class="comp-col">
-              <span class="comp-label oop">Out of Position</span>
-              <p class="comp-text">{item.outOfPosition}</p>
-            </div>
-            {#if item.notes}
-              <div class="comp-notes">{item.notes}</div>
-            {/if}
-          </div>
-        </details>
-      {/each}
+          </details>
+        {/each}
+      </div>
     </div>
   {/if}
 </div>

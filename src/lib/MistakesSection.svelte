@@ -34,12 +34,14 @@
   </p>
 
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -52,96 +54,104 @@
 
   <!-- ── PREFLOP LEAKS ── -->
   {#if activeTab === 'preflop'}
-    <div class="section-header">
-      <h3>Preflop Mistakes</h3>
-      <p class="section-note">
-        Preflop mistakes compound across every hand you play. Fixing these leaks gives you
-        the biggest bang for your buck because they affect your range construction in every pot.
-      </p>
-    </div>
-    <div class="leak-cards">
-      {#each preflopLeaks as leak}
-        <details class="leak-card">
-          <summary class="leak-header">
-            <span class="leak-title">{leak.title}</span>
-            <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}">
-              {sevLabel(leak.severity)}
-            </span>
-          </summary>
-          <div class="leak-body">
-            <p class="leak-desc">{leak.description}</p>
-            <div class="fix-row">
-              <span class="fix-label">Fix</span>
-              <span class="fix-text">{leak.fix}</span>
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Preflop Mistakes</h3>
+        <p class="section-note">
+          Preflop mistakes compound across every hand you play. Fixing these leaks gives you
+          the biggest bang for your buck because they affect your range construction in every pot.
+        </p>
+      </div>
+      <div class="leak-cards">
+        {#each preflopLeaks as leak}
+          <details class="leak-card">
+            <summary class="leak-header">
+              <span class="leak-title">{leak.title}</span>
+              <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}">
+                {sevLabel(leak.severity)}
+              </span>
+            </summary>
+            <div class="leak-body">
+              <p class="leak-desc">{leak.description}</p>
+              <div class="fix-row">
+                <span class="fix-label">Fix</span>
+                <span class="fix-text">{leak.fix}</span>
+              </div>
             </div>
-          </div>
-        </details>
-      {/each}
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── POSTFLOP LEAKS ── -->
   {:else if activeTab === 'postflop'}
-    <div class="section-header">
-      <h3>Postflop Mistakes</h3>
-      <p class="section-note">
-        Postflop is where the most money is won and lost. These common errors cost you significant
-        EV over time and are often harder to spot than preflop leaks.
-      </p>
-    </div>
-    <div class="leak-cards">
-      {#each postflopLeaks as leak}
-        <details class="leak-card">
-          <summary class="leak-header">
-            <span class="leak-title">{leak.title}</span>
-            <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}">
-              {sevLabel(leak.severity)}
-            </span>
-          </summary>
-          <div class="leak-body">
-            <p class="leak-desc">{leak.description}</p>
-            <div class="fix-row">
-              <span class="fix-label">Fix</span>
-              <span class="fix-text">{leak.fix}</span>
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Postflop Mistakes</h3>
+        <p class="section-note">
+          Postflop is where the most money is won and lost. These common errors cost you significant
+          EV over time and are often harder to spot than preflop leaks.
+        </p>
+      </div>
+      <div class="leak-cards">
+        {#each postflopLeaks as leak}
+          <details class="leak-card">
+            <summary class="leak-header">
+              <span class="leak-title">{leak.title}</span>
+              <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}">
+                {sevLabel(leak.severity)}
+              </span>
+            </summary>
+            <div class="leak-body">
+              <p class="leak-desc">{leak.description}</p>
+              <div class="fix-row">
+                <span class="fix-label">Fix</span>
+                <span class="fix-text">{leak.fix}</span>
+              </div>
             </div>
-          </div>
-        </details>
-      {/each}
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── MENTAL GAME ── -->
   {:else if activeTab === 'mental'}
-    <div class="section-header">
-      <h3>Mental Game</h3>
-      <p class="section-note">
-        Your mental game determines how consistently you can apply your technical knowledge.
-        Even the best strategy falls apart when emotions take over.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each mentalGame as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Mental Game</h3>
+        <p class="section-note">
+          Your mental game determines how consistently you can apply your technical knowledge.
+          Even the best strategy falls apart when emotions take over.
+        </p>
+      </div>
+      <div class="concepts-grid">
+        {#each mentalGame as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── SIZING ERRORS ── -->
   {:else if activeTab === 'sizing'}
-    <div class="section-header">
-      <h3>Sizing Mistakes</h3>
-      <p class="section-note">
-        Bet sizing is both an art and a science. These common sizing errors either leave money on the table
-        or give opponents easy decisions they shouldn't have.
-      </p>
-    </div>
-    <div class="concepts-grid">
-      {#each sizingMistakes as item}
-        <details class="concept-card">
-          <summary class="concept-title">{item.title}</summary>
-          <p class="concept-body">{item.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Sizing Mistakes</h3>
+        <p class="section-note">
+          Bet sizing is both an art and a science. These common sizing errors either leave money on the table
+          or give opponents easy decisions they shouldn't have.
+        </p>
+      </div>
+      <div class="concepts-grid">
+        {#each sizingMistakes as item}
+          <details class="concept-card">
+            <summary class="concept-title">{item.title}</summary>
+            <p class="concept-body">{item.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
   {/if}
 </div>

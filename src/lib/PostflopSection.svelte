@@ -41,12 +41,14 @@
 
   <!-- Street tabs -->
   <div class="tabs-row">
-    <div class="street-tabs">
+    <div class="street-tabs" role="tablist">
       {#each ['flop', 'turn', 'river', 'concepts'] as street}
         <button
           class="street-btn"
           class:active={activeStreet === street}
           onclick={() => activeStreet = street}
+          role="tab"
+          aria-selected={activeStreet === street}
         >
           {street.charAt(0).toUpperCase() + street.slice(1)}
         </button>
@@ -59,184 +61,192 @@
 
   <!-- ── FLOP ── -->
   {#if activeStreet === 'flop'}
-    <div class="section-header">
-      <h3>Flop
-        <span data-tooltip-title="C-Bet — Continuation Bet" data-tooltip="Betting the flop after being the preflop aggressor. GTO c-bet frequency varies heavily by board texture.">C-Bet</span>
-        Frequencies by
-        <span data-tooltip-title="Board Texture" data-tooltip="The character of the community cards: dry (unconnected, rainbow), wet (connected, suited), paired, monotone, etc. Drives bet frequency and sizing decisions.">Board Texture</span>
-      </h3>
-      <p class="section-note">
-        Frequencies shown are for the preflop raiser (PFR) as the aggressor.
-        <span class="badge ip" data-tooltip-title="IP — In Position" data-tooltip="Acting after your opponent on all postflop streets. IP players see villain's action before deciding, allowing better equity realization.">IP</span> = in position (acts last postflop).
-        <span class="badge oop" data-tooltip-title="OOP — Out of Position" data-tooltip="Acting before your opponent on postflop streets. Must act with less information — GTO OOP play involves checking more and using larger bet sizes.">OOP</span> = out of position.
-      </p>
-    </div>
-
-    <div class="search-bar">
-      <input
-        type="text"
-        class="flop-search"
-        placeholder="Search flops — texture, board, range advantage, notes…"
-        bind:value={flopSearch}
-      />
-      {#if flopSearch.trim()}
-        <span class="result-count">{filteredFlops.length} of {cbetData.length} textures</span>
-      {/if}
-    </div>
-
-    <div class="cbet-table">
-      <div class="cbet-header">
-        <span>Texture</span>
-        <span>Example</span>
-        <span class="center" data-tooltip-title="Range Advantage" data-tooltip="When your overall range has higher equity on this board than your opponent's. The player with range advantage c-bets more frequently.">Range Adv</span>
-        <span class="center">IP Freq</span>
-        <span class="center">IP Size</span>
-        <span class="center">OOP Freq</span>
-        <span class="center">OOP Size</span>
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Flop
+          <span data-tooltip-title="C-Bet — Continuation Bet" data-tooltip="Betting the flop after being the preflop aggressor. GTO c-bet frequency varies heavily by board texture.">C-Bet</span>
+          Frequencies by
+          <span data-tooltip-title="Board Texture" data-tooltip="The character of the community cards: dry (unconnected, rainbow), wet (connected, suited), paired, monotone, etc. Drives bet frequency and sizing decisions.">Board Texture</span>
+        </h3>
+        <p class="section-note">
+          Frequencies shown are for the preflop raiser (PFR) as the aggressor.
+          <span class="badge ip" data-tooltip-title="IP — In Position" data-tooltip="Acting after your opponent on all postflop streets. IP players see villain's action before deciding, allowing better equity realization.">IP</span> = in position (acts last postflop).
+          <span class="badge oop" data-tooltip-title="OOP — Out of Position" data-tooltip="Acting before your opponent on postflop streets. Must act with less information — GTO OOP play involves checking more and using larger bet sizes.">OOP</span> = out of position.
+        </p>
       </div>
-      {#each filteredFlops as row}
-        <div class="cbet-row">
-          <span class="texture-name">{row.texture}</span>
-          <span class="board-example">{row.example}</span>
-          <span class="center">
-            <span class="range-tag">{row.rangeAdv}</span>
-          </span>
-          <span class="center">
-            <span class="freq-pill" style="color: {freqColor(row.ipFreq)}">
-              {row.ipFreq}% <span class="freq-label">{freqLabel(row.ipFreq)}</span>
-            </span>
-          </span>
-          <span class="center size-text">{row.ipSize}</span>
-          <span class="center">
-            <span class="freq-pill" style="color: {freqColor(row.oopFreq)}">
-              {row.oopFreq}% <span class="freq-label">{freqLabel(row.oopFreq)}</span>
-            </span>
-          </span>
-          <span class="center size-text">{row.oopSize}</span>
-        </div>
-        <div class="cbet-notes">{row.notes}</div>
-      {/each}
-    </div>
 
-    <div class="callout">
-      <span class="callout-icon">♠</span>
-      <div>
-        <strong>Understanding these frequencies</strong>
-        <p class="callout-sub">
-          The percentages above are <em>range-wide</em> frequencies — they describe how often
-          you should bet with your <strong>entire range</strong> on that board texture, not a
-          single hand. For example, "IP Freq 80%" on an ace-high dry board means you c-bet 80%
-          of the hands you could hold there (most Ax, overpairs, gutshots) and check the other 20%.
-        </p>
-        <p class="callout-sub" style="margin-top: 6px;">
-          Individual hands also have mixed frequencies. Strong hands (top pair+) bet close to 100%.
-          Marginal hands (weak middle pair, backdoor draws) might bet 30% and check 70%. Pure air
-          with no equity checks and gives up. The board texture determines which hands fall into each
-          category — on dry boards, more hands can profitably bet; on wet boards, fewer can.
-        </p>
-        <p class="callout-sub" style="margin-top: 6px;">
-          <strong>Preflop vs postflop:</strong> Preflop ranges are usually simplified to pure
-          strategies (always raise or always fold). Postflop is where mixed frequencies become
-          critical — the same hand might bet on one board texture and check on another, or bet
-          the flop but check the turn depending on the runout.
-        </p>
+      <div class="search-bar">
+        <input
+          type="text"
+          class="flop-search"
+          placeholder="Search flops — texture, board, range advantage, notes…"
+          bind:value={flopSearch}
+        />
+        {#if flopSearch.trim()}
+          <span class="result-count">{filteredFlops.length} of {cbetData.length} textures</span>
+        {/if}
+      </div>
+
+      <div class="cbet-table">
+        <div class="cbet-header">
+          <span>Texture</span>
+          <span>Example</span>
+          <span class="center" data-tooltip-title="Range Advantage" data-tooltip="When your overall range has higher equity on this board than your opponent's. The player with range advantage c-bets more frequently.">Range Adv</span>
+          <span class="center">IP Freq</span>
+          <span class="center">IP Size</span>
+          <span class="center">OOP Freq</span>
+          <span class="center">OOP Size</span>
+        </div>
+        {#each filteredFlops as row}
+          <div class="cbet-row">
+            <span class="texture-name">{row.texture}</span>
+            <span class="board-example">{row.example}</span>
+            <span class="center">
+              <span class="range-tag">{row.rangeAdv}</span>
+            </span>
+            <span class="center">
+              <span class="freq-pill" style="color: {freqColor(row.ipFreq)}">
+                {row.ipFreq}% <span class="freq-label">{freqLabel(row.ipFreq)}</span>
+              </span>
+            </span>
+            <span class="center size-text">{row.ipSize}</span>
+            <span class="center">
+              <span class="freq-pill" style="color: {freqColor(row.oopFreq)}">
+                {row.oopFreq}% <span class="freq-label">{freqLabel(row.oopFreq)}</span>
+              </span>
+            </span>
+            <span class="center size-text">{row.oopSize}</span>
+          </div>
+          <div class="cbet-notes">{row.notes}</div>
+        {/each}
+      </div>
+
+      <div class="callout">
+        <span class="callout-icon">♠</span>
+        <div>
+          <strong>Understanding these frequencies</strong>
+          <p class="callout-sub">
+            The percentages above are <em>range-wide</em> frequencies — they describe how often
+            you should bet with your <strong>entire range</strong> on that board texture, not a
+            single hand. For example, "IP Freq 80%" on an ace-high dry board means you c-bet 80%
+            of the hands you could hold there (most Ax, overpairs, gutshots) and check the other 20%.
+          </p>
+          <p class="callout-sub" style="margin-top: 6px;">
+            Individual hands also have mixed frequencies. Strong hands (top pair+) bet close to 100%.
+            Marginal hands (weak middle pair, backdoor draws) might bet 30% and check 70%. Pure air
+            with no equity checks and gives up. The board texture determines which hands fall into each
+            category — on dry boards, more hands can profitably bet; on wet boards, fewer can.
+          </p>
+          <p class="callout-sub" style="margin-top: 6px;">
+            <strong>Preflop vs postflop:</strong> Preflop ranges are usually simplified to pure
+            strategies (always raise or always fold). Postflop is where mixed frequencies become
+            critical — the same hand might bet on one board texture and check on another, or bet
+            the flop but check the turn depending on the runout.
+          </p>
+        </div>
       </div>
     </div>
 
   <!-- ── TURN ── -->
   {:else if activeStreet === 'turn'}
-    <div class="section-header">
-      <h3>Turn Decisions</h3>
-      <p class="section-note">After a flop c-bet is called, how you proceed on the turn is crucial.</p>
-    </div>
-    <div class="guide-cards">
-      {#each turnGuide as item}
-        <details class="guide-card">
-          <summary class="guide-header">
-            <span class="situation">{item.situation}</span>
-            <span class="action-badge">{item.action}</span>
-          </summary>
-          <div class="guide-body">
-            <div class="guide-row">
-              <span class="guide-label">Hands</span>
-              <span class="guide-val">{item.hands}</span>
-            </div>
-            <div class="guide-row">
-              <span class="guide-label">Frequency</span>
-              <span class="guide-val">{item.frequency}</span>
-            </div>
-            {#if item.sizing !== '—'}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Turn Decisions</h3>
+        <p class="section-note">After a flop c-bet is called, how you proceed on the turn is crucial.</p>
+      </div>
+      <div class="guide-cards">
+        {#each turnGuide as item}
+          <details class="guide-card">
+            <summary class="guide-header">
+              <span class="situation">{item.situation}</span>
+              <span class="action-badge">{item.action}</span>
+            </summary>
+            <div class="guide-body">
               <div class="guide-row">
-                <span class="guide-label">Sizing</span>
-                <span class="guide-val highlight">{item.sizing}</span>
+                <span class="guide-label">Hands</span>
+                <span class="guide-val">{item.hands}</span>
               </div>
-            {/if}
-            <div class="guide-notes">{item.notes}</div>
-          </div>
-        </details>
-      {/each}
+              <div class="guide-row">
+                <span class="guide-label">Frequency</span>
+                <span class="guide-val">{item.frequency}</span>
+              </div>
+              {#if item.sizing !== '—'}
+                <div class="guide-row">
+                  <span class="guide-label">Sizing</span>
+                  <span class="guide-val highlight">{item.sizing}</span>
+                </div>
+              {/if}
+              <div class="guide-notes">{item.notes}</div>
+            </div>
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── RIVER ── -->
   {:else if activeStreet === 'river'}
-    <div class="section-header">
-      <h3>River Decisions</h3>
-      <p class="section-note">The river is polarization time. Size big with value and balance with bluffs at the right frequency.</p>
-    </div>
-
-    <div class="callout">
-      <span class="callout-icon">♠</span>
-      <div>
-        <strong>Bluff:Value ratio by bet size</strong>
-        <ul class="ratio-list">
-          <li>½ pot bet → bluff <strong>33%</strong> of betting range (2:1 value:bluff)</li>
-          <li>Pot-size bet → bluff <strong>50%</strong> of betting range (1:1 value:bluff)</li>
-          <li>2x pot overbet → bluff <strong>67%</strong> of betting range (1:2 value:bluff)</li>
-        </ul>
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>River Decisions</h3>
+        <p class="section-note">The river is polarization time. Size big with value and balance with bluffs at the right frequency.</p>
       </div>
-    </div>
 
-    <div class="guide-cards">
-      {#each riverGuide as item}
-        <details class="guide-card">
-          <summary class="guide-header">
-            <span class="situation">{item.situation}</span>
-            <span class="action-badge">{item.action}</span>
-          </summary>
-          <div class="guide-body">
-            <div class="guide-row">
-              <span class="guide-label">Hands</span>
-              <span class="guide-val">{item.hands}</span>
-            </div>
-            <div class="guide-row">
-              <span class="guide-label">Frequency</span>
-              <span class="guide-val">{item.frequency}</span>
-            </div>
-            {#if item.sizing}
+      <div class="callout">
+        <span class="callout-icon">♠</span>
+        <div>
+          <strong>Bluff:Value ratio by bet size</strong>
+          <ul class="ratio-list">
+            <li>½ pot bet → bluff <strong>33%</strong> of betting range (2:1 value:bluff)</li>
+            <li>Pot-size bet → bluff <strong>50%</strong> of betting range (1:1 value:bluff)</li>
+            <li>2x pot overbet → bluff <strong>67%</strong> of betting range (1:2 value:bluff)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="guide-cards">
+        {#each riverGuide as item}
+          <details class="guide-card">
+            <summary class="guide-header">
+              <span class="situation">{item.situation}</span>
+              <span class="action-badge">{item.action}</span>
+            </summary>
+            <div class="guide-body">
               <div class="guide-row">
-                <span class="guide-label">Sizing</span>
-                <span class="guide-val highlight">{item.sizing}</span>
+                <span class="guide-label">Hands</span>
+                <span class="guide-val">{item.hands}</span>
               </div>
-            {/if}
-            <div class="guide-notes">{item.notes}</div>
-          </div>
-        </details>
-      {/each}
+              <div class="guide-row">
+                <span class="guide-label">Frequency</span>
+                <span class="guide-val">{item.frequency}</span>
+              </div>
+              {#if item.sizing}
+                <div class="guide-row">
+                  <span class="guide-label">Sizing</span>
+                  <span class="guide-val highlight">{item.sizing}</span>
+                </div>
+              {/if}
+              <div class="guide-notes">{item.notes}</div>
+            </div>
+          </details>
+        {/each}
+      </div>
     </div>
 
   <!-- ── CONCEPTS ── -->
   {:else if activeStreet === 'concepts'}
-    <div class="section-header">
-      <h3>Core Postflop Principles</h3>
-      <p class="section-note">Foundational GTO concepts that underpin all postflop decisions.</p>
-    </div>
-    <div class="concepts-grid">
-      {#each principles as p}
-        <details class="concept-card">
-          <summary class="concept-title">{p.title}</summary>
-          <p class="concept-body">{p.body}</p>
-        </details>
-      {/each}
+    <div role="tabpanel">
+      <div class="section-header">
+        <h3>Core Postflop Principles</h3>
+        <p class="section-note">Foundational GTO concepts that underpin all postflop decisions.</p>
+      </div>
+      <div class="concepts-grid">
+        {#each principles as p}
+          <details class="concept-card">
+            <summary class="concept-title">{p.title}</summary>
+            <p class="concept-body">{p.body}</p>
+          </details>
+        {/each}
+      </div>
     </div>
   {/if}
 </div>

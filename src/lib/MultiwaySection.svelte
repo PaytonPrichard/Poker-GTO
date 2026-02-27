@@ -30,12 +30,14 @@
 
   <!-- Tabs -->
   <div class="tabs-row">
-    <div class="tabs">
+    <div class="tabs" role="tablist">
       {#each tabs as tab}
         <button
           class="tab-btn"
           class:active={activeTab === tab}
           onclick={() => activeTab = tab}
+          role="tab"
+          aria-selected={activeTab === tab}
         >
           {tabLabels[tab]}
         </button>
@@ -48,6 +50,7 @@
 
   <!-- ── PREFLOP ── -->
   {#if activeTab === 'preflop'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Preflop Adjustments: HU vs 3-Way vs 4-Way</h3>
       <p class="section-note">
@@ -84,9 +87,11 @@
         </p>
       </div>
     </div>
+    </div>
 
   <!-- ── FLOP ── -->
   {:else if activeTab === 'flop'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Multiway <span data-tooltip-title="C-Bet — Continuation Bet" data-tooltip="Betting the flop (or turn/river) after being the preflop aggressor. In multiway pots, c-bet frequency drops sharply — only bet with strong hands or nut advantage.">C-Bet</span> Frequencies by Board Texture</h3>
       <p class="section-note">
@@ -132,9 +137,11 @@
         </ul>
       </div>
     </div>
+    </div>
 
   <!-- ── TURN / RIVER ── -->
   {:else if activeTab === 'turnriver'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Turn & River Decisions in Multiway Pots</h3>
       <p class="section-note">
@@ -168,9 +175,11 @@
         </details>
       {/each}
     </div>
+    </div>
 
   <!-- ── CONCEPTS ── -->
   {:else if activeTab === 'concepts'}
+    <div role="tabpanel">
     <div class="section-header">
       <h3>Core Multiway Principles</h3>
       <p class="section-note">Foundational concepts that drive GTO play in pots with three or more players.</p>
@@ -182,6 +191,7 @@
           <p class="concept-body">{p.body}</p>
         </details>
       {/each}
+    </div>
     </div>
   {/if}
 </div>
