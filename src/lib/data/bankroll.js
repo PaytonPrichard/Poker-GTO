@@ -25,6 +25,10 @@ export const cashBrm = [
     body:  'One of the most critical bankroll rules is to keep your poker money completely separate from your living expenses. This means a dedicated account or tracking system for poker funds only. Never use rent money, savings, or emergency funds to play poker. When you win, resist the temptation to immediately withdraw profits — let your bankroll grow so you can move up in stakes. Conversely, if you are running bad, never dip into personal funds to chase losses. This separation protects both your finances and your decision-making at the table.',
   },
   {
+    title: 'Buy-ins and Big Blinds: A Quick Reference',
+    body:  'A standard cash game buy-in is 100 big blinds (BB). Stakes are named by the blind amounts — the "NL" label equals the buy-in in dollars. Here is how common stakes break down: NL2 ($0.01/$0.02) = $2 buy-in, NL5 ($0.02/$0.05) = $5, NL10 ($0.05/$0.10) = $10, NL25 ($0.10/$0.25) = $25, NL50 ($0.25/$0.50) = $50, NL100 ($0.50/$1) = $100, NL200 ($1/$2) = $200, NL500 ($2/$5) = $500, NL1000 ($5/$10) = $1,000. When someone says "I have 25 buy-ins for NL50," that means $1,250 ($50 × 25). Always think in BB, not dollars — a 3 BB open is always 3 BB whether you play NL10 or NL1000. This makes strategy portable across stakes.',
+  },
+  {
     title: 'Online vs Live Bankroll Differences',
     body:  'Online poker requires a larger bankroll in terms of buy-ins because you play far more hands per hour (especially if multi-tabling), which means you experience variance faster. An online grinder playing 4 tables sees roughly 300 hands/hour vs 25-30 live. However, live games are typically softer, so your win rate in bb/100 is often higher. A practical guideline: online cash requires 25-30 buy-ins minimum, while live cash can function with 15-20 buy-ins. Also factor in that live poker has travel and session costs (food, tips, parking) that online does not.',
   },

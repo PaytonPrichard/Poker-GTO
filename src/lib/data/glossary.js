@@ -546,6 +546,18 @@ export const glossary = [
     category: 'Theory',
     definition: 'The expected chips you lose on future streets when you make your hand but it\'s second-best. E.g., completing a non-nut flush and facing a large bet — you might pay off the nut flush. Hands with reverse implied odds (like dominated draws) should be played cautiously.',
   },
+  {
+    term: 'Buy-in',
+    full: 'Buy-in',
+    category: 'Theory',
+    definition: 'The amount of money you bring to a cash game table or pay to enter a tournament. In cash games, the standard buy-in is 100 big blinds (100 BB). Stakes are expressed as small blind/big blind — so at $1/$2, one buy-in is $200 (100 × $2). Common examples: $0.01/$0.02 (NL2) = $2 buy-in, $0.05/$0.10 (NL10) = $10, $0.25/$0.50 (NL50) = $50, $0.50/$1 (NL100) = $100, $1/$2 (NL200) = $200, $2/$5 (NL500) = $500, $5/$10 (NL1000) = $1,000. In tournaments, the buy-in is the fixed entry fee (e.g., a $50 MTT). Bankroll management is measured in buy-ins — e.g., "have 25 buy-ins for your stake."',
+  },
+  {
+    term: 'Stakes',
+    full: 'Stake Level',
+    category: 'Theory',
+    definition: 'The blind level of a cash game, written as small blind/big blind (e.g., $1/$2). The "NL" shorthand refers to the buy-in in dollars: NL200 means $200 max buy-in, which is the $1/$2 game (100 BB × $2). Online stakes are typically labeled by buy-in (NL2, NL10, NL50, NL100, NL200, NL500, NL1000). Live games are labeled by blinds ($1/$2, $2/$5, $5/$10). Moving up in stakes requires a larger bankroll and usually better skills to beat tougher competition.',
+  },
 ];
 
 // Quick lookup by term string for the tooltip system

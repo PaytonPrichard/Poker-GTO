@@ -20,21 +20,21 @@
   $effect(() => { localStorage.setItem('activeSection', activeSection); });
 
   const sections = [
-    { id: 'preflop',  label: 'Preflop Ranges',   icon: '♠', ready: true  },
-    { id: 'postflop', label: 'Postflop Play',     icon: '♥', ready: true  },
-    { id: 'glossary', label: 'Glossary',           icon: '📖', ready: true  },
-    { id: 'sizing',   label: 'Bet Sizing Theory', icon: '◈', ready: true  },
-    { id: 'equity',   label: 'Hand Equity',        icon: '♦', ready: true  },
-    { id: 'multiway', label: 'Multiway Pots',      icon: '♣', ready: true  },
-    { id: 'bluffing',     label: 'Bluffing & Reads',    icon: '🎭', ready: true  },
-    { id: 'tournament',  label: 'Tournament Play',    icon: '🏆', ready: true  },
-    { id: 'handreading', label: 'Hand Reading',        icon: '🔍', ready: true  },
-    { id: 'position',    label: 'Position Strategy',   icon: '⊞', ready: true  },
-    { id: 'bankroll',    label: 'Bankroll Mgmt',       icon: '💰', ready: true  },
-    { id: 'mistakes',    label: 'Common Mistakes',     icon: '⚠', ready: true  },
-    { id: 'solver',      label: 'Solver Guide',        icon: '⚙', ready: true  },
-    { id: 'quiz',        label: 'Quiz Mode',           icon: '?', ready: true  },
-    { id: 'notes',       label: 'Session Notes',       icon: '📝', ready: true  },
+    { id: 'preflop',     label: 'Preflop Ranges',    icon: '♠',  color: '#52b788', ready: true },
+    { id: 'postflop',    label: 'Postflop Play',      icon: '♥',  color: '#ef4444', ready: true },
+    { id: 'glossary',    label: 'Glossary',            icon: '≡',  color: '#8b5cf6', ready: true },
+    { id: 'sizing',      label: 'Bet Sizing Theory',  icon: '◆',  color: '#f59e0b', ready: true },
+    { id: 'equity',      label: 'Hand Equity',         icon: '♦',  color: '#3b82f6', ready: true },
+    { id: 'multiway',    label: 'Multiway Pots',       icon: '♣',  color: '#14b8a6', ready: true },
+    { id: 'bluffing',    label: 'Bluffing & Reads',   icon: '✦',  color: '#ec4899', ready: true },
+    { id: 'tournament',  label: 'Tournament Play',    icon: '★',  color: '#eab308', ready: true },
+    { id: 'handreading', label: 'Hand Reading',        icon: '◎',  color: '#06b6d4', ready: true },
+    { id: 'position',    label: 'Position Strategy',  icon: '⊞',  color: '#a78bfa', ready: true },
+    { id: 'bankroll',    label: 'Bankroll Mgmt',       icon: '$',  color: '#22c55e', ready: true },
+    { id: 'mistakes',    label: 'Common Mistakes',     icon: '⚠',  color: '#f97316', ready: true },
+    { id: 'solver',      label: 'Solver Guide',        icon: '⚙',  color: '#60a5fa', ready: true },
+    { id: 'quiz',        label: 'Quiz Mode',           icon: '✧',  color: '#c084fc', ready: true },
+    { id: 'notes',       label: 'Session Notes',       icon: '✎',  color: '#a8a29e', ready: true },
   ];
 
   // ── Global tooltip ────────────────────────────────────────────────────────
@@ -119,7 +119,7 @@
           class:disabled={!sec.ready}
           onclick={() => sec.ready && (activeSection = sec.id)}
         >
-          <span class="nav-icon">{sec.icon}</span>
+          <span class="nav-icon" style="color:{sec.color}">{sec.icon}</span>
           <span class="nav-label">{sec.label}</span>
           {#if !sec.ready}
             <span class="soon">soon</span>
