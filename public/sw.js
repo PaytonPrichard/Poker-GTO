@@ -2,7 +2,7 @@ const CACHE_NAME = 'felttheory-v1';
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(['/Poker-GTO/']))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(['/']))
   );
   self.skipWaiting();
 });
@@ -27,7 +27,7 @@ self.addEventListener('fetch', (e) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
           return res;
         })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match('/Poker-GTO/')))
+        .catch(() => caches.match(request).then((cached) => cached || caches.match('/')))
     );
   } else {
     // Cache-first for assets
