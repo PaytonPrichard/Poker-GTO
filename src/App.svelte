@@ -33,13 +33,13 @@
     { id: 'tournament',  label: 'Tournament Play',    icon: '★',  color: '#eab308', ready: true },
     { id: 'handreading', label: 'Hand Reading',        icon: '◎',  color: '#06b6d4', ready: true },
     { id: 'position',    label: 'Position Strategy',  icon: '⊞',  color: '#a78bfa', ready: true },
-    { id: 'bankroll',    label: 'Bankroll Mgmt',       icon: '$',  color: '#22c55e', ready: true },
-    { id: 'mistakes',    label: 'Common Mistakes',     icon: '⚠',  color: '#f97316', ready: true },
-    { id: 'solver',      label: 'Solver Guide',        icon: '⚙',  color: '#60a5fa', ready: true },
-    { id: 'cheatsheet',  label: 'Cheat Sheet',         icon: '▤',  color: '#10b981', ready: true },
-    { id: 'range-builder', label: 'Range Builder',     icon: '▦',  color: '#6366f1', ready: true },
-    { id: 'quiz',        label: 'Quiz Mode',           icon: '✧',  color: '#c084fc', ready: true },
-    { id: 'notes',       label: 'Session Notes',       icon: '✎',  color: '#a8a29e', ready: true },
+    { id: 'bankroll',    label: 'Bankroll Management', icon: '$',  color: '#22c55e', ready: true, shortcut: 'B' },
+    { id: 'mistakes',    label: 'Common Mistakes',     icon: '⚠',  color: '#f97316', ready: true, shortcut: 'M' },
+    { id: 'solver',      label: 'Solver Guide',        icon: '⚙',  color: '#60a5fa', ready: true, shortcut: 'S' },
+    { id: 'cheatsheet',  label: 'Cheat Sheet',         icon: '▤',  color: '#10b981', ready: true, shortcut: 'C' },
+    { id: 'range-builder', label: 'Range Builder',     icon: '▦',  color: '#6366f1', ready: true, shortcut: 'R' },
+    { id: 'quiz',        label: 'Quiz Mode',           icon: '✧',  color: '#c084fc', ready: true, shortcut: 'Q' },
+    { id: 'notes',       label: 'Session Notes',       icon: '✎',  color: '#a8a29e', ready: true, shortcut: 'N' },
   ];
 
   // ── Mobile sidebar ─────────────────────────────────────────────────────────
@@ -110,6 +110,14 @@
         e.preventDefault();
         activeSection = sections[idx].id;
       }
+      return;
+    }
+    // Letter shortcuts for sections 11+
+    const letter = e.key.toUpperCase();
+    const match = sections.find(s => s.shortcut === letter);
+    if (match && match.ready && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      activeSection = match.id;
     }
   }
 
@@ -209,6 +217,7 @@
   const shortcuts = [
     { key: '1 – 9',  desc: 'Jump to section 1–9' },
     { key: '0',      desc: 'Jump to section 10' },
+    { key: 'B M S C R Q N', desc: 'Sections 11–17' },
     { key: '[ / ]',  desc: 'Previous / next section' },
     { key: '/',      desc: 'Focus search' },
     { key: '?',      desc: 'Toggle this help' },
@@ -282,6 +291,8 @@
           <span class="nav-label">{sec.label}</span>
           {#if i < 10}
             <span class="nav-shortcut">{i === 9 ? '0' : i + 1}</span>
+          {:else if sec.shortcut}
+            <span class="nav-shortcut">{sec.shortcut}</span>
           {/if}
           {#if !sec.ready}
             <span class="soon">soon</span>
