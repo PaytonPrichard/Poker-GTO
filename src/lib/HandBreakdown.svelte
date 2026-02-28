@@ -23,7 +23,7 @@
 
   // Earliest position this hand is raised from (tightest position it appears in)
   const positionRank = { 'UTG': 0, 'UTG+1': 1, 'HJ': 2, 'CO': 3, 'BTN': 4, 'SB': 5 };
-  let earliestPos = $derived(() => {
+  let earliestPos = $derived.by(() => {
     const raised = entries.filter(e => e.raised);
     if (raised.length === 0) return null;
     return raised.reduce((best, e) =>
@@ -57,9 +57,9 @@
       <span class="stat-val">{totalRaised}<span class="stat-denom">/{totalSlots}</span></span>
       <span class="stat-label">position slots</span>
     </div>
-    {#if earliestPos()}
+    {#if earliestPos}
       <div class="summary-stat">
-        <span class="stat-val pos-val">{earliestPos()}</span>
+        <span class="stat-val pos-val">{earliestPos}</span>
         <span class="stat-label">earliest open</span>
       </div>
     {:else}

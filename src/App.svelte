@@ -60,7 +60,7 @@
     searchIndex = buildSearchIndex();
   });
 
-  let searchResults = $derived(() => {
+  let searchResults = $derived.by(() => {
     const q = searchQuery.trim().toLowerCase();
     if (q.length < 2) return [];
     return searchIndex.filter(item => item.text.includes(q)).slice(0, 8);
@@ -157,13 +157,51 @@
   });
   function toggleA11y() { a11y = !a11y; }
 
+  // ── Export / Import ─────────────────────────────────────────────────────────
+  const backupKeys = ['sessionNotes', 'savedNotes', 'quizHistory', 'customRanges', 'activeSection', 'theme', 'a11y'];
+  let fileInput = $state(null);
+
+  function exportData() {
+    const data = {};
+    for (const key of backupKeys) {
+      const val = localStorage.getItem(key);
+      if (val !== null) data[key] = val;
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'felttheory-backup.json';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function importData(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        for (const [key, val] of Object.entries(data)) {
+          if (backupKeys.includes(key)) localStorage.setItem(key, val);
+        }
+        location.reload();
+      } catch {
+        alert('Invalid backup file.');
+      }
+      e.target.value = '';
+    };
+    reader.readAsText(file);
+  }
+
   // Flip tooltip left if near right edge of viewport
-  let tipLeft = $derived(() => {
+  let tipLeft = $derived.by(() => {
     if (typeof window === 'undefined') return tip.x + 14;
     return tip.x + 260 > window.innerWidth ? tip.x - 260 - 4 : tip.x + 14;
   });
 
-  let tipTop = $derived(() => {
+  let tipTop = $derived.by(() => {
     if (typeof window === 'undefined') return tip.y - 8;
     return tip.y + 120 > window.innerHeight ? tip.y - 120 : tip.y - 8;
   });
@@ -220,9 +258,9 @@
         placeholder="Search... ( / )"
         aria-label="Search all sections"
       />
-      {#if searchResults().length > 0}
+      {#if searchResults.length > 0}
         <div class="search-results">
-          {#each searchResults() as result}
+          {#each searchResults as result}
             <button class="search-result-item" onclick={() => { navigateTo(result.section); }}>
               <span class="sr-section">{sectionLabels[result.section] ?? result.section}</span>
               <span class="sr-label">{result.label}</span>
@@ -261,6 +299,21 @@
       <button class="theme-toggle" onclick={() => showHelp = !showHelp}>
         ? Keyboard shortcuts
       </button>
+      <div class="data-buttons">
+        <button class="theme-toggle" onclick={exportData}>
+          ↓ Export data
+        </button>
+        <button class="theme-toggle" onclick={() => fileInput?.click()}>
+          ↑ Import data
+        </button>
+        <input
+          bind:this={fileInput}
+          type="file"
+          accept=".json"
+          onchange={importData}
+          style="display:none"
+        />
+      </div>
     </div>
   </aside>
 
@@ -337,7 +390,7 @@
   {#if tip.visible && tip.text}
     <div
       class="g-tooltip"
-      style="left: {tipLeft()}px; top: {tipTop()}px"
+      style="left: {tipLeft}px; top: {tipTop}px"
       role="tooltip"
       aria-hidden="true"
     >

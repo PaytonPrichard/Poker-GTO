@@ -13,7 +13,7 @@
   let calcHand1 = $state('AA');
   let calcHand2 = $state('KK');
 
-  let calcResult = $derived(() => {
+  let calcResult = $derived.by(() => {
     if (calcHand1 === calcHand2) return null;
     const key = [calcHand1, calcHand2].sort().join('-');
     const entry = equityLookup.get(key);
@@ -247,25 +247,25 @@
 
       {#if calcHand1 === calcHand2}
         <div class="calc-message">Select two different hands.</div>
-      {:else if calcResult()}
+      {:else if calcResult}
         <div class="calc-result">
           <div class="calc-bar-row">
             <span class="calc-hand-label hero-label">{calcHand1}</span>
             <div class="calc-bar-wrap">
-              <div class="calc-bar hero-bar" style="width: {calcResult().eq1}%"></div>
-              <div class="calc-bar villain-bar" style="width: {calcResult().eq2}%"></div>
+              <div class="calc-bar hero-bar" style="width: {calcResult.eq1}%"></div>
+              <div class="calc-bar villain-bar" style="width: {calcResult.eq2}%"></div>
             </div>
             <span class="calc-hand-label villain-label">{calcHand2}</span>
           </div>
           <div class="calc-pcts">
-            <span class="calc-pct hero-pct">{calcResult().eq1}%</span>
-            <span class="calc-pct villain-pct">{calcResult().eq2}%</span>
+            <span class="calc-pct hero-pct">{calcResult.eq1}%</span>
+            <span class="calc-pct villain-pct">{calcResult.eq2}%</span>
           </div>
           <div class="calc-verdict">
-            {#if calcResult().eq1 > calcResult().eq2}
-              <strong>{calcHand1}</strong> is favored ({calcResult().eq1}% equity)
-            {:else if calcResult().eq2 > calcResult().eq1}
-              <strong>{calcHand2}</strong> is favored ({calcResult().eq2}% equity)
+            {#if calcResult.eq1 > calcResult.eq2}
+              <strong>{calcHand1}</strong> is favored ({calcResult.eq1}% equity)
+            {:else if calcResult.eq2 > calcResult.eq1}
+              <strong>{calcHand2}</strong> is favored ({calcResult.eq2}% equity)
             {:else}
               Coin flip — 50/50
             {/if}

@@ -142,7 +142,7 @@ export const vsOpenRanges = {
       call: s([
         'TT','99','88',
         'AJs','ATs',
-        'KQs','KJs',
+        'KJs',
         'QJs','JTs',
       ]),
     },
@@ -173,7 +173,7 @@ export const vsOpenRanges = {
     HJ: {
       threebet: s(['AA','KK','QQ','JJ','AKs','AKo','AQs','A5s','A4s','KQs','TT']),
       call: s([
-        'TT','99','88','77','66','55','44',
+        '99','88','77','66','55','44',
         'AJs','ATs','A9s','A8s',
         'KJs','KTs','K9s',
         'QJs','QTs','Q9s',
@@ -189,7 +189,7 @@ export const vsOpenRanges = {
       // Very tight — UTG range is strong
       threebet: s(['AA','KK','QQ','AKs','AKo','AQs','JJ']),
       call: s([
-        'JJ','TT','99','88','77',
+        'TT','99','88','77',
         'AJs','ATs',
         'KQs','KJs',
         'QJs','JTs','T9s',
@@ -234,7 +234,7 @@ export const vsOpenRanges = {
     UTG: {
       threebet: s(['AA','KK','QQ','AKs','AKo','JJ']),
       call: s([
-        'JJ','TT','99','88',
+        'TT','99','88',
         'AQs','AJs',
         'KQs',
         'QJs','JTs',

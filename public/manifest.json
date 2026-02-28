@@ -1,0 +1,17 @@
+{
+  "name": "FeltTheory",
+  "short_name": "FeltTheory",
+  "description": "Poker GTO reference and study tool",
+  "start_url": "/Poker-GTO/",
+  "display": "standalone",
+  "theme_color": "#0d1117",
+  "background_color": "#0d1117",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

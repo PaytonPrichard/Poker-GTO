@@ -68,14 +68,14 @@
   }
 
   // Valid "your position" slots when facing a raise
-  let defenderPositions = $derived(() => {
+  let defenderPositions = $derived.by(() => {
     const order = positionOrder[playerCount];
     const ri = order.indexOf(raiserPos);
     return ri >= 0 ? order.slice(ri + 1) : [];
   });
 
   // Valid 3-bettor positions (positions to your left after you opened)
-  let threeBettorPositions = $derived(() => {
+  let threeBettorPositions = $derived.by(() => {
     const order = positionOrder[playerCount];
     const oi = order.indexOf(yourPos);
     return oi >= 0 ? order.slice(oi + 1) : [];
@@ -210,7 +210,7 @@
       <div class="selector-group">
         <div class="group-label">Your position</div>
         <div class="btn-group">
-          {#each defenderPositions() as pos}
+          {#each defenderPositions as pos}
             <button class="tab-btn pos" class:active={yourPos === pos} onclick={() => yourPos = pos}>
               {pos}
             </button>
@@ -250,7 +250,7 @@
       <div class="selector-group">
         <div class="group-label">3-Bettor's position</div>
         <div class="btn-group">
-          {#each threeBettorPositions() as pos}
+          {#each threeBettorPositions as pos}
             <button class="tab-btn pos raiser" class:active={threePos === pos} onclick={() => threePos = pos}>
               {pos}
             </button>

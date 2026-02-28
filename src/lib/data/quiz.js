@@ -209,8 +209,8 @@ export const quizQuestions = [
     scenario: 'You bet 75% pot on the river as a bluff. Villain is facing your bet.',
     question: 'At what frequency must villain call to prevent you from profiting with any two cards?',
     options: ['33% of the time', '43% of the time', '50% of the time', '57% of the time'],
-    correct: 1,
-    explanation: 'MDF = pot / (pot + bet). At 75% pot: pot = 1, bet = 0.75, MDF = 1 / 1.75 ≈ 57%. Wait — villain must CALL at 57% to prevent profitable bluffing, meaning they can fold 43%. Villain\'s correct call frequency = 1 - MDF fold = ~57% call.',
+    correct: 3,
+    explanation: 'MDF = pot / (pot + bet). At 75% pot: pot = 1, bet = 0.75, MDF = 1 / 1.75 ≈ 57%. Villain must call at least 57% of the time to prevent you from profiting with any bluff. They can fold at most 43%.',
   },
   {
     id: 15,
@@ -261,8 +261,8 @@ export const quizQuestions = [
     scenario: 'Pot is $100. Villain bets $50 (50% pot). You must decide to call.',
     question: 'What is the minimum equity you need to call this bet profitably?',
     options: ['25%', '33%', '40%', '50%'],
-    correct: 1,
-    explanation: 'Equity needed = bet / (pot + bet + bet) = 50 / (100 + 50 + 50) = 50/200 = 25%. Wait — correct formula: equity = call / (pot after call) = 50 / (100 + 50 + 50) = 33%. You need 33% equity to call a 50% pot bet.',
+    correct: 0,
+    explanation: 'Equity needed = call / (total pot after call) = 50 / (100 + 50 + 50) = 50 / 200 = 25%. You need 25% equity to profitably call a 50% pot bet.',
   },
   {
     id: 19,

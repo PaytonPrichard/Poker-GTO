@@ -32,7 +32,7 @@
   }
 
   // Best score per category
-  let bestScores = $derived(() => {
+  let bestScores = $derived.by(() => {
     const map = {};
     for (const h of history) {
       const key = h.category;
@@ -135,7 +135,7 @@
         <div class="history-section">
           <h4>Best Score by Category</h4>
           <div class="best-grid">
-            {#each Object.entries(bestScores()) as [cat, entry]}
+            {#each Object.entries(bestScores) as [cat, entry]}
               <div class="best-card">
                 <span class="best-cat">{cat}</span>
                 <span class="best-pct" class:excellent={entry.pct >= 80} class:good={entry.pct >= 60 && entry.pct < 80} class:practice={entry.pct < 60}>
