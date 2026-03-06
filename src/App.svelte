@@ -199,6 +199,7 @@
     collapsedGroupId = null;
     sidebarOpen = false;
     searchQuery = '';
+    showTakeaway = false;
   }
 
   // ── Global search ───────────────────────────────────────────────────────────
@@ -306,7 +307,7 @@
   function toggleA11y() { a11y = !a11y; }
 
   // ── Export / Import ─────────────────────────────────────────────────────────
-  const backupKeys = ['sessionNotes', 'savedNotes', 'quizHistory', 'customRanges', 'activeSection', 'theme', 'a11y', 'completedSections', 'readItems', 'practiceScores_equity', 'practiceScores_cbet', 'practiceScores_pushfold', 'dailyChallenge', 'srData', 'streakData', 'speedHighScore'];
+  const backupKeys = ['sessionNotes', 'savedNotes', 'quizHistory', 'customRanges', 'activeSection', 'theme', 'a11y', 'completedSections', 'readItems', 'practiceScores_equity', 'practiceScores_cbet', 'practiceScores_pushfold', 'dailyChallenge', 'srData', 'streakData', 'speedHighScore', 'totalStudyTime', 'bookmarks'];
   let fileInput = $state(null);
 
   function exportData() {
@@ -361,6 +362,128 @@
     { key: '?',      desc: 'Toggle this help' },
     { key: 'Esc',    desc: 'Close overlay / sidebar / search' },
   ];
+
+  // ── Session timer ──────────────────────────────────────────────────────────
+  const sessionStartMs = Date.now();
+  let sessionMinutes = $state(0);
+  let storedStudyMs = parseInt(localStorage.getItem('totalStudyTime') ?? '0');
+
+  $effect(() => {
+    const interval = setInterval(() => {
+      sessionMinutes = Math.floor((Date.now() - sessionStartMs) / 60000);
+    }, 30000); // update every 30s
+    const saveTime = () => {
+      localStorage.setItem('totalStudyTime', String(storedStudyMs + (Date.now() - sessionStartMs)));
+    };
+    window.addEventListener('beforeunload', saveTime);
+    return () => { clearInterval(interval); window.removeEventListener('beforeunload', saveTime); };
+  });
+
+  let totalStudyHours = $derived(Math.floor((storedStudyMs + sessionMinutes * 60000) / 3600000));
+  let totalStudyMins = $derived(Math.floor(((storedStudyMs + sessionMinutes * 60000) % 3600000) / 60000));
+
+  // ── Bookmarks ──────────────────────────────────────────────────────────────
+  let bookmarks = $state(JSON.parse(localStorage.getItem('bookmarks') ?? '[]'));
+  $effect(() => { localStorage.setItem('bookmarks', JSON.stringify(bookmarks)); });
+
+  let isBookmarked = $derived(bookmarks.includes(activeSection));
+
+  function toggleBookmark() {
+    if (isBookmarked) {
+      bookmarks = bookmarks.filter(b => b !== activeSection);
+    } else {
+      bookmarks = [...bookmarks, activeSection];
+    }
+  }
+
+  // ── Key Takeaways ─────────────────────────────────────────────────────────
+  const takeaways = {
+    position: [
+      'Acting last gives you an information advantage — you see opponents act before deciding',
+      'Play tighter from early position, wider from late position',
+      'The Button is the most profitable seat — you have position on everyone postflop',
+    ],
+    preflop: [
+      'Starting hand selection is your foundation — tighter is safer, especially for beginners',
+      'Open-raise ranges widen as you move closer to the button',
+      'Suited hands add ~3-4% equity over their offsuit counterparts',
+    ],
+    equity: [
+      'Equity = your share of the pot if played to showdown. 60% equity wins 60% long-term',
+      'Pair vs overcards is ~55/45 (race). Pair vs undercards is ~80/20',
+      'Suited adds ~3% equity. Domination (e.g. AK vs AQ) is roughly 70/30',
+    ],
+    sizing: [
+      'Bet bigger on wet boards for protection, smaller on dry boards for thin value',
+      'Standard open raise: 2.5-3x BB. Standard 3-bet: ~3x the open raise',
+      'Pot geometry: plan your sizing across streets to get all-in by the river when you want to',
+    ],
+    postflop: [
+      'C-bet ~60% on dry boards (you have range advantage), ~40% on wet boards',
+      'Board texture dictates strategy — dry boards favor the preflop aggressor',
+      'Check back weak hands occasionally to protect your checking range',
+    ],
+    handreading: [
+      'Narrow villain\'s range street by street — each action eliminates combos',
+      'Pay attention to what villain doesn\'t do as much as what they do',
+      'Bet sizing tells: small = wide range, large = polarized (strong or bluff)',
+    ],
+    bluffing: [
+      'Bluff with equity (draws/blockers), not random hands',
+      'Good bluff candidates block villain\'s strong hands and unblock their folds',
+      'Bluff less in multiway pots — someone usually has something',
+    ],
+    mistakes: [
+      'Biggest leak: playing too many hands preflop (VPIP too high)',
+      'Second biggest: calling too much instead of raising or folding',
+      'Third: not adjusting bet sizing to board texture and opponent tendencies',
+    ],
+    multiway: [
+      'Tighten up significantly — your equity drops fast with more players in the pot',
+      'Bluff much less — the more players, the more likely someone connects',
+      'Value bet stronger hands thinner, and respect signs of strength',
+    ],
+    tournament: [
+      'ICM pressure changes optimal play — chips won are worth less than chips lost',
+      'Near the bubble: tighten vs big stacks, pressure short stacks',
+      'Adjust push/fold ranges based on stack depth and payout jumps',
+    ],
+    bankroll: [
+      'Cash games: 20-30 buy-ins minimum. Tournaments: 50-100 buy-ins',
+      'Move down stakes if you lose 30%+ of your bankroll — protect your roll',
+      'Separate poker money from life money. Variance is real even for winners',
+    ],
+    solver: [
+      'Solvers find Nash equilibrium — the unexploitable strategy',
+      'Use solver output to understand patterns, not memorize specific spots',
+      'Focus on high-frequency spots first: single-raised pots, common board textures',
+    ],
+  };
+
+  let showTakeaway = $state(false);
+
+  // ── Cross-links ───────────────────────────────────────────────────────────
+  const sectionFlow = {
+    position:    { next: 'preflop',     practice: 'quiz' },
+    preflop:     { next: 'equity',      practice: 'range-builder' },
+    equity:      { next: 'sizing',      practice: 'quiz' },
+    sizing:      { next: 'postflop',    practice: 'quiz' },
+    postflop:    { next: 'handreading', practice: 'walkthrough' },
+    handreading: { next: 'bluffing',    practice: 'quiz' },
+    bluffing:    { next: 'mistakes',    practice: 'quiz' },
+    mistakes:    { next: 'multiway',    practice: 'daily' },
+    multiway:    { next: 'tournament',  practice: 'quiz' },
+    tournament:  { next: 'bankroll',    practice: 'quiz' },
+    bankroll:    { next: 'solver',      practice: 'quiz' },
+    solver:      { next: null,          practice: 'quiz' },
+  };
+
+  // Flat label map for all sections
+  const allSectionLabels = {};
+  for (const g of groups) for (const i of g.items) allSectionLabels[i.id] = i.label;
+  allSectionLabels['guided'] = 'Guided Learning';
+  allSectionLabels['stats'] = 'My Stats';
+  allSectionLabels['walkthrough'] = 'Hand Walkthrough';
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -505,7 +628,25 @@
         {/if}
       {/each}
     </nav>
+
+    <!-- Bookmarked sections -->
+    {#if bookmarks.length > 0}
+      <div class="bookmarks-section">
+        <span class="bookmarks-label">★ Bookmarked</span>
+        {#each bookmarks as bm}
+          <button class="nav-sub-item bookmark-item" class:active={activeSection === bm} onclick={() => navigateTo(bm)}>
+            {allSectionLabels[bm] ?? bm}
+          </button>
+        {/each}
+      </div>
+    {/if}
+
     <div class="sidebar-footer">
+      <div class="session-timer">
+        <span class="timer-label">Session: {sessionMinutes < 1 ? '<1' : sessionMinutes}m</span>
+        <span class="timer-sep">|</span>
+        <span class="timer-label">Total: {totalStudyHours > 0 ? totalStudyHours + 'h ' : ''}{totalStudyMins}m</span>
+      </div>
       <button class="theme-toggle" onclick={toggleTheme}>
         {theme === 'dark' ? '☀ Light mode' : '☾ Dark mode'}
       </button>
@@ -537,7 +678,31 @@
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <main id="main-content" class="content" style:zoom={a11y ? 1.15 : 1} style:line-height={a11y ? '1.75' : null} style:letter-spacing={a11y ? '0.01em' : null} onclick={onContentClick}>
-    <button class="print-btn" onclick={() => window.print()}>⎙ Print</button>
+    <div class="content-actions">
+      <button class="print-btn" onclick={() => window.print()}>⎙ Print</button>
+      {#if contentSections.has(activeSection)}
+        <button class="bookmark-btn" class:active={isBookmarked} onclick={toggleBookmark}>
+          {isBookmarked ? '★' : '☆'}
+        </button>
+      {/if}
+    </div>
+
+    <!-- Key Takeaway -->
+    {#if takeaways[activeSection]}
+      <button class="takeaway-toggle" onclick={() => showTakeaway = !showTakeaway}>
+        <span class="takeaway-icon">&#9670;</span>
+        <span>Key Takeaways</span>
+        <span class="takeaway-chevron" class:open={showTakeaway}>›</span>
+      </button>
+      {#if showTakeaway}
+        <div class="takeaway-card">
+          {#each takeaways[activeSection] as point}
+            <div class="takeaway-point">{point}</div>
+          {/each}
+        </div>
+      {/if}
+    {/if}
+
     {#if activeSection === 'preflop'}
       <PreflopSection onTakePostflop={takePostflop} />
     {:else if activeSection === 'postflop'}
@@ -585,6 +750,20 @@
         <div class="cs-icon">🃏</div>
         <h2>Coming Soon</h2>
         <p>This section is under construction.</p>
+      </div>
+    {/if}
+
+    <!-- Cross-links -->
+    {#if sectionFlow[activeSection]}
+      <div class="cross-links">
+        {#if sectionFlow[activeSection].next}
+          <button class="cross-link" onclick={() => navigateTo(sectionFlow[activeSection].next)}>
+            Continue to: <strong>{allSectionLabels[sectionFlow[activeSection].next]}</strong> →
+          </button>
+        {/if}
+        <button class="cross-link practice-link" onclick={() => navigateTo(sectionFlow[activeSection].practice)}>
+          Practice: <strong>{allSectionLabels[sectionFlow[activeSection].practice]}</strong>
+        </button>
       </div>
     {/if}
 
@@ -997,9 +1176,6 @@
   }
 
   .print-btn {
-    position: absolute;
-    top: 28px;
-    right: 32px;
     padding: 5px 12px;
     border-radius: 5px;
     border: 1px solid var(--c-border);
@@ -1167,11 +1343,6 @@
       padding: 60px 16px 16px;
     }
 
-    .print-btn {
-      top: 14px;
-      right: 16px;
-    }
-
     .nav-shortcut {
       display: none;
     }
@@ -1180,5 +1351,109 @@
       margin: 16px;
       min-width: auto;
     }
+
+    .content-actions { top: 14px; right: 16px; }
   }
+
+  /* ── Content actions (print + bookmark) ── */
+  .content-actions {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    display: flex;
+    gap: 6px;
+    z-index: 5;
+  }
+
+  .bookmark-btn {
+    padding: 4px 10px; border-radius: 6px;
+    border: 1px solid transparent;
+    background: none;
+    color: var(--c-text-4);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .bookmark-btn:hover { color: #f59e0b; }
+  .bookmark-btn.active { color: #f59e0b; }
+
+  /* ── Key Takeaway ── */
+  .takeaway-toggle {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px; border-radius: 7px;
+    border: 1px solid var(--c-border-accent);
+    background: var(--c-bg-callout);
+    color: var(--c-accent);
+    font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s;
+    width: fit-content;
+  }
+  .takeaway-toggle:hover { border-color: var(--c-accent); }
+  .takeaway-icon { font-size: 11px; }
+  .takeaway-chevron {
+    font-size: 14px; transition: transform 0.15s;
+    display: inline-block; margin-left: auto;
+  }
+  .takeaway-chevron.open { transform: rotate(90deg); }
+  .takeaway-card {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 12px 16px;
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border);
+    border-radius: 7px;
+    margin-top: -8px;
+  }
+  .takeaway-point {
+    font-size: 13px; color: var(--c-text-2); line-height: 1.55;
+    padding-left: 14px;
+    position: relative;
+  }
+  .takeaway-point::before {
+    content: '•';
+    position: absolute; left: 0;
+    color: var(--c-accent); font-weight: 700;
+  }
+
+  /* ── Cross-links ── */
+  .cross-links {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    padding: 20px 0 0;
+    margin-top: 20px;
+    border-top: 1px solid var(--c-border-soft);
+  }
+  .cross-link {
+    padding: 8px 16px; border-radius: 6px;
+    border: 1px solid var(--c-border);
+    background: var(--c-bg-card);
+    color: var(--c-text-3);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .cross-link:hover { border-color: var(--c-accent-dark); color: var(--c-text); }
+  .cross-link strong { color: var(--c-text); font-weight: 700; }
+  .cross-link.practice-link { border-style: dashed; }
+
+  /* ── Bookmarks sidebar section ── */
+  .bookmarks-section {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 8px 10px;
+    border-top: 1px solid var(--c-border-soft);
+  }
+  .bookmarks-label {
+    font-size: 11px; font-weight: 700;
+    color: #f59e0b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 4px 8px;
+  }
+  .bookmark-item { font-size: 13px; }
+
+  /* ── Session timer ── */
+  .session-timer {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px;
+    font-size: 11px; font-weight: 600;
+    color: var(--c-text-4);
+  }
+  .timer-sep { opacity: 0.4; }
 </style>

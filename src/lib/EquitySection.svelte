@@ -1,6 +1,6 @@
 <script>
   import { matchups, matchupCategories, outsChart, rule24, vsRangeTable, rangeTiers } from './data/equity.js';
-  import { equityLookup, commonHands } from './data/equityLookup.js';
+  import { estimateEquity, describeMatchup, allHands } from './data/equityCalc.js';
   import RangeVisualizer from './RangeVisualizer.svelte';
 
   let activeTab = $state('calculator');
@@ -12,23 +12,92 @@
   // ── Equity Calculator ───────────────────────────────────────────────────────
   let calcHand1 = $state('AA');
   let calcHand2 = $state('KK');
+  let search1 = $state('');
+  let search2 = $state('');
+  let focused1 = $state(false);
+  let focused2 = $state(false);
+
+  let filtered1 = $derived(
+    search1 ? allHands.filter(h => h.toLowerCase().startsWith(search1.toLowerCase())) : allHands
+  );
+  let filtered2 = $derived(
+    search2 ? allHands.filter(h => h.toLowerCase().startsWith(search2.toLowerCase())) : allHands
+  );
+
+  function selectHand1(hand) { calcHand1 = hand; search1 = ''; focused1 = false; }
+  function selectHand2(hand) { calcHand2 = hand; search2 = ''; focused2 = false; }
+
+  function findExactMatch(query) {
+    if (!query) return null;
+    return allHands.find(h => h.toLowerCase() === query.toLowerCase()) ?? null;
+  }
+
+  function handleKey1(e) {
+    if (e.key === 'Enter') {
+      const match = findExactMatch(search1) ?? (filtered1.length === 1 ? filtered1[0] : null);
+      if (match) selectHand1(match);
+    }
+  }
+  function handleKey2(e) {
+    if (e.key === 'Enter') {
+      const match = findExactMatch(search2) ?? (filtered2.length === 1 ? filtered2[0] : null);
+      if (match) selectHand2(match);
+    }
+  }
 
   let calcResult = $derived.by(() => {
     if (calcHand1 === calcHand2) return null;
-    const key = [calcHand1, calcHand2].sort().join('-');
-    const entry = equityLookup.get(key);
-    if (!entry) return null;
-    // Determine which hand maps to hand1 in the key
-    const sorted = [calcHand1, calcHand2].sort();
-    const h1eq = entry.hand1;
-    const h2eq = entry.hand2;
-    // If calcHand1 is the first sorted hand, its equity is hand1
-    if (calcHand1 === sorted[0]) {
-      return { eq1: h1eq, eq2: h2eq };
-    } else {
-      return { eq1: h2eq, eq2: h1eq };
-    }
+    return estimateEquity(calcHand1, calcHand2);
   });
+
+  let calcReason = $derived(describeMatchup(calcHand1, calcHand2));
+
+  // ── Quiz Me (random matchup from all 169 hands) ───────────────────────────
+  let quizActive = $state(false);
+  let quizGuess = $state('');
+  let quizRevealed = $state(false);
+  let quizScore = $state(0);
+  let quizTotal = $state(0);
+
+  function quizStart() {
+    quizActive = true;
+    quizRevealed = false;
+    quizGuess = '';
+    pickRandomPair();
+  }
+
+  function pickRandomPair() {
+    let a, b;
+    do {
+      a = allHands[Math.floor(Math.random() * allHands.length)];
+      b = allHands[Math.floor(Math.random() * allHands.length)];
+    } while (a === b);
+    calcHand1 = a;
+    calcHand2 = b;
+    search1 = '';
+    search2 = '';
+  }
+
+  function quizSubmit() {
+    if (!quizGuess || quizRevealed) return;
+    quizRevealed = true;
+    quizTotal++;
+    if (Math.abs(parseInt(quizGuess) - (calcResult?.eq1 ?? 0)) <= 5) quizScore++;
+  }
+
+  function quizNext() {
+    quizRevealed = false;
+    quizGuess = '';
+    pickRandomPair();
+  }
+
+  function quizStop() {
+    quizActive = false;
+    quizRevealed = false;
+    quizGuess = '';
+  }
+
+  let quizDiff = $derived(Math.abs(parseInt(quizGuess) - (calcResult?.eq1 ?? 0)));
 
   let filteredMatchups = $derived(
     activeCategory === 'All'
@@ -200,27 +269,15 @@
             <span class="center">Hero %</span>
           </div>
           {#each filteredMatchups as row}
-            {@const canCalc = commonHands.includes(row.hero) && commonHands.includes(row.villain)}
             <div class="table-row mu-row" style="grid-template-columns: 1fr 1fr 2.5fr 1fr;">
-              {#if canCalc}
-                <button class="hand-chip hero clickable" onclick={() => { calcHand1 = row.hero; calcHand2 = row.villain; activeTab = 'calculator'; }}
-                  data-tooltip-title="{row.hero} vs {row.villain}" data-tooltip="Click to compare in calculator. {row.notes}">
-                  {row.hero}
-                </button>
-                <button class="hand-chip villain clickable" onclick={() => { calcHand1 = row.hero; calcHand2 = row.villain; activeTab = 'calculator'; }}
-                  data-tooltip-title="{row.hero} vs {row.villain}" data-tooltip="Click to compare in calculator. {row.notes}">
-                  {row.villain}
-                </button>
-              {:else}
-                <span class="hand-chip hero"
-                  data-tooltip-title="{row.hero}" data-tooltip="{row.notes}">
-                  {row.hero}
-                </span>
-                <span class="hand-chip villain"
-                  data-tooltip-title="{row.villain}" data-tooltip="{row.notes}">
-                  {row.villain}
-                </span>
-              {/if}
+              <button class="hand-chip hero clickable" onclick={() => { calcHand1 = row.hero; calcHand2 = row.villain; activeTab = 'calculator'; }}
+                data-tooltip-title="{row.hero} vs {row.villain}" data-tooltip="Click to compare in calculator. {row.notes}">
+                {row.hero}
+              </button>
+              <button class="hand-chip villain clickable" onclick={() => { calcHand1 = row.hero; calcHand2 = row.villain; activeTab = 'calculator'; }}
+                data-tooltip-title="{row.hero} vs {row.villain}" data-tooltip="Click to compare in calculator. {row.notes}">
+                {row.villain}
+              </button>
               <span class="eq-bar-wrap">
                 <span
                   class="eq-bar"
@@ -352,60 +409,167 @@
   {:else if activeTab === 'calculator'}
     <div role="tabpanel">
       <div class="section-header">
-        <h3>Equity Calculator</h3>
-        <p class="section-note">Select two hands to see their preflop all-in equity. Covers ~80 common matchups.</p>
-      </div>
-
-      <div class="calc-wrap">
-        <div class="calc-hand">
-          <label class="calc-label" for="calc-hand1">Hand 1</label>
-          <select id="calc-hand1" class="calc-select" bind:value={calcHand1}>
-            {#each commonHands as hand}
-              <option value={hand}>{hand}</option>
-            {/each}
-          </select>
-        </div>
-
-        <span class="calc-vs">vs</span>
-
-        <div class="calc-hand">
-          <label class="calc-label" for="calc-hand2">Hand 2</label>
-          <select id="calc-hand2" class="calc-select" bind:value={calcHand2}>
-            {#each commonHands as hand}
-              <option value={hand}>{hand}</option>
-            {/each}
-          </select>
+        <div class="header-row">
+          <div>
+            <h3>Equity Calculator</h3>
+            <p class="section-note">Compare any two starting hands. Type to search (e.g. "AK", "TT", "97s").</p>
+          </div>
+          <button class="mode-toggle" class:active={quizActive} onclick={() => quizActive ? quizStop() : quizStart()}>
+            {quizActive ? '✕ Exit Quiz' : '♦ Quiz Me'}
+          </button>
         </div>
       </div>
 
-      {#if calcHand1 === calcHand2}
-        <div class="calc-message">Select two different hands.</div>
-      {:else if calcResult}
-        <div class="calc-result">
-          <div class="calc-bar-row">
-            <span class="calc-hand-label hero-label">{calcHand1}</span>
-            <div class="calc-bar-wrap">
-              <div class="calc-bar hero-bar" style="width: {calcResult.eq1}%"></div>
-              <div class="calc-bar villain-bar" style="width: {calcResult.eq2}%"></div>
+      {#if quizActive}
+        <!-- Quiz Me Mode -->
+        <div class="quiz-me">
+          <div class="guess-score">Score: {quizScore}/{quizTotal} correct (within 5%)</div>
+          <div class="guess-card">
+            <div class="guess-matchup">
+              <span class="hand-chip hero">{calcHand1}</span>
+              <span class="guess-vs">vs</span>
+              <span class="hand-chip villain">{calcHand2}</span>
             </div>
-            <span class="calc-hand-label villain-label">{calcHand2}</span>
-          </div>
-          <div class="calc-pcts">
-            <span class="calc-pct hero-pct">{calcResult.eq1}%</span>
-            <span class="calc-pct villain-pct">{calcResult.eq2}%</span>
-          </div>
-          <div class="calc-verdict">
-            {#if calcResult.eq1 > calcResult.eq2}
-              <strong>{calcHand1}</strong> is favored ({calcResult.eq1}% equity)
-            {:else if calcResult.eq2 > calcResult.eq1}
-              <strong>{calcHand2}</strong> is favored ({calcResult.eq2}% equity)
+            {#if !quizRevealed}
+              <div class="guess-input-row">
+                <label class="guess-label">{calcHand1} equity %</label>
+                <input
+                  type="number"
+                  class="guess-input"
+                  bind:value={quizGuess}
+                  placeholder="e.g. 65"
+                  min="0" max="100"
+                  onkeydown={(e) => e.key === 'Enter' && quizSubmit()}
+                />
+                <button class="guess-btn" onclick={quizSubmit} disabled={!quizGuess}>Guess</button>
+              </div>
             {:else}
-              Coin flip — 50/50
+              <div class="guess-result">
+                <div class="calc-bar-row">
+                  <span class="calc-hand-label hero-label">{calcHand1}</span>
+                  <div class="calc-bar-wrap">
+                    <div class="calc-bar hero-bar" style="width: {calcResult.eq1}%"></div>
+                    <div class="calc-bar villain-bar" style="width: {calcResult.eq2}%"></div>
+                  </div>
+                  <span class="calc-hand-label villain-label">{calcHand2}</span>
+                </div>
+                <div class="calc-pcts">
+                  <span class="calc-pct hero-pct">{calcResult.eq1}%</span>
+                  <span class="calc-pct villain-pct">{calcResult.eq2}%</span>
+                </div>
+                <div class="guess-feedback" class:correct={quizDiff <= 5} class:close={quizDiff > 5 && quizDiff <= 15} class:off={quizDiff > 15}>
+                  {#if quizDiff <= 5}
+                    Nailed it! You guessed {quizGuess}% (off by {quizDiff}%)
+                  {:else if quizDiff <= 15}
+                    Close! You guessed {quizGuess}% (off by {quizDiff}%)
+                  {:else}
+                    Off by {quizDiff}%. You guessed {quizGuess}%, actual is {calcResult.eq1}%
+                  {/if}
+                </div>
+                {#if calcReason}
+                  <div class="calc-reason">{calcReason}</div>
+                {/if}
+                <button class="guess-btn next" onclick={quizNext}>Next Matchup</button>
+              </div>
             {/if}
           </div>
         </div>
       {:else}
-        <div class="calc-message">Matchup not available. Try a different combination.</div>
+        <!-- Normal Calculator -->
+        <div class="calc-wrap">
+          <div class="calc-hand">
+            <label class="calc-label">Hand 1</label>
+            <div class="calc-search-wrap">
+              <input
+                type="text"
+                class="calc-search"
+                placeholder={calcHand1}
+                bind:value={search1}
+                onfocus={() => focused1 = true}
+                onblur={() => setTimeout(() => focused1 = false, 150)}
+                onkeydown={handleKey1}
+              />
+              <span class="calc-selected">{calcHand1}</span>
+              {#if focused1 && filtered1.length > 0}
+                <div class="calc-dropdown">
+                  {#each filtered1.slice(0, 30) as hand}
+                    <button
+                      class="calc-drop-item"
+                      class:active={hand === calcHand1}
+                      onmousedown={() => selectHand1(hand)}
+                    >{hand}</button>
+                  {/each}
+                  {#if filtered1.length > 30}
+                    <div class="calc-drop-more">+{filtered1.length - 30} more — keep typing</div>
+                  {/if}
+                </div>
+              {/if}
+            </div>
+          </div>
+
+          <span class="calc-vs">vs</span>
+
+          <div class="calc-hand">
+            <label class="calc-label">Hand 2</label>
+            <div class="calc-search-wrap">
+              <input
+                type="text"
+                class="calc-search"
+                placeholder={calcHand2}
+                bind:value={search2}
+                onfocus={() => focused2 = true}
+                onblur={() => setTimeout(() => focused2 = false, 150)}
+                onkeydown={handleKey2}
+              />
+              <span class="calc-selected">{calcHand2}</span>
+              {#if focused2 && filtered2.length > 0}
+                <div class="calc-dropdown">
+                  {#each filtered2.slice(0, 30) as hand}
+                    <button
+                      class="calc-drop-item"
+                      class:active={hand === calcHand2}
+                      onmousedown={() => selectHand2(hand)}
+                    >{hand}</button>
+                  {/each}
+                  {#if filtered2.length > 30}
+                    <div class="calc-drop-more">+{filtered2.length - 30} more — keep typing</div>
+                  {/if}
+                </div>
+              {/if}
+            </div>
+          </div>
+        </div>
+
+        {#if calcHand1 === calcHand2}
+          <div class="calc-message">Select two different hands.</div>
+        {:else if calcResult}
+          <div class="calc-result">
+            <div class="calc-bar-row">
+              <span class="calc-hand-label hero-label">{calcHand1}</span>
+              <div class="calc-bar-wrap">
+                <div class="calc-bar hero-bar" style="width: {calcResult.eq1}%"></div>
+                <div class="calc-bar villain-bar" style="width: {calcResult.eq2}%"></div>
+              </div>
+              <span class="calc-hand-label villain-label">{calcHand2}</span>
+            </div>
+            <div class="calc-pcts">
+              <span class="calc-pct hero-pct">{calcResult.eq1}%</span>
+              <span class="calc-pct villain-pct">{calcResult.eq2}%</span>
+            </div>
+            <div class="calc-verdict">
+              {#if calcResult.eq1 > calcResult.eq2}
+                <strong>{calcHand1}</strong> is favored ({calcResult.eq1}% equity)
+              {:else if calcResult.eq2 > calcResult.eq1}
+                <strong>{calcHand2}</strong> is favored ({calcResult.eq2}% equity)
+              {:else}
+                Coin flip — 50/50
+              {/if}
+            </div>
+            {#if calcReason}
+              <div class="calc-reason">{calcReason}</div>
+            {/if}
+          </div>
+        {/if}
       {/if}
     </div>
   {/if}
@@ -586,7 +750,8 @@
   }
   .calc-hand { display: flex; flex-direction: column; gap: 4px; }
   .calc-label { font-size: 12px; font-weight: 700; color: var(--c-text-4); text-transform: uppercase; letter-spacing: 0.05em; }
-  .calc-select {
+  .calc-search-wrap { position: relative; }
+  .calc-search {
     padding: 8px 14px;
     border-radius: 6px;
     border: 1px solid var(--c-border);
@@ -595,10 +760,37 @@
     font-size: 16px;
     font-weight: 800;
     font-family: 'Courier New', monospace;
-    cursor: pointer;
-    min-width: 100px;
+    min-width: 120px;
+    width: 120px;
+    outline: none;
   }
-  .calc-select:focus { border-color: var(--c-accent); outline: none; }
+  .calc-search:focus { border-color: var(--c-accent); }
+  .calc-search::placeholder { color: var(--c-text-3); opacity: 0.7; }
+  .calc-selected {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-size: 11px; font-weight: 700; color: var(--c-accent);
+    font-family: 'Courier New', monospace;
+    pointer-events: none;
+  }
+  .calc-dropdown {
+    position: absolute; top: 100%; left: 0; right: 0;
+    max-height: 220px; overflow-y: auto;
+    background: var(--c-bg-card); border: 1px solid var(--c-border);
+    border-radius: 0 0 6px 6px; z-index: 20;
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+  }
+  .calc-drop-item {
+    padding: 6px 10px; border: none; background: none;
+    color: var(--c-text); font-size: 13px; font-weight: 700;
+    font-family: 'Courier New', monospace;
+    cursor: pointer; text-align: center;
+  }
+  .calc-drop-item:hover { background: var(--c-bg-hover); color: var(--c-accent); }
+  .calc-drop-item.active { background: var(--c-bg-nav-active); color: var(--c-accent); }
+  .calc-drop-more {
+    grid-column: 1 / -1; padding: 6px 10px;
+    font-size: 11px; color: var(--c-text-4); text-align: center;
+  }
   .calc-vs { font-size: 16px; font-weight: 700; color: var(--c-text-4); padding-bottom: 8px; }
 
   .calc-result {
@@ -653,6 +845,15 @@
     border-radius: 6px;
   }
   .calc-verdict strong { color: var(--c-text); }
+
+  .calc-reason {
+    font-size: 13px; color: var(--c-text-3); text-align: center;
+    padding: 8px 14px; line-height: 1.5;
+    background: var(--c-bg-subtle); border-radius: 6px;
+    font-style: italic;
+  }
+
+  .quiz-me { display: flex; flex-direction: column; gap: 16px; max-width: 500px; }
 
   .calc-message {
     font-size: 14px;
