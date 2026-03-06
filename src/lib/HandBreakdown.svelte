@@ -2,7 +2,7 @@
   import { positionsByCount } from './data/hands.js';
   import { rfiRanges } from './data/ranges.js';
 
-  let { hand, onClose = null } = $props();
+  let { hand, onClose = null, onTakePostflop = null } = $props();
 
   const counts = [4, 5, 6, 7];
 
@@ -81,6 +81,12 @@
 
   <!-- Per-player-count grid -->
   <div class="count-rows">
+    {#if onTakePostflop}
+      <button class="take-postflop" onclick={onTakePostflop}>
+        See postflop play →
+      </button>
+    {/if}
+
     {#each counts as c}
       {@const positions = positionsByCount[c]}
       {@const raisedInCount = positions.filter(p => rfiRanges[c]?.[p]?.has(hand)).length}
@@ -89,7 +95,8 @@
         <div class="pos-badges">
           {#each positions as pos}
             {@const raised = rfiRanges[c]?.[pos]?.has(hand) ?? false}
-            <div class="pos-badge" class:raised class:fold={!raised} title={raised ? 'Raise' : 'Fold'}>
+            <div class="pos-badge" class:raised class:fold={!raised}
+              data-tooltip-title="{pos} — {raised ? 'Raise' : 'Fold'}" data-tooltip="{raised ? `Open-raise ${hand} from ${pos} in ${c}-handed play.` : `Fold ${hand} from ${pos} in ${c}-handed play — not in the opening range.`}">
               {pos}
             </div>
           {/each}
@@ -213,6 +220,17 @@
   .pct-bar-label.fold { color: #4a5568; }
 
   /* ── Per-count rows ── */
+  .take-postflop {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    width: calc(100% - 28px); margin: 10px 14px 0;
+    padding: 9px 16px; border-radius: 6px;
+    border: 1px solid var(--c-accent-dark);
+    background: rgba(45,106,79,0.12);
+    color: var(--c-accent); font-size: 13px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .take-postflop:hover { background: var(--c-accent-dark); color: #fff; }
+
   .count-rows {
     display: flex;
     flex-direction: column;

@@ -47,8 +47,7 @@
 <div class="bluffing" bind:this={sectionEl}>
   <h2>Bluffing & Player Profiling</h2>
   <p class="intro">
-    Profitable bluffing combines blocker theory, board texture reads, and opponent profiling.
-    GTO provides the baseline frequencies — exploitative reads tell you when to deviate.
+    Blocker theory, board texture reads, and opponent profiling for profitable bluffs.
   </p>
 
   <!-- Tabs -->
@@ -77,8 +76,7 @@
     <div class="section-header">
       <h3>Conditions That Make Bluffs Profitable</h3>
       <p class="section-note">
-        Not all bluffs are created equal. These factors determine whether a bluff is +EV or burning money.
-        The more conditions you satisfy, the better your bluff.
+        Factors that determine whether a bluff is +EV.
       </p>
     </div>
 
@@ -87,7 +85,8 @@
         <div class="condition-card">
           <div class="cond-header">
             <span class="cond-factor">{cond.factor}</span>
-            <span class="impact-badge" style="color:{impactColor(cond.impact)}">
+            <span class="impact-badge" style="color:{impactColor(cond.impact)}"
+              data-tooltip-title="{cond.impact === 'high' ? 'High Impact' : cond.impact === 'medium' ? 'Medium Impact' : 'Low Impact'}" data-tooltip="{cond.impact === 'high' ? 'This factor strongly determines whether a bluff is profitable. Prioritize this.' : cond.impact === 'medium' ? 'Moderate influence on bluff profitability. Consider alongside other factors.' : 'Minor factor. Relevant but not decisive on its own.'}">
               {cond.impact} impact
             </span>
           </div>
@@ -122,8 +121,7 @@
     <div class="section-header">
       <h3>Blocker Theory: Why the Cards You Hold Matter</h3>
       <p class="section-note">
-        Blockers remove combos from your opponent's range. The best bluffs hold cards that block villain's
-        strongest hands while <em>not</em> blocking hands they'd fold.
+        Block villain's value hands without blocking their folding range.
       </p>
     </div>
 
@@ -132,7 +130,8 @@
         <div class="blocker-card">
           <div class="blocker-header">
             <div class="blocker-scenario">{b.scenario}</div>
-            <span class="quality-badge" style="color:{qualityColor(b.bluffQuality)}">
+            <span class="quality-badge" style="color:{qualityColor(b.bluffQuality)}"
+              data-tooltip-title="Bluff Quality: {b.bluffQuality}" data-tooltip="{b.bluffQuality === 'excellent' ? 'Top-tier bluffing spot. Strong blockers make this highly profitable.' : b.bluffQuality === 'good' ? 'Solid bluffing opportunity with effective blockers.' : b.bluffQuality === 'moderate' ? 'Decent spot but depends heavily on opponent tendencies.' : 'Marginal spot. Only bluff if reads strongly support it.'}">
               {b.bluffQuality}
             </span>
           </div>
@@ -156,10 +155,7 @@
       <div>
         <strong>The unblocker principle</strong>
         <p class="callout-body">
-          Just as important as blocking villain's value hands is <em>not blocking</em> their folding range.
-          If you hold cards that villain would fold (busted draws, weak pairs), your bluff is less effective
-          because you've removed the exact hands you <em>want</em> them to have. The ideal bluff blocks value
-          and unblocks folds.
+          The ideal bluff blocks villain's value hands and <em>unblocks</em> their folding range. Holding cards they'd fold removes the hands you <em>want</em> them to have.
         </p>
       </div>
     </div>
@@ -171,8 +167,7 @@
     <div class="section-header">
       <h3>Player Profiling: Adjust Your Bluffs to the Opponent</h3>
       <p class="section-note">
-        GTO frequencies assume a perfect opponent. Real players have tendencies you can exploit.
-        Identify the player type, then adjust your bluffing frequency up or down accordingly.
+        Identify opponent tendencies and adjust bluff frequency accordingly.
       </p>
     </div>
 
@@ -183,8 +178,14 @@
             <div class="profile-type-row">
               <span class="profile-type" style="color:{profileColor(p.type)}">{p.type}</span>
               <span class="stat-pills">
-                <span class="stat-pill">VPIP {p.vpip}</span>
-                <span class="stat-pill">PFR {p.pfr}</span>
+                <span class="stat-pill"
+                  data-tooltip-title="VPIP — Voluntarily Put $ In Pot" data-tooltip="Percentage of hands this player type voluntarily puts money in the pot preflop (calls or raises). {p.vpip} is {parseInt(p.vpip) <= 20 ? 'tight' : parseInt(p.vpip) <= 30 ? 'moderate' : 'loose'}.">
+                  VPIP {p.vpip}
+                </span>
+                <span class="stat-pill"
+                  data-tooltip-title="PFR — Preflop Raise %" data-tooltip="Percentage of hands this player type raises preflop. {p.pfr} indicates {parseInt(p.pfr) <= 10 ? 'passive' : parseInt(p.pfr) <= 20 ? 'balanced' : 'aggressive'} preflop play. Gap between VPIP and PFR shows how often they cold-call.">
+                  PFR {p.pfr}
+                </span>
               </span>
             </div>
             <span class="bluff-adj" style="color:{bluffAdjColor(p.bluffAdj)}">
@@ -216,8 +217,7 @@
     <div class="section-header">
       <h3>Common Bluffing Spots</h3>
       <p class="section-note">
-        These are the highest-frequency bluffing opportunities you'll encounter. Each includes the setup,
-        ideal blockers, and which player types to target (or avoid).
+        High-frequency bluff spots with setup, blockers, and target profiles.
       </p>
     </div>
 
@@ -227,8 +227,14 @@
           <div class="spot-header">
             <span class="spot-name">{s.spot}</span>
             <div class="spot-tags">
-              <span class="street-tag">{s.street}</span>
-              <span class="pos-tag">{s.position}</span>
+              <span class="street-tag"
+                data-tooltip-title="{s.street}" data-tooltip="This bluffing spot occurs on the {s.street.toLowerCase()}. Board texture and range interactions are specific to this street.">
+                {s.street}
+              </span>
+              <span class="pos-tag"
+                data-tooltip-title="Position: {s.position}" data-tooltip="This spot works best from {s.position}. Position determines fold equity and credibility of the bluffing line.">
+                {s.position}
+              </span>
             </div>
           </div>
           <div class="spot-body">

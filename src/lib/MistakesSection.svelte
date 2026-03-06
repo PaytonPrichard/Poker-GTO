@@ -29,8 +29,7 @@
 <div class="mistakes" bind:this={sectionEl}>
   <h2>Common Mistakes & Leaks</h2>
   <p class="intro">
-    Even solid players have leaks in their game. Identifying and fixing these common mistakes
-    is one of the fastest ways to improve your win rate. Be honest with yourself about which ones apply to you.
+    Identify and fix the most common leaks that cost you win rate.
   </p>
 
   <div class="tabs-row">
@@ -58,8 +57,7 @@
       <div class="section-header">
         <h3>Preflop Mistakes</h3>
         <p class="section-note">
-          Preflop mistakes compound across every hand you play. Fixing these leaks gives you
-          the biggest bang for your buck because they affect your range construction in every pot.
+          Preflop leaks compound across every hand — fix these first.
         </p>
       </div>
       <div class="leak-cards">
@@ -67,7 +65,8 @@
           <details class="leak-card">
             <summary class="leak-header">
               <span class="leak-title">{leak.title}</span>
-              <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}">
+              <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}"
+                data-tooltip-title="{sevLabel(leak.severity)} Severity" data-tooltip="{leak.severity === 'high' ? 'Major leak — fixing this has a large impact on your win rate. Prioritize this.' : leak.severity === 'medium' ? 'Moderate leak — costs you meaningful EV over time. Address after fixing high-severity leaks.' : 'Minor leak — small impact but still worth fixing for long-term improvement.'}">
                 {sevLabel(leak.severity)}
               </span>
             </summary>
@@ -89,8 +88,7 @@
       <div class="section-header">
         <h3>Postflop Mistakes</h3>
         <p class="section-note">
-          Postflop is where the most money is won and lost. These common errors cost you significant
-          EV over time and are often harder to spot than preflop leaks.
+          Costly postflop errors that are harder to spot than preflop leaks.
         </p>
       </div>
       <div class="leak-cards">
@@ -98,7 +96,8 @@
           <details class="leak-card">
             <summary class="leak-header">
               <span class="leak-title">{leak.title}</span>
-              <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}">
+              <span class="sev-badge" style="color:{sevColor(leak.severity)};border-color:{sevColor(leak.severity)}"
+                data-tooltip-title="{sevLabel(leak.severity)} Severity" data-tooltip="{leak.severity === 'high' ? 'Major leak — fixing this has a large impact on your win rate. Prioritize this.' : leak.severity === 'medium' ? 'Moderate leak — costs you meaningful EV over time. Address after fixing high-severity leaks.' : 'Minor leak — small impact but still worth fixing for long-term improvement.'}">
                 {sevLabel(leak.severity)}
               </span>
             </summary>
@@ -119,9 +118,8 @@
     <div role="tabpanel">
       <div class="section-header">
         <h3>Mental Game</h3>
-        <p class="section-note">
-          Your mental game determines how consistently you can apply your technical knowledge.
-          Even the best strategy falls apart when emotions take over.
+      <p class="section-note">
+          Strategy falls apart when emotions take over.
         </p>
       </div>
       <div class="concepts-grid">
@@ -140,8 +138,7 @@
       <div class="section-header">
         <h3>Sizing Mistakes</h3>
         <p class="section-note">
-          Bet sizing is both an art and a science. These common sizing errors either leave money on the table
-          or give opponents easy decisions they shouldn't have.
+          Sizing errors that leave money on the table or give opponents easy decisions.
         </p>
       </div>
       <div class="concepts-grid">

@@ -37,7 +37,7 @@
 <div class="sizing" bind:this={sectionEl}>
   <h2>Bet Sizing Theory</h2>
   <p class="intro">
-    GTO bet sizing balances polarization, range advantage, and pot odds. Correct sizing extracts maximum value while keeping your range unexploitable.
+    Sizing principles that maximize value while keeping your range unexploitable.
   </p>
 
   <!-- Tabs -->
@@ -83,7 +83,7 @@
     <div class="section-header">
       <h3>Preflop Open & 3-Bet Sizes</h3>
       <p class="section-note">
-        Sizes expressed as multiples of the big blind (BB). Adjust by stack depth — see stack depth guide below.
+        Sizes in BB multiples. Adjust by stack depth (see below).
       </p>
     </div>
 
@@ -123,7 +123,7 @@
     <div class="section-header">
       <h3>Postflop Sizing by Street & Situation</h3>
       <p class="section-note">
-        Frequency and sizing guidelines for common postflop spots. Freq = how often to bet; Size = bet as % of pot.
+        Freq = how often to bet. Size = bet as % of pot.
       </p>
     </div>
 
@@ -136,10 +136,16 @@
       </div>
       {#each postflopSizingRows as row}
         <div class="table-row" style="grid-template-columns: 1fr 2fr 1fr 1fr;">
-          <span class="street-tag">{row.street}</span>
+          <span class="street-tag"
+            data-tooltip-title="{row.street}" data-tooltip="Bet sizing guidance for the {row.street.toLowerCase()}.">
+            {row.street}
+          </span>
           <span class="row-label">{row.situation}</span>
           <span class="center freq-text">{row.freq}</span>
-          <span class="center size-chip">{row.size}</span>
+          <span class="center size-chip"
+            data-tooltip-title="Size: {row.size}" data-tooltip="Recommended bet size as a percentage of the pot for this situation.">
+            {row.size}
+          </span>
         </div>
         <div class="table-notes">{row.notes}</div>
       {/each}
@@ -152,8 +158,8 @@
     <div class="section-header">
       <h3><span data-tooltip-title="Pot Odds" data-tooltip="The ratio of the current pot size to the cost of a call. If pot is $100 and call is $25, pot odds are 4:1 (you need 20% equity to break even).">Pot Odds</span> & Minimum Defense Frequency</h3>
       <p class="section-note">
-        <strong>Equity needed</strong> = break-even equity to call a bet.&ensp;
-        <strong data-tooltip-title="Minimum Defense Frequency" data-tooltip="The % of your range you must continue (call or raise) to prevent your opponent from profiting with any two cards as a bluff. MDF = pot / (pot + bet).">MDF</strong> = minimum % of your range you must defend to prevent villain bluffing with any two cards.
+        <strong>Equity needed</strong> = break-even to call.&ensp;
+        <strong data-tooltip-title="Minimum Defense Frequency" data-tooltip="The % of your range you must continue (call or raise) to prevent your opponent from profiting with any two cards as a bluff. MDF = pot / (pot + bet).">MDF</strong> = minimum % of range you must defend.
       </p>
     </div>
 
@@ -167,10 +173,12 @@
         <div class="table-row po-row" style="grid-template-columns: 1.2fr 1fr 1fr;">
           <span class="bet-size-label">{row.betPct}% pot</span>
           <span class="center">
-            <span class="pct-chip" style="color:{eqColor(row.equityNeeded)}">{row.equityNeeded}%</span>
+            <span class="pct-chip" style="color:{eqColor(row.equityNeeded)}"
+              data-tooltip-title="Equity Needed: {row.equityNeeded}%" data-tooltip="Against a {row.betPct}% pot bet, you need at least {row.equityNeeded}% equity to break even on a call. If your hand has less equity, folding is correct.">{row.equityNeeded}%</span>
           </span>
           <span class="center">
-            <span class="pct-chip" style="color:{mdfColor(row.mdf)}">{row.mdf}%</span>
+            <span class="pct-chip" style="color:{mdfColor(row.mdf)}"
+              data-tooltip-title="MDF: {row.mdf}%" data-tooltip="Against a {row.betPct}% pot bet, you must defend (call + raise) at least {row.mdf}% of your range. Folding more than {100 - row.mdf}% lets villain profitably bluff any two cards.">{row.mdf}%</span>
           </span>
         </div>
       {/each}
@@ -181,16 +189,14 @@
       <div>
         <strong>How to use MDF</strong>
         <p class="callout-body">
-          If villain bets 50% pot, you must defend at least 67% of your range (call + raise). Folding more than 33%
-          lets villain profitably bluff any two cards. Use pot odds to evaluate individual hand calls;
-          use MDF to evaluate your overall range defense.
+          50% pot bet → defend 67% of range. Folding more than 33% lets villain profitably bluff any two cards.
         </p>
       </div>
     </div>
 
     <h3 style="margin-top:20px;"><span data-tooltip-title="SPR — Stack-to-Pot Ratio" data-tooltip="Effective stack divided by pot size at the start of a street. Low SPR (&lt;4): marginal hands can stack off. High SPR (&gt;10): need strong hands to commit.">Stack-to-Pot Ratio (SPR)</span> Guide</h3>
     <p class="section-note" style="margin-bottom:12px;">
-      SPR = effective stack ÷ pot size at the start of a street. Dictates commitment thresholds.
+      Effective stack ÷ pot size. Dictates commitment thresholds.
     </p>
     <div class="spr-grid">
       {#each sprGuide as tier}

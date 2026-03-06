@@ -18,8 +18,7 @@
 <div class="bankroll" bind:this={sectionEl}>
   <h2>Bankroll Management</h2>
   <p class="intro">
-    Even the best poker strategy is useless without proper bankroll management. Understanding variance,
-    setting buy-in rules, and knowing when to move up or down in stakes is essential for long-term success.
+    Buy-in rules, variance management, and when to move up or down in stakes.
   </p>
 
   <div class="tabs-row">
@@ -44,8 +43,7 @@
     <div class="section-header">
       <h3>Cash Game Bankroll Rules</h3>
       <p class="section-note">
-        Cash games have lower variance than tournaments, but you still need a proper bankroll
-        to weather inevitable downswings and play your best without financial pressure.
+        Lower variance than tournaments, but proper bankroll rules still apply.
       </p>
     </div>
     <div class="concepts-grid">
@@ -62,8 +60,7 @@
     <div class="section-header">
       <h3>Tournament Bankroll Rules</h3>
       <p class="section-note">
-        Tournaments have much higher variance than cash games. Even elite players go on long stretches
-        without cashing. A larger bankroll is essential for weathering the swings.
+        Higher variance than cash — a larger bankroll is essential.
       </p>
     </div>
     <div class="concepts-grid">
@@ -80,8 +77,7 @@
     <div class="section-header">
       <h3>Understanding Variance</h3>
       <p class="section-note">
-        Variance is the mathematical reality that short-term results will deviate significantly from your
-        true win rate. Understanding this is crucial for maintaining confidence and proper bankroll discipline.
+        Short-term results deviate wildly from true win rate.
       </p>
     </div>
     <div class="concepts-grid">
@@ -98,9 +94,7 @@
       <div>
         <strong>Variance reality check</strong>
         <p class="callout-body">
-          A solid winning player at 5 bb/100 with a standard deviation of 80 bb/100 has a ~40% chance of
-          being a loser over any 10,000 hand stretch. You need 50,000+ hands before your results start to
-          reliably reflect your true win rate. Trust the process, not the results.
+          A 5 bb/100 winner has a ~40% chance of losing over any 10k hand stretch. You need 50k+ hands for results to reflect true win rate.
         </p>
       </div>
     </div>
@@ -110,8 +104,7 @@
     <div class="section-header">
       <h3>Moving Up & Down in Stakes</h3>
       <p class="section-note">
-        Knowing when to take a shot at higher stakes and when to move back down is a critical bankroll
-        skill. The goal is to maximize your earning potential while protecting your bankroll.
+        When to take shots at higher stakes and when to move back down.
       </p>
     </div>
     <div class="concepts-grid">

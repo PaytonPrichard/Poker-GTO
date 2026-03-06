@@ -24,8 +24,7 @@
 <div class="handreading" bind:this={sectionEl}>
   <h2>Hand Reading</h2>
   <p class="intro">
-    Hand reading is the skill of narrowing your opponent's range of possible holdings based on their actions,
-    position, bet sizing, and board texture. It's the foundation of all poker decision-making.
+    Narrow opponent ranges street-by-street using actions, position, sizing, and board texture.
   </p>
 
   <!-- Tabs -->
@@ -54,8 +53,7 @@
     <div class="section-header">
       <h3>Narrowing Opponent Ranges</h3>
       <p class="section-note">
-        Every action your opponent takes reveals information. By combining preflop actions, position,
-        and postflop decisions, you can narrow their range from 1,326 combos down to a handful.
+        Each action narrows villain's range from 1,326 combos to a handful.
       </p>
     </div>
     <div class="concepts-grid">
@@ -74,8 +72,7 @@
     <div class="section-header">
       <h3>Board Texture & Range Interaction</h3>
       <p class="section-note">
-        Different board textures favor different ranges. Understanding who has the range advantage on each
-        board type is key to reading hands and choosing the right strategy.
+        Which boards favor PFR vs caller range and why.
       </p>
     </div>
     <div class="data-table">
@@ -91,7 +88,10 @@
             <div class="texture-desc">{row.description}</div>
           </div>
           <span class="center">
-            <span class="range-badge" style="color:{rangeColor(row.favoredRange)}">{row.favoredRange}</span>
+            <span class="range-badge" style="color:{rangeColor(row.favoredRange)}"
+              data-tooltip-title="Favors: {row.favoredRange}" data-tooltip="{row.favoredRange === 'PFR' ? 'The preflop raiser has the stronger range on this board texture, allowing higher c-bet frequency.' : row.favoredRange === 'Caller' ? 'The caller has more medium-strength hands that connect with this board, reducing the PFR\'s c-bet frequency.' : 'Neither player has a clear range advantage on this board texture.'}">
+              {row.favoredRange}
+            </span>
           </span>
           <span class="key-points">{row.keyPoints}</span>
         </div>
@@ -105,8 +105,7 @@
     <div class="section-header">
       <h3>What Bet Sizes Reveal</h3>
       <p class="section-note">
-        Bet sizing is one of the most reliable sources of information in poker. Different sizes correlate
-        with different hand strengths and intentions — learn to decode them.
+        Different bet sizes correlate with hand strength — learn to decode them.
       </p>
     </div>
     <div class="concepts-grid">
@@ -125,8 +124,7 @@
     <div class="section-header">
       <h3>Street-by-Street Range Narrowing</h3>
       <p class="section-note">
-        Follow these hand examples to see how an opponent's range narrows on each street.
-        By the river, you should have a clear picture of their likely holdings.
+        Worked examples showing how ranges narrow on each street.
       </p>
     </div>
     <div class="example-cards">

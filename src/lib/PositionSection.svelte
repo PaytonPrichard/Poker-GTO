@@ -24,9 +24,7 @@
 <div class="position" bind:this={sectionEl}>
   <h2>Position Strategy</h2>
   <p class="intro">
-    Position is the single most important factor in poker profitability. Acting last gives you
-    an information advantage that compounds across every street. Understanding and leveraging
-    position is what separates winning players from losing ones.
+    Acting last gives you an information edge that compounds on every street.
   </p>
 
   <div class="tabs-row">
@@ -54,8 +52,7 @@
       <div class="section-header">
         <h3>The Power of Position</h3>
         <p class="section-note">
-          Position in poker means acting after your opponents. This advantage is so powerful that
-          it should influence every decision from preflop hand selection to river bluffs.
+          Acting last influences every decision from preflop to river.
         </p>
       </div>
       <div class="concepts-grid">
@@ -74,8 +71,7 @@
       <div class="section-header">
         <h3>Expected Value by Position (6-Max)</h3>
         <p class="section-note">
-          These approximate win rates show how much each position contributes to (or costs) your overall results.
-          The button is the most profitable seat; the blinds lose money even for winning players.
+          Win rates by seat. BTN is most profitable; blinds lose money.
         </p>
       </div>
       <div class="data-table">
@@ -104,8 +100,7 @@
         <div>
           <strong>Key takeaway</strong>
           <p class="callout-body">
-            The BTN wins ~3-5x more than any other position. If you could only improve one aspect of your game,
-            play more hands on the button and fewer from early position and the blinds.
+            BTN wins ~3-5x more than any other seat. Play more hands on the button, fewer from EP and blinds.
           </p>
         </div>
       </div>
@@ -117,7 +112,7 @@
       <div class="section-header">
         <h3>Plays That Leverage Position</h3>
         <p class="section-note">
-          These are specific tactical plays that are only possible (or much more profitable) when you have position on your opponent.
+          Tactical plays that require or heavily benefit from position.
         </p>
       </div>
       <div class="concepts-grid">
@@ -136,8 +131,7 @@
       <div class="section-header">
         <h3>IP vs OOP: How Strategy Changes</h3>
         <p class="section-note">
-          The same hand plays very differently in position vs out of position. These comparisons show
-          how to adjust your strategy based on where you're sitting.
+          Side-by-side comparisons of IP vs OOP strategy adjustments.
         </p>
       </div>
       <div class="comparison-cards">

@@ -10,6 +10,18 @@
   let showHistory    = $state(false);
   let confirmClear   = $state(false);
 
+  // ── Speed Round ────────────────────────────────────────────────────────────
+  let speedMode       = $state(false);
+  let speedTimeLeft   = $state(60);
+  let speedScore      = $state(0);
+  let speedAttempted  = $state(0);
+  let speedFinished   = $state(false);
+  let speedSelected   = $state(null);   // index of chosen option during speed round
+  let speedTimer      = $state(null);   // interval reference
+  let speedQuestions  = $state([]);
+  let speedCurrent    = $state(0);
+  let speedFlash      = $state(null);   // 'correct' | 'wrong' | null
+
   // ── History ─────────────────────────────────────────────────────────────────
   let history = $state(JSON.parse(localStorage.getItem('quizHistory') ?? '[]'));
 
@@ -71,7 +83,16 @@
   function choose(idx) {
     if (selected !== null) return; // already answered
     selected = idx;
-    if (idx === questions[current].correct) score += 1;
+    const isCorrect = idx === questions[current].correct;
+    if (isCorrect) score += 1;
+    // Feed spaced repetition data
+    const srRaw = JSON.parse(localStorage.getItem('srData') ?? '{}');
+    const qId = questions[current].id;
+    const entry = srRaw[qId] || { correct: 0, wrong: 0, lastSeen: '' };
+    if (isCorrect) entry.correct++; else entry.wrong++;
+    entry.lastSeen = new Date().toISOString().slice(0, 10);
+    srRaw[qId] = entry;
+    localStorage.setItem('srData', JSON.stringify(srRaw));
   }
 
   function next() {
@@ -109,18 +130,105 @@
 
   let q = $derived(questions[current]);
   let progressPct = $derived(questions.length === 0 ? 0 : (current / questions.length) * 100);
+
+  // ── Speed Round helpers ────────────────────────────────────────────────────
+  let speedQ = $derived(speedQuestions[speedCurrent]);
+
+  let speedHighScoreData = $state((() => {
+    try { return JSON.parse(localStorage.getItem('speedHighScore') ?? '{}'); }
+    catch { return {}; }
+  })());
+
+  function startSpeedRound() {
+    const filtered = activeCategory === 'All'
+      ? quizQuestions
+      : quizQuestions.filter(q => q.category === activeCategory);
+    speedQuestions = shuffle(filtered);
+    speedCurrent   = 0;
+    speedScore     = 0;
+    speedAttempted = 0;
+    speedTimeLeft  = 60;
+    speedFinished  = false;
+    speedSelected  = null;
+    speedFlash     = null;
+    speedMode      = true;
+  }
+
+  function exitSpeedMode() {
+    if (speedTimer) { clearInterval(speedTimer); speedTimer = null; }
+    speedMode     = false;
+    speedFinished = false;
+  }
+
+  function finishSpeedRound() {
+    if (speedTimer) { clearInterval(speedTimer); speedTimer = null; }
+    speedFinished = true;
+    // Save high score per category
+    const existing = { ...speedHighScoreData };
+    const cat = activeCategory;
+    if (!existing[cat] || speedScore > existing[cat].score) {
+      existing[cat] = { score: speedScore, category: cat, date: new Date().toISOString() };
+      localStorage.setItem('speedHighScore', JSON.stringify(existing));
+      speedHighScoreData = existing;
+    }
+  }
+
+  function speedChoose(idx) {
+    if (speedSelected !== null || speedFinished) return;
+    speedSelected = idx;
+    speedAttempted += 1;
+    const isCorrect = idx === speedQ.correct;
+    if (isCorrect) speedScore += 1;
+    speedFlash = isCorrect ? 'correct' : 'wrong';
+
+    // Auto-advance after 400ms
+    setTimeout(() => {
+      speedFlash = null;
+      speedSelected = null;
+      if (speedCurrent + 1 >= speedQuestions.length) {
+        finishSpeedRound();
+      } else {
+        speedCurrent += 1;
+      }
+    }, 400);
+  }
+
+  // Timer lifecycle via $effect
+  $effect(() => {
+    if (speedMode && !speedFinished) {
+      const id = setInterval(() => {
+        speedTimeLeft -= 1;
+        if (speedTimeLeft <= 0) {
+          speedTimeLeft = 0;
+          finishSpeedRound();
+        }
+      }, 1000);
+      speedTimer = id;
+      return () => { clearInterval(id); };
+    }
+  });
 </script>
 
 <div class="quiz">
   <h2>Quiz Mode</h2>
   <div class="quiz-header">
     <p class="intro">Test your GTO knowledge. Choose a category and work through randomized questions.</p>
-    <button class="history-toggle" onclick={() => { showHistory = !showHistory; }}>
-      {showHistory ? '← Back to Quiz' : '📊 History'}
+    <button class="history-toggle" onclick={() => { showHistory = !showHistory; speedMode && exitSpeedMode(); }}>
+      {showHistory ? '← Back to Quiz' : 'History'}
       {#if totalAttempts > 0}
         <span class="history-badge">{totalAttempts}</span>
       {/if}
     </button>
+    {#if !showHistory && !speedMode}
+      <button class="history-toggle speed-toggle" onclick={startSpeedRound}>
+        Speed Round
+      </button>
+    {/if}
+    {#if speedMode}
+      <button class="history-toggle" onclick={exitSpeedMode}>
+        ← Back to Quiz
+      </button>
+    {/if}
   </div>
 
   {#if showHistory}
@@ -180,6 +288,88 @@
       {/if}
     </div>
 
+  {:else if speedMode}
+    <!-- ── SPEED ROUND ── -->
+    <!-- Category filter pills (still available in speed mode) -->
+    <div class="cat-filters">
+      {#each quizCategories as cat}
+        <button
+          class="cat-btn"
+          class:active={activeCategory === cat}
+          onclick={() => { activeCategory = cat; startSpeedRound(); }}
+        >{cat}</button>
+      {/each}
+    </div>
+
+    {#if speedFinished}
+      <!-- ── SPEED RESULTS ── -->
+      {@const accuracy = speedAttempted === 0 ? 0 : Math.round((speedScore / speedAttempted) * 100)}
+      {@const catKey = activeCategory}
+      {@const hs = speedHighScoreData[catKey]}
+      {@const isNewHigh = hs && hs.score === speedScore}
+      <div class="end-screen speed-results">
+        <div class="speed-results-title">Speed Round Complete</div>
+        <div class="end-score">{speedScore}<span class="end-total"> correct</span></div>
+        <div class="speed-stats-grid">
+          <div class="speed-stat">
+            <span class="speed-stat-value">{speedAttempted}</span>
+            <span class="speed-stat-label">Attempted</span>
+          </div>
+          <div class="speed-stat">
+            <span class="speed-stat-value">{accuracy}%</span>
+            <span class="speed-stat-label">Accuracy</span>
+          </div>
+          <div class="speed-stat">
+            <span class="speed-stat-value">{hs ? hs.score : speedScore}</span>
+            <span class="speed-stat-label">High Score ({catKey})</span>
+          </div>
+        </div>
+        {#if isNewHigh}
+          <div class="speed-new-high">New High Score!</div>
+        {/if}
+        <div class="end-actions">
+          <button class="restart-btn" onclick={startSpeedRound}>Play Again</button>
+          <button class="history-btn" onclick={exitSpeedMode}>Back to Quiz</button>
+        </div>
+      </div>
+
+    {:else if speedQ}
+      <!-- ── SPEED HUD ── -->
+      <div class="speed-hud">
+        <div class="speed-timer" class:speed-timer-danger={speedTimeLeft < 10}>
+          {speedTimeLeft}s
+        </div>
+        <div class="speed-live-score">
+          {speedScore} correct
+        </div>
+      </div>
+
+      <!-- ── SPEED QUESTION CARD ── -->
+      <div class="quiz-card" class:speed-flash-correct={speedFlash === 'correct'} class:speed-flash-wrong={speedFlash === 'wrong'}>
+        <div class="difficulty-badge" class:easy={speedQ.difficulty === 'easy'} class:medium={speedQ.difficulty === 'medium'} class:hard={speedQ.difficulty === 'hard'}>
+          {speedQ.difficulty}
+        </div>
+        <p class="scenario">{speedQ.scenario}</p>
+        <p class="question">{speedQ.question}</p>
+
+        <div class="options-grid">
+          {#each speedQ.options as opt, idx}
+            <button
+              class="option-btn"
+              class:correct={speedSelected !== null && idx === speedQ.correct}
+              class:wrong={speedSelected !== null && idx === speedSelected && idx !== speedQ.correct}
+              class:dimmed={speedSelected !== null && idx !== speedSelected && idx !== speedQ.correct}
+              onclick={() => speedChoose(idx)}
+              disabled={speedSelected !== null}
+            >
+              <span class="opt-letter">{String.fromCharCode(65 + idx)}</span>
+              <span class="opt-text">{opt}</span>
+            </button>
+          {/each}
+        </div>
+      </div>
+    {/if}
+
   {:else}
     <!-- Category filter pills -->
     <div class="cat-filters">
@@ -207,8 +397,8 @@
         </p>
         <p class="end-saved">Score saved to history</p>
         <div class="end-actions">
-          <button class="restart-btn" onclick={restart}>↺ Restart</button>
-          <button class="history-btn" onclick={() => showHistory = true}>📊 View History</button>
+          <button class="restart-btn" onclick={restart}>Restart</button>
+          <button class="history-btn" onclick={() => showHistory = true}>View History</button>
           <p class="cat-hint">Change category above to quiz a different topic.</p>
         </div>
       </div>
@@ -579,9 +769,114 @@
 
   .cat-hint { font-size: 13px; color: var(--c-text-4); margin: 0; }
 
+  /* ── Speed Round ── */
+  .speed-toggle {
+    background: var(--c-bg-subtle);
+    border-color: #f59e0b;
+    color: #f59e0b;
+  }
+  .speed-toggle:hover {
+    background: #3d2a00;
+    border-color: #f59e0b;
+    color: #fbbf24;
+  }
+
+  .speed-hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    max-width: 760px;
+  }
+
+  .speed-timer {
+    font-size: 36px;
+    font-weight: 900;
+    font-family: 'Courier New', Courier, monospace;
+    color: var(--c-accent);
+    line-height: 1;
+    min-width: 80px;
+  }
+  .speed-timer-danger {
+    color: #ef4444;
+    animation: speed-pulse 0.6s ease-in-out infinite alternate;
+  }
+
+  @keyframes speed-pulse {
+    from { opacity: 1; }
+    to   { opacity: 0.5; }
+  }
+
+  .speed-live-score {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--c-text-h);
+  }
+
+  /* Flash effects on quiz card */
+  .speed-flash-correct {
+    border-color: #52b788 !important;
+    box-shadow: inset 0 0 0 2px rgba(82, 183, 136, 0.3);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .speed-flash-wrong {
+    border-color: #ef4444 !important;
+    box-shadow: inset 0 0 0 2px rgba(239, 68, 68, 0.3);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  /* Speed results screen */
+  .speed-results {
+    max-width: 520px;
+  }
+  .speed-results-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #f59e0b;
+  }
+  .speed-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+    margin: 8px 0;
+  }
+  .speed-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 8px;
+    background: var(--c-bg-subtle);
+    border-radius: 8px;
+    border: 1px solid var(--c-border-soft);
+  }
+  .speed-stat-value {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--c-text-h);
+    font-family: 'Courier New', Courier, monospace;
+  }
+  .speed-stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-text-4);
+    text-align: center;
+  }
+  .speed-new-high {
+    font-size: 16px;
+    font-weight: 800;
+    color: #f59e0b;
+    letter-spacing: 0.04em;
+  }
+
   @media (max-width: 768px) {
     .options-grid { grid-template-columns: 1fr; }
     .best-grid { grid-template-columns: repeat(2, 1fr); }
     .at-header, .at-row { grid-template-columns: 1.5fr 0.8fr 0.6fr 1.2fr; }
+    .speed-stats-grid { grid-template-columns: 1fr; }
+    .speed-timer { font-size: 28px; }
   }
 </style>

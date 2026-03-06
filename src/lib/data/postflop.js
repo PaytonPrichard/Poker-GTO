@@ -13,7 +13,7 @@ export const cbetData = [
     oopFreq:  65,
     oopSize:  '25–33%',
     rangeAdv: 'Strong PFR',
-    notes:    'PFR hits this board hard (AK, AQ, AJ, AT in range). Bet small and frequent — value + protection, hard for caller to continue.',
+    notes:    'PFR hits hard (AK, AQ, AJ, AT). Bet small and frequent for value + protection.',
   },
   {
     texture:  'King-high dry',
@@ -23,7 +23,7 @@ export const cbetData = [
     oopFreq:  55,
     oopSize:  '33%',
     rangeAdv: 'PFR',
-    notes:    'Similar to ace-high. PFR range connects well. Small-size bet is optimal — caller can\'t have many Kx combos unless they called with KQo/KJs.',
+    notes:    'PFR connects well. Small bet optimal; caller has few Kx combos.',
   },
   {
     texture:  'Mid-card dry',
@@ -33,7 +33,7 @@ export const cbetData = [
     oopFreq:  22,
     oopSize:  '50%',
     rangeAdv: 'Caller',
-    notes:    'Low boards favor the caller\'s range (more 8x, 5x, pocket pairs). PFR should check more and bet larger when they do bet.',
+    notes:    'Low boards favor caller (more 8x, 5x, pairs). Check more; bet larger when you do.',
   },
   {
     texture:  'Connected 2-tone',
@@ -43,7 +43,7 @@ export const cbetData = [
     oopFreq:  28,
     oopSize:  '66%',
     rangeAdv: 'Caller',
-    notes:    'Wet boards with draws favor caller. Fewer pure bluffs — bet for protection on made hands. Size up to charge draws.',
+    notes:    'Wet board favors caller. Bet for protection; size up to charge draws.',
   },
   {
     texture:  'Connected rainbow',
@@ -53,7 +53,7 @@ export const cbetData = [
     oopFreq:  35,
     oopSize:  '50%',
     rangeAdv: 'Neutral',
-    notes:    'Both players can have straights and two-pairs. More balanced betting. Check sets and straights occasionally to balance range.',
+    notes:    'Both players connect. Balanced betting; occasionally slow-play sets/straights.',
   },
   {
     texture:  'Paired board',
@@ -63,7 +63,7 @@ export const cbetData = [
     oopFreq:  50,
     oopSize:  '25–33%',
     rangeAdv: 'PFR',
-    notes:    'PFR range has more KK/AK/KQ combos. Bet small and very frequently — most hands have decent equity on paired boards. Rarely bluff-catch vs small bets.',
+    notes:    'PFR has more KK/AK/KQ. Bet small and frequent; most hands have decent equity.',
   },
   {
     texture:  'Low paired',
@@ -73,7 +73,7 @@ export const cbetData = [
     oopFreq:  35,
     oopSize:  '50%',
     rangeAdv: 'Slight caller',
-    notes:    'Caller may have more 5x. PFR can still bet with overcards for equity. Medium frequency, don\'t over-c-bet.',
+    notes:    'Caller has more 5x. PFR can bet overcards; medium frequency.',
   },
   {
     texture:  'Monotone',
@@ -83,7 +83,7 @@ export const cbetData = [
     oopFreq:  18,
     oopSize:  '33%',
     rangeAdv: 'Slight caller',
-    notes:    'Monotone boards are tricky — many bluffs have draws, caller can have flushes. Check the vast majority. When betting, size small.',
+    notes:    'Caller can have flushes; many bluffs have draws. Check most; bet small when you do.',
   },
   {
     texture:  'Ace-high 2-tone',
@@ -93,7 +93,7 @@ export const cbetData = [
     oopFreq:  45,
     oopSize:  '50%',
     rangeAdv: 'PFR',
-    notes:    'PFR has range advantage from Ax, but flush draws add complexity. Size up slightly vs the two-tone. Strong nut advantage.',
+    notes:    'PFR has Ax range advantage + nut advantage. Size up slightly for the flush draws.',
   },
   {
     texture:  'Queen-high dry',
@@ -103,7 +103,7 @@ export const cbetData = [
     oopFreq:  40,
     oopSize:  '33–50%',
     rangeAdv: 'PFR',
-    notes:    'PFR has QQ, AQ, KQ in range. Slightly less dominant than A/K-high boards because caller can have QJ, QT combos. Bet frequently but not as aggressively as ace-high.',
+    notes:    'PFR has QQ/AQ/KQ. Caller also has QJ/QT; less dominant than A/K-high boards.',
   },
   {
     texture:  'Jack-high dry',
@@ -113,7 +113,7 @@ export const cbetData = [
     oopFreq:  35,
     oopSize:  '50%',
     rangeAdv: 'Slight PFR',
-    notes:    'PFR has JJ, AJ, KJ. But caller also has many Jx suited combos. Medium c-bet frequency — check more than on A/K-high. Bet bigger when you do bet.',
+    notes:    'PFR has JJ/AJ/KJ but caller has many Jx suited. Medium frequency; bet bigger.',
   },
   {
     texture:  'Ten-high dry',
@@ -123,7 +123,7 @@ export const cbetData = [
     oopFreq:  30,
     oopSize:  '50%',
     rangeAdv: 'Neutral',
-    notes:    'T-high boards are closer to neutral range advantage. Caller has many Tx combos (T9s, JTs, QTs). PFR should check more — c-bet mostly overpairs and strong Tx.',
+    notes:    'Near-neutral range advantage. Caller has many Tx (T9s, JTs, QTs). C-bet mainly overpairs.',
   },
   {
     texture:  'Broadway heavy',
@@ -133,7 +133,7 @@ export const cbetData = [
     oopFreq:  42,
     oopSize:  '33%',
     rangeAdv: 'PFR',
-    notes:    'PFR range smashes broadway boards (AK, AQ, AJ, KQ, KJ, QJ). Bet small and very frequently. Caller has some pieces but PFR has nut advantage with ATs+ straights.',
+    notes:    'PFR smashes broadway boards (AK, AQ, KQ, KJ). Bet small and frequent; PFR has nut advantage.',
   },
   {
     texture:  'Low 2-tone',
@@ -143,7 +143,7 @@ export const cbetData = [
     oopFreq:  15,
     oopSize:  '50–66%',
     rangeAdv: 'Caller',
-    notes:    'Low two-tone boards strongly favor the caller. More suited connectors, small pairs, and suited gappers in their range. PFR should check most hands and bet only strong overpairs.',
+    notes:    'Strongly favors caller (suited connectors, small pairs, gappers). Bet only strong overpairs.',
   },
   {
     texture:  'Three-to-straight',
@@ -153,7 +153,7 @@ export const cbetData = [
     oopFreq:  20,
     oopSize:  '66%',
     rangeAdv: 'Caller',
-    notes:    'Extremely coordinated board that strongly favors the caller (89, T8, 45, 34 all connect). PFR should check most of range. When betting, use large sizing to charge draws and straights.',
+    notes:    'Highly coordinated; favors caller (89, T8, 45, 34 connect). Check most; bet large.',
   },
   {
     texture:  'Ace-high paired',
@@ -163,7 +163,7 @@ export const cbetData = [
     oopFreq:  55,
     oopSize:  '25–33%',
     rangeAdv: 'Strong PFR',
-    notes:    'PFR dominates with more Ax combos (AK, AQ, AJ, AT). Bet very small, very frequently. Caller rarely has an ace. One of the highest c-bet frequency boards in GTO.',
+    notes:    'PFR dominates with Ax combos. Bet very small, very often; caller rarely has an ace.',
   },
   {
     texture:  'Mid 2-tone',
@@ -173,7 +173,7 @@ export const cbetData = [
     oopFreq:  22,
     oopSize:  '50%',
     rangeAdv: 'Slight caller',
-    notes:    'Caller has many suited heart combos and connected hands (98, 87, 76). PFR should check frequently. Bet with overpairs and nut flush draws; check everything else.',
+    notes:    'Caller has suited combos and connectors (98, 87, 76). Bet overpairs and nut flush draws only.',
   },
   {
     texture:  'Wheel cards rainbow',
@@ -183,7 +183,7 @@ export const cbetData = [
     oopFreq:  18,
     oopSize:  '50%',
     rangeAdv: 'Caller',
-    notes:    'Very low board heavily favoring the caller\'s range. PFR has mostly overcards. Check frequently — only bet strong overpairs (AA, KK). A5 is a premium holding here (nut straight draw).',
+    notes:    'Heavily favors caller. Only bet AA/KK. A5 is premium here (nut straight draw).',
   },
 ];
 
@@ -192,26 +192,26 @@ export const turnGuide = [
   {
     situation: 'You c-bet flop, got called',
     action:    'Double barrel',
-    hands:     'Strong value (top pair+), combo draws, nut flush draws',
+    hands:     'Top pair+, combo draws, nut flush draws',
     frequency: '40–55% of range',
     sizing:    '55–75% pot',
-    notes:     'Continue on good runouts. Shut down on bad runouts (draws complete for caller, board pairs unfavorably). Give up thin value on wet turns.',
+    notes:     'Continue on good runouts. Shut down when draws complete or board pairs badly.',
   },
   {
     situation: 'You c-bet flop, got called',
     action:    'Check turn',
-    hands:     'Marginal made hands (2nd pair, weak top pair), missed bluffs',
+    hands:     '2nd pair, weak top pair, missed bluffs',
     frequency: '45–60% of range',
     sizing:    '—',
-    notes:     'Protect range integrity. Check-call with marginal hands. Check-raise opportunities arise on blanks when you have nut advantage.',
+    notes:     'Check-call marginals. Check-raise on blanks when you have nut advantage.',
   },
   {
     situation: 'You checked flop, villain bet, you called',
     action:    'Donk-bet turn',
-    hands:     'Very rarely — mostly avoid donk bets in GTO',
+    hands:     'Rarely; avoid donk bets in GTO',
     frequency: '<10%',
     sizing:    '50–70% pot',
-    notes:     'Donk betting is generally a leak. Prefer check-raising or calling. Reserve donk bets for when you have uncapped range advantage on specific turn cards.',
+    notes:     'Generally a leak. Prefer check-raise/call. Only when you have uncapped range advantage on the turn card.',
   },
   {
     situation: 'You checked flop, villain checked back',
@@ -219,7 +219,7 @@ export const turnGuide = [
     hands:     'Strong value, top pair, draws',
     frequency: '50–65%',
     sizing:    '50–66% pot',
-    notes:     'Villain capped their range by checking. Now your range has advantage — bet frequently and use a variety of sizings.',
+    notes:     'Villain capped by checking. Your range has advantage; bet frequently with varied sizing.',
   },
 ];
 
@@ -231,7 +231,7 @@ export const riverGuide = [
     hands:     'Nut hands, polarized (nuts or air)',
     frequency: '35–50% of range',
     sizing:    '66–100% pot (large or overbet)',
-    notes:     'River is polarization time. Thin value rarely bets. Use full pot or overbets with nuts and pure bluffs. Balance bluff frequency to value (1:1 at pot-size bet).',
+    notes:     'Polarize: pot/overbet with nuts and pure bluffs. Balance ~1:1 bluff-to-value at pot-size.',
   },
   {
     situation: 'You bet flop + turn, villain called both',
@@ -239,7 +239,7 @@ export const riverGuide = [
     hands:     'Thin value, bluff-catchers, missed draws',
     frequency: '50–65% of range',
     sizing:    '—',
-    notes:     'Check and induce bluffs with thin value. Many missed draws should check-fold.',
+    notes:     'Induce bluffs with thin value. Missed draws check-fold.',
   },
   {
     situation: 'You check river after two streets of action',
@@ -247,7 +247,7 @@ export const riverGuide = [
     hands:     'Missed draws with no showdown value',
     frequency: 'Depends on sizing / pot odds you give',
     sizing:    '50–100% pot',
-    notes:     'Good bluff candidates have blockers to villain\'s calling range (e.g., having an ace blocks AA/AK/AT calling combos). Size bluffs consistently with your value bets.',
+    notes:     'Best bluffs block villain\'s calling range (e.g., ace blocks AK/AT). Size consistently with value bets.',
   },
 ];
 
@@ -255,30 +255,30 @@ export const riverGuide = [
 export const principles = [
   {
     title: 'Position is everything',
-    body:  'IP player sees villain\'s action before deciding. This allows IP to realize more equity on every street — hence why IP calls more hands preflop and bets wider postflop.',
+    body:  'IP acts after villain, realizing more equity every street. IP calls wider preflop and bets wider postflop.',
   },
   {
     title: 'Range advantage vs nut advantage',
-    body:  'Range advantage = your overall range has higher equity on this board. Nut advantage = you have more of the strongest hands (nutted hands). Both matter. Range advantage drives frequency; nut advantage drives sizing.',
+    body:  'Range advantage = higher overall equity. Nut advantage = more nutted hands. Range drives frequency; nut advantage drives sizing.',
   },
   {
     title: 'Bet sizing is a signal',
-    body:  'Small bets (25–33%) work best when betting polarization is low (all hands benefit). Large bets (66–100%+) work when your range is polarized. Calibrate by how much of your range wants to bet at that size.',
+    body:  'Small bets (25–33%) when polarization is low. Large bets (66–100%+) when polarized. Match size to range composition.',
   },
   {
     title: 'Equity realization',
-    body:  'Not all hands realize their raw equity. Position, playability, and opponent ranges affect this. Suited connectors and pairs realize more equity IP than OOP. Account for this when evaluating thin preflop calls.',
+    body:  'Position and playability affect how much raw equity you realize. Suited connectors and pairs realize more IP than OOP.',
   },
   {
     title: 'Balancing check-raises',
-    body:  'When you check, villain may bet. Having check-raises in your range (both value and bluffs) prevents exploitation. Without check-raises, villain can bet freely knowing you\'ll only call or fold.',
+    body:  'Check-raises (value + bluffs) prevent villain from betting freely. Without them, you\'re exploitable.',
   },
   {
     title: 'Blockers on the river',
-    body:  'Holding a card reduces the number of combos your opponent can have containing that rank. On a flush-completing river, holding a flush card is a good bluff — you block villain\'s strong flush hands that might call your bluff.',
+    body:  'Holding a card reduces villain\'s combos of that rank. On flush rivers, holding a flush card makes a good bluff (blocks villain\'s flushes).',
   },
   {
     title: 'Mixed frequencies vs pure strategies',
-    body:  'GTO solvers often split borderline hands into mixed actions — e.g. "c-bet this hand 60%, check 40%." Core value hands and clear folds are pure (100% one action), but the middle of your range mixes. In practice, pick one action for each hand and focus on getting the overall range frequency roughly right rather than randomizing individual hands.',
+    body:  'Solvers mix borderline hands (e.g., c-bet 60%, check 40%). In practice, pick one action per hand and focus on getting overall range frequency right.',
   },
 ];

@@ -3,7 +3,7 @@
   import { equityLookup, commonHands } from './data/equityLookup.js';
   import RangeVisualizer from './RangeVisualizer.svelte';
 
-  let activeTab = $state('matchups');
+  let activeTab = $state('calculator');
   let activeCategory = $state('All');
 
   const tabs = ['matchups', 'outs', 'vsrange', 'calculator'];
@@ -36,6 +36,53 @@
       : matchups.filter(m => m.category === activeCategory)
   );
 
+  // ── Equity Guess Game ──────────────────────────────────────────────────────
+  let guessMode = $state(false);
+  let guessInput = $state('');
+  let guessIdx = $state(0);
+  let guessRevealed = $state(false);
+  let guessScore = $state(0);
+  let guessTotal = $state(0);
+
+  // Persistent scores
+  let eqStats = $state(JSON.parse(localStorage.getItem('practiceScores_equity') ?? '{"totalCorrect":0,"totalAttempts":0,"bestStreak":0}'));
+  let eqStreak = $state(0);
+  function saveEqStats() { localStorage.setItem('practiceScores_equity', JSON.stringify(eqStats)); }
+
+  let guessRow = $derived(filteredMatchups[guessIdx] ?? filteredMatchups[0]);
+  let guessDiff = $derived(Math.abs(parseInt(guessInput) - (guessRow?.equity ?? 0)));
+
+  function submitGuess() {
+    if (!guessInput || guessRevealed) return;
+    guessRevealed = true;
+    guessTotal++;
+    if (guessDiff <= 5) guessScore++;
+    eqStats.totalAttempts++;
+    if (guessDiff <= 5) {
+      eqStats.totalCorrect++;
+      eqStreak++;
+      if (eqStreak > eqStats.bestStreak) eqStats.bestStreak = eqStreak;
+    } else {
+      eqStreak = 0;
+    }
+    saveEqStats();
+  }
+
+  function nextGuess() {
+    guessRevealed = false;
+    guessInput = '';
+    guessIdx = (guessIdx + 1) % filteredMatchups.length;
+  }
+
+  function resetGuess() {
+    guessMode = false;
+    guessRevealed = false;
+    guessInput = '';
+    guessIdx = 0;
+    guessScore = 0;
+    guessTotal = 0;
+  }
+
   function equityBarColor(eq) {
     if (eq >= 75) return '#52b788';
     if (eq >= 55) return '#f59e0b';
@@ -53,7 +100,7 @@
 <div class="equity">
   <h2>Hand Equity</h2>
   <p class="intro">
-    Understand how hands perform against each other, how to count outs, and how <span data-tooltip-title="Equity" data-tooltip="Your share of the pot if the hand was played to showdown many times. A 60% equity hand wins 60% of the pot on average. Equity is distinct from EV — position and playability affect realized equity.">equity</span> shifts vs different villain ranges.
+    Hand matchups, outs, and <span data-tooltip-title="Equity" data-tooltip="Your share of the pot if the hand was played to showdown many times. A 60% equity hand wins 60% of the pot on average. Equity is distinct from EV — position and playability affect realized equity.">equity</span> vs different villain ranges.
   </p>
 
   <!-- Tabs -->
@@ -75,43 +122,117 @@
   {#if activeTab === 'matchups'}
     <div role="tabpanel">
       <div class="section-header">
-        <h3>Key Hand Matchups</h3>
-        <p class="section-note">All-in equity at preflop — approximate values. Filter by matchup type.</p>
-      </div>
-
-      <!-- Category filter pills -->
-      <div class="cat-filters">
-        {#each matchupCategories as cat}
-          <button
-            class="cat-btn"
-            class:active={activeCategory === cat}
-            onclick={() => activeCategory = cat}
-          >{cat}</button>
-        {/each}
-      </div>
-
-      <div class="data-table">
-        <div class="table-header" style="grid-template-columns: 1fr 1fr 2.5fr 1fr;">
-          <span>Hero</span>
-          <span>Villain</span>
-          <span>Equity</span>
-          <span class="center">Hero %</span>
+        <div class="header-row">
+          <h3>Key Hand Matchups</h3>
+          <button class="mode-toggle" class:active={guessMode} onclick={() => guessMode ? resetGuess() : (guessMode = true)}>
+            {guessMode ? '✕ Exit Practice' : '♦ Practice Mode'}
+          </button>
         </div>
-        {#each filteredMatchups as row}
-          <div class="table-row mu-row" style="grid-template-columns: 1fr 1fr 2.5fr 1fr;">
-            <span class="hand-chip hero">{row.hero}</span>
-            <span class="hand-chip villain">{row.villain}</span>
-            <span class="eq-bar-wrap">
-              <span
-                class="eq-bar"
-                style="width:{row.equity}%; background:{equityBarColor(row.equity)}"
-              ></span>
-            </span>
-            <span class="center eq-pct" style="color:{equityBarColor(row.equity)}">{row.equity}%</span>
-          </div>
-          <div class="table-notes mu-note">{row.notes}</div>
-        {/each}
       </div>
+
+      {#if guessMode}
+        <!-- Equity Guess Game -->
+        <div class="guess-game">
+          <div class="guess-score">Score: {guessScore}/{guessTotal} correct (within 5%)</div>
+            <div class="guess-alltime">All-time: {eqStats.totalCorrect}/{eqStats.totalAttempts} | Best streak: {eqStats.bestStreak}</div>
+          <div class="guess-card">
+            <div class="guess-matchup">
+              <span class="hand-chip hero">{guessRow.hero}</span>
+              <span class="guess-vs">vs</span>
+              <span class="hand-chip villain">{guessRow.villain}</span>
+            </div>
+            <div class="guess-category">{guessRow.category}</div>
+
+            {#if !guessRevealed}
+              <div class="guess-input-row">
+                <label class="guess-label">Hero equity %</label>
+                <input
+                  type="number"
+                  class="guess-input"
+                  bind:value={guessInput}
+                  placeholder="e.g. 65"
+                  min="0"
+                  max="100"
+                  onkeydown={(e) => e.key === 'Enter' && submitGuess()}
+                />
+                <button class="guess-btn" onclick={submitGuess} disabled={!guessInput}>Guess</button>
+              </div>
+            {:else}
+              <div class="guess-result">
+                <div class="guess-answer">
+                  <span class="eq-bar-wrap" style="height:14px;">
+                    <span class="eq-bar" style="width:{guessRow.equity}%; background:{equityBarColor(guessRow.equity)}"></span>
+                  </span>
+                  <span class="guess-actual" style="color:{equityBarColor(guessRow.equity)}">Actual: {guessRow.equity}%</span>
+                </div>
+                <div class="guess-feedback" class:correct={guessDiff <= 5} class:close={guessDiff > 5 && guessDiff <= 15} class:off={guessDiff > 15}>
+                  {#if guessDiff <= 5}
+                    Nailed it! You guessed {guessInput}% (off by {guessDiff}%)
+                  {:else if guessDiff <= 15}
+                    Close! You guessed {guessInput}% (off by {guessDiff}%)
+                  {:else}
+                    Off by {guessDiff}%. You guessed {guessInput}%, actual is {guessRow.equity}%
+                  {/if}
+                </div>
+                <div class="guess-note">{guessRow.notes}</div>
+                <button class="guess-btn next" onclick={nextGuess}>Next Matchup →</button>
+              </div>
+            {/if}
+          </div>
+        </div>
+      {:else}
+        <!-- Normal table view -->
+        <div class="cat-filters">
+          {#each matchupCategories as cat}
+            <button
+              class="cat-btn"
+              class:active={activeCategory === cat}
+              onclick={() => activeCategory = cat}
+            >{cat}</button>
+          {/each}
+        </div>
+
+        <div class="data-table">
+          <div class="table-header" style="grid-template-columns: 1fr 1fr 2.5fr 1fr;">
+            <span>Hero</span>
+            <span>Villain</span>
+            <span>Equity</span>
+            <span class="center">Hero %</span>
+          </div>
+          {#each filteredMatchups as row}
+            {@const canCalc = commonHands.includes(row.hero) && commonHands.includes(row.villain)}
+            <div class="table-row mu-row" style="grid-template-columns: 1fr 1fr 2.5fr 1fr;">
+              {#if canCalc}
+                <button class="hand-chip hero clickable" onclick={() => { calcHand1 = row.hero; calcHand2 = row.villain; activeTab = 'calculator'; }}
+                  data-tooltip-title="{row.hero} vs {row.villain}" data-tooltip="Click to compare in calculator. {row.notes}">
+                  {row.hero}
+                </button>
+                <button class="hand-chip villain clickable" onclick={() => { calcHand1 = row.hero; calcHand2 = row.villain; activeTab = 'calculator'; }}
+                  data-tooltip-title="{row.hero} vs {row.villain}" data-tooltip="Click to compare in calculator. {row.notes}">
+                  {row.villain}
+                </button>
+              {:else}
+                <span class="hand-chip hero"
+                  data-tooltip-title="{row.hero}" data-tooltip="{row.notes}">
+                  {row.hero}
+                </span>
+                <span class="hand-chip villain"
+                  data-tooltip-title="{row.villain}" data-tooltip="{row.notes}">
+                  {row.villain}
+                </span>
+              {/if}
+              <span class="eq-bar-wrap">
+                <span
+                  class="eq-bar"
+                  style="width:{row.equity}%; background:{equityBarColor(row.equity)}"
+                ></span>
+              </span>
+              <span class="center eq-pct" style="color:{equityBarColor(row.equity)}">{row.equity}%</span>
+            </div>
+            <div class="table-notes mu-note">{row.notes}</div>
+          {/each}
+        </div>
+      {/if}
     </div>
 
   <!-- ── OUTS & DRAWS ── -->
@@ -154,8 +275,14 @@
         </div>
         {#each outsChart as row}
           <div class="table-row" style="grid-template-columns: 2.5fr 0.6fr 0.8fr 0.8fr 0.8fr;">
-            <span class="draw-name">{row.draw}</span>
-            <span class="center outs-chip">{row.outs}</span>
+            <span class="draw-name"
+              data-tooltip-title="{row.draw}" data-tooltip="{row.notes}">
+              {row.draw}
+            </span>
+            <span class="center outs-chip"
+              data-tooltip-title="{row.outs} Outs" data-tooltip="Rule of 4: {row.outs} × 4 ≈ {row.outs * 4}% with 2 cards to come. Rule of 2: {row.outs} × 2 ≈ {row.outs * 2}% with 1 card to come.">
+              {row.outs}
+            </span>
             <span class="center eq-num">{row.turn}%</span>
             <span class="center eq-num">{row.river}%</span>
             <span class="center eq-num combined">{row.twoCards}%</span>
@@ -171,13 +298,12 @@
       <div class="section-header">
         <h3>Hand Equity vs Villain Range</h3>
         <p class="section-note">
-          Approximate preflop all-in equity vs different villain range widths (top X% of hands).
-          Ranges: top 5% ≈ QQ+/AKs; top 10% ≈ TT+/AQs+; top 20% ≈ 77+/AJs+; top 50% ≈ wide opening range.
+          Preflop all-in equity vs top 5%/10%/20%/50% of hands.
         </p>
       </div>
 
       <h3>Range Tier Visualizer</h3>
-      <p class="section-note">Which hands fall in each range width? Hover a cell to see the hand name.</p>
+      <p class="section-note">Hover a cell to see the hand name.</p>
       <RangeVisualizer tierMap={rangeTiers} />
 
       <div class="data-table">
@@ -191,11 +317,18 @@
         </div>
         {#each vsRangeTable as row}
           <div class="table-row" style="grid-template-columns: 1fr 1fr 1fr 1fr 1fr 2fr;">
-            <span class="hand-chip hero">{row.hand}</span>
-            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top5)}">{row.top5}%</span></span>
-            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top10)}">{row.top10}%</span></span>
-            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top20)}">{row.top20}%</span></span>
-            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top50)}">{row.top50}%</span></span>
+            <button class="hand-chip hero clickable" onclick={() => { calcHand1 = row.hand; activeTab = 'calculator'; }}
+              data-tooltip-title="{row.hand}" data-tooltip="Click to load in calculator. {row.notes}">
+              {row.hand}
+            </button>
+            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top5)}"
+              data-tooltip-title="{row.hand} vs Top 5%" data-tooltip="QQ+, AKs — the tightest ranges. {row.top5}% equity means {row.hand} is {row.top5 >= 50 ? 'favored' : 'underdog'} here.">{row.top5}%</span></span>
+            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top10)}"
+              data-tooltip-title="{row.hand} vs Top 10%" data-tooltip="TT+, AQs+ — strong opening range. {row.top10}% equity.">{row.top10}%</span></span>
+            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top20)}"
+              data-tooltip-title="{row.hand} vs Top 20%" data-tooltip="77+, AJs+, KQs — standard opening range. {row.top20}% equity.">{row.top20}%</span></span>
+            <span class="center"><span class="eq-cell" style="color:{vsColor(row.top50)}"
+              data-tooltip-title="{row.hand} vs Top 50%" data-tooltip="Wide range including suited connectors and small pairs. {row.top50}% equity.">{row.top50}%</span></span>
             <span class="vsr-notes">{row.notes}</span>
           </div>
         {/each}
@@ -206,10 +339,10 @@
         <div>
           <strong>Range equity concepts</strong>
           <ul class="concept-list">
-            <li>Equity vs a range is an average — your hand may dominate some combos and lose to others.</li>
-            <li>Suited hands gain ~3–4% equity vs broad ranges thanks to flush draw equity.</li>
-            <li>Dominated hands (AQ vs AK) perform poorly vs tight ranges but improve significantly vs loose ones.</li>
-            <li>Always consider which part of villain's range calls vs folds — your realized equity depends on the calling range, not the full range.</li>
+            <li>Equity vs a range is an average across all combos.</li>
+            <li>Suited hands gain ~3-4% equity vs broad ranges.</li>
+            <li>Dominated hands improve significantly vs loose ranges.</li>
+            <li>Realized equity depends on villain's calling range, not full range.</li>
           </ul>
         </div>
       </div>
@@ -364,6 +497,16 @@
   }
   .hand-chip.hero    { background: #1d4ed822; color: #93c5fd; border: 1px solid #1d4ed8; }
   .hand-chip.villain { background: #92400e22; color: #fcd34d; border: 1px solid #92400e; }
+
+  /* Clickable hand chips */
+  button.hand-chip.clickable {
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  button.hand-chip.clickable:hover {
+    filter: brightness(1.3);
+    transform: scale(1.05);
+  }
 
   /* Equity bar */
   .mu-row { align-items: center; }
@@ -521,4 +664,55 @@
     border-radius: 8px;
     max-width: 400px;
   }
+
+  /* ── Practice mode toggle ── */
+  .header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .mode-toggle {
+    padding: 6px 16px; border-radius: 6px;
+    border: 1px solid var(--c-border); background: var(--c-bg-card);
+    color: var(--c-text-3); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .mode-toggle:hover { border-color: var(--c-accent-dark); color: var(--c-text); }
+  .mode-toggle.active { background: var(--c-accent-dark); border-color: var(--c-accent-dark); color: #fff; }
+
+  /* ── Equity Guess Game ── */
+  .guess-game { display: flex; flex-direction: column; gap: 16px; max-width: 500px; }
+  .guess-score { font-size: 13px; font-weight: 700; color: var(--c-accent); }
+  .guess-card {
+    background: var(--c-bg-card); border: 1px solid var(--c-border);
+    border-radius: 10px; padding: 24px; display: flex; flex-direction: column; gap: 16px;
+  }
+  .guess-matchup { display: flex; align-items: center; gap: 12px; justify-content: center; }
+  .guess-vs { font-size: 18px; font-weight: 700; color: var(--c-text-4); }
+  .guess-category { text-align: center; font-size: 12px; color: var(--c-text-4); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .guess-input-row { display: flex; align-items: center; gap: 10px; }
+  .guess-label { font-size: 13px; font-weight: 600; color: var(--c-text-3); white-space: nowrap; }
+  .guess-input {
+    flex: 1; padding: 8px 12px; border-radius: 6px;
+    border: 1px solid var(--c-border); background: var(--c-bg-subtle);
+    color: var(--c-text); font-size: 16px; font-weight: 700;
+    font-family: 'Courier New', monospace; outline: none; max-width: 100px;
+  }
+  .guess-input:focus { border-color: var(--c-accent); }
+  .guess-btn {
+    padding: 8px 20px; border-radius: 6px;
+    border: 1px solid var(--c-accent-dark); background: var(--c-accent-dark);
+    color: #fff; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .guess-btn:hover:not(:disabled) { filter: brightness(1.15); }
+  .guess-btn:disabled { opacity: 0.4; cursor: default; }
+  .guess-btn.next { background: var(--c-bg-subtle); border-color: var(--c-border); color: var(--c-text); }
+  .guess-btn.next:hover { border-color: var(--c-accent-dark); color: var(--c-accent); }
+
+  .guess-result { display: flex; flex-direction: column; gap: 10px; }
+  .guess-answer { display: flex; flex-direction: column; gap: 6px; }
+  .guess-actual { font-size: 18px; font-weight: 900; font-family: 'Courier New', monospace; text-align: center; }
+  .guess-feedback { font-size: 14px; font-weight: 700; text-align: center; padding: 8px; border-radius: 6px; }
+  .guess-feedback.correct { background: #2d6a4f22; color: #52b788; }
+  .guess-feedback.close { background: #92400e22; color: #f59e0b; }
+  .guess-feedback.off { background: #7f1d1d22; color: #ef4444; }
+  .guess-note { font-size: 12px; color: var(--c-text-4); text-align: center; line-height: 1.5; }
+  .guess-alltime { font-size: 11px; color: var(--c-text-4); font-weight: 600; text-align: center; }
 </style>

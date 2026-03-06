@@ -92,6 +92,21 @@ a:hover { color: var(--c-accent-hover); }
   .options-grid { grid-template-columns: 1fr !important; }
 }
 
+/* ── Tooltip hint for hoverable elements ──────────────────────────────────── */
+[data-tooltip] {
+  cursor: help;
+}
+/* Clickable tooltip elements override cursor back to pointer */
+button[data-tooltip] {
+  cursor: pointer;
+}
+/* Chips, badges, pills with tooltips get a subtle glow on hover */
+span[data-tooltip]:hover,
+button[data-tooltip]:hover,
+div[data-tooltip]:hover {
+  filter: brightness(1.15);
+}
+
 /* ── Reduced motion ──────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

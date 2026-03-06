@@ -18,8 +18,7 @@
 <div class="solver" bind:this={sectionEl}>
   <h2>Solver Interpretation</h2>
   <p class="intro">
-    Solvers compute game-theory optimal strategies, but understanding their output is a skill in itself.
-    Learn to read solver results, understand mixed strategies, and know when to deviate from solver play.
+    Read solver output, understand mixed strategies, and know when to deviate.
   </p>
 
   <div class="tabs-row">
@@ -47,8 +46,7 @@
       <div class="section-header">
         <h3>How to Read Solver Results</h3>
         <p class="section-note">
-          Understanding what a solver is telling you is the first step to using it effectively.
-          These concepts will help you interpret any solver's output.
+          Key concepts for interpreting any solver's output.
         </p>
       </div>
       <div class="concepts-grid">
@@ -67,8 +65,7 @@
       <div class="section-header">
         <h3>Understanding Mixed Strategies & Frequencies</h3>
         <p class="section-note">
-          Solvers often recommend mixing actions with specific frequencies. Understanding why they mix
-          and how to implement this in practice is crucial for applying solver work at the table.
+          Why solvers mix actions and how to implement frequencies in practice.
         </p>
       </div>
       <div class="concepts-grid">
@@ -85,9 +82,7 @@
         <div>
           <strong>Practical frequency tip</strong>
           <p class="callout-body">
-            Don't try to randomize at the table. Instead, convert solver frequencies into simple rules:
-            "If the solver says bet 70% and check 30%, I'll bet everything except my weakest hands in the
-            betting range." This captures most of the EV without the mental overhead.
+            Convert frequencies into simple rules: "Bet 70% → bet everything except the weakest hands in range." Captures most EV without mental overhead.
           </p>
         </div>
       </div>
@@ -99,8 +94,7 @@
       <div class="section-header">
         <h3>When to Deviate from Solver Play</h3>
         <p class="section-note">
-          GTO is the baseline, but real-world poker has exploitable opponents, ICM, and imperfect information.
-          Knowing when to deviate is what makes solver study truly profitable.
+          GTO is the baseline — deviate when opponents are exploitable.
         </p>
       </div>
       <div class="concepts-grid">
@@ -119,8 +113,7 @@
       <div class="section-header">
         <h3>Practical Application</h3>
         <p class="section-note">
-          Solver study is only valuable if you can apply it at the table. These tips will help you
-          translate solver output into actionable strategies you can use in real games.
+          Translate solver output into actionable table strategy.
         </p>
       </div>
       <div class="concepts-grid">

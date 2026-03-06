@@ -24,8 +24,7 @@
 <div class="multiway" bind:this={sectionEl}>
   <h2>Multiway Pots</h2>
   <p class="intro">
-    When three or more players see a flop, GTO strategy adjusts significantly. Bluffing becomes unprofitable,
-    nut advantage matters more, and hand selection tightens preflop.
+    How strategy changes with 3+ players: tighter ranges, less bluffing, nut advantage matters more.
   </p>
 
   <!-- Tabs -->
@@ -54,7 +53,7 @@
     <div class="section-header">
       <h3>Preflop Adjustments: HU vs 3-Way vs 4-Way</h3>
       <p class="section-note">
-        Multiway pots require tighter hand selection and adjusted ranges. The more players, the stronger your hand needs to be for commitment.
+        More players = tighter hand selection and stronger commitment thresholds.
       </p>
     </div>
 
@@ -81,9 +80,7 @@
       <div>
         <strong>Key preflop insight</strong>
         <p class="callout-body">
-          Multiway pots primarily change <em>hand selection</em>, not postflop tactics. Play tighter preflop
-          and you will be in better shape postflop. Speculative hands (small pairs, suited connectors) gain
-          implied odds multiway but need to make very strong hands to win.
+          Multiway pots mainly change <em>hand selection</em>. Play tighter preflop; speculative hands gain implied odds but must make strong hands.
         </p>
       </div>
     </div>
@@ -95,8 +92,7 @@
     <div class="section-header">
       <h3>Multiway <span data-tooltip-title="C-Bet — Continuation Bet" data-tooltip="Betting the flop (or turn/river) after being the preflop aggressor. In multiway pots, c-bet frequency drops sharply — only bet with strong hands or nut advantage.">C-Bet</span> Frequencies by Board Texture</h3>
       <p class="section-note">
-        C-bet frequencies drop sharply multiway. The more players in the pot, the stronger your hand needs to be to bet.
-        <strong>3-way</strong> = 3 players postflop; <strong>4-way</strong> = 4+ players.
+        C-bet freq drops sharply multiway. <strong>3-way</strong> = 3 players; <strong>4-way</strong> = 4+.
       </p>
     </div>
 
@@ -112,10 +108,12 @@
         <div class="table-row" style="grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;">
           <span class="texture-name">{row.texture}</span>
           <span class="center">
-            <span class="freq-pill" style="color:{freqColor(row.freq3way)}">{row.freq3way}%</span>
+            <span class="freq-pill" style="color:{freqColor(row.freq3way)}"
+              data-tooltip-title="3-Way C-Bet: {row.freq3way}%" data-tooltip="C-bet frequency on {row.texture} boards in a 3-way pot. With two opponents, you need a stronger range to bet. Bet with: {row.hands}.">{row.freq3way}%</span>
           </span>
           <span class="center">
-            <span class="freq-pill" style="color:{freqColor(row.freq4way)}">{row.freq4way}%</span>
+            <span class="freq-pill" style="color:{freqColor(row.freq4way)}"
+              data-tooltip-title="4-Way C-Bet: {row.freq4way}%" data-tooltip="C-bet frequency on {row.texture} boards in a 4-way pot. With three opponents, only bet strong value. Bet with: {row.hands}.">{row.freq4way}%</span>
           </span>
           <span class="center size-text">{row.size}</span>
           <span class="hands-text">{row.hands}</span>
@@ -129,11 +127,11 @@
       <div>
         <strong>Multiway flop checklist</strong>
         <ul class="check-list">
-          <li>✓ C-bet with <span data-tooltip-title="Nut Advantage" data-tooltip="Having a disproportionately larger share of the strongest possible hands (nuts) on a given board compared to your opponent's range. Allows credible large and overbet sizings.">nut advantage</span> hands only (top set, top two pair, nut flush draw)</li>
-          <li>✓ Check entire range on boards where callers have range advantage</li>
-          <li>✓ Size small (33%) when betting — inflating pot with marginal holdings is -EV</li>
-          <li>✗ Never bluff-bet without blockers or draw equity vs multiple opponents</li>
-          <li>✗ Avoid c-betting second pair or weak top pair into 3+ players</li>
+          <li>✓ C-bet only with <span data-tooltip-title="Nut Advantage" data-tooltip="Having a disproportionately larger share of the strongest possible hands (nuts) on a given board compared to your opponent's range. Allows credible large and overbet sizings.">nut advantage</span> hands (top set, nut draws)</li>
+          <li>✓ Check on boards where callers have range advantage</li>
+          <li>✓ Size small (33%) — inflating pot with marginal hands is -EV</li>
+          <li>✗ No bluff-bets without blockers or draw equity</li>
+          <li>✗ Avoid c-betting weak top pair into 3+ players</li>
         </ul>
       </div>
     </div>
@@ -145,7 +143,7 @@
     <div class="section-header">
       <h3>Turn & River Decisions in Multiway Pots</h3>
       <p class="section-note">
-        By the turn, most multiway pots reduce to two players. Adjust strategy based on how many players remain and the street.
+        Adjust based on how many players remain and the street.
       </p>
     </div>
     <div class="guide-cards">
@@ -153,7 +151,8 @@
         <details class="guide-card">
           <summary class="guide-header">
             <span class="situation">{item.situation}</span>
-            <span class="action-badge">{item.action}</span>
+            <span class="action-badge"
+              data-tooltip-title="{item.action}" data-tooltip="Recommended action: {item.action}. Hands: {item.hands}. Frequency: {item.frequency}.">{item.action}</span>
           </summary>
           <div class="guide-body">
             <div class="guide-row">

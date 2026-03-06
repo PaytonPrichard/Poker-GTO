@@ -5,6 +5,8 @@
   import { rfiRanges, openSizes, threeBetSizes } from './data/ranges.js';
   import { vsOpenRanges, vs3betRanges, positionOrder } from './data/vsRanges.js';
 
+  let { onTakePostflop = null } = $props();
+
   // ── State ──────────────────────────────────────────────────────────────────
   let playerCount  = $state(6);
   let scenario     = $state('rfi');      // 'rfi' | 'vs-open' | 'vs-3bet'
@@ -266,9 +268,13 @@
       </div>
       <div class="info-item">
         <span class="info-label">Key concept</span>
-        <span class="info-value">4-bet polarized (value + bluffs). Call with medium-strong hands that realize equity.</span>
+        <span class="info-value">4-bet polarized. Call with medium-strong hands.</span>
       </div>
     </div>
+  {/if}
+
+  {#if hasData && !selectedHand}
+    <p class="matrix-hint">Click any hand to see details and how it plays postflop.</p>
   {/if}
 
   <!-- Matrix or no-data state -->
@@ -281,13 +287,17 @@
   {:else}
     <div class="no-data">
       <span>No data for this matchup yet.</span>
-      <span class="no-data-sub">This specific position vs position combo hasn't been added to the database.</span>
+      <span class="no-data-sub">This position combo hasn't been added yet.</span>
     </div>
   {/if}
 
   <!-- Hand breakdown panel — appears when a cell is clicked -->
   {#if selectedHand}
-    <HandBreakdown hand={selectedHand} onClose={() => selectedHand = null} />
+    <HandBreakdown
+      hand={selectedHand}
+      onClose={() => selectedHand = null}
+      onTakePostflop={onTakePostflop ? () => onTakePostflop(selectedHand, yourPos) : null}
+    />
   {/if}
 
   <!-- Mixed strategy note -->
@@ -296,17 +306,10 @@
     <div>
       <strong>Pure vs mixed strategies</strong>
       <p class="callout-body">
-        The chart above shows <em>pure strategies</em> — each hand is always raise, call, or fold.
-        In reality, GTO solvers use <em>mixed strategies</em> for borderline hands. For example, a
-        solver might say "raise KTo from the CO 65% of the time, fold 35%" — this is a
-        <strong>mixed frequency</strong>, where the same hand splits between two actions. Hands in
-        the core of a range (like AA) are always 100% one action, but hands at the edges mix.
+        This chart shows <em>pure strategies</em> (always raise, call, or fold). Solvers use <em>mixed strategies</em> for borderline hands (e.g., "raise KTo 65%, fold 35%"). Core hands like AA are always 100% one action; edge hands mix.
       </p>
       <p class="callout-body" style="margin-top: 6px;">
-        <strong>In practice:</strong> Pure strategies are easier to execute and lose very little EV
-        vs perfect mixed strategies. If a hand is close to the border, pick one action and stick with
-        it — the EV difference between raising and folding a marginal hand is tiny. Focus on never
-        making large mistakes (folding premiums, opening trash) rather than nailing exact frequencies.
+        <strong>In practice:</strong> Pick one action for borderline hands and stick with it — the EV difference is tiny. Focus on avoiding big mistakes over nailing exact frequencies.
       </p>
     </div>
   </div>
@@ -410,6 +413,11 @@
   }
   .info-value  { font-size: 14px; color: var(--c-text); }
   .info-value.highlight { color: var(--c-accent); font-weight: 700; font-size: 17px; }
+
+  .matrix-hint {
+    font-size: 12px; color: var(--c-text-4); margin: 0;
+    text-align: center; font-style: italic;
+  }
 
   .no-data {
     display: flex;

@@ -28,7 +28,7 @@ export const quizQuestions = [
     question: 'What is the correct GTO open-raise sizing from the Button?',
     options: ['2x BB', '2.5x BB', '3x BB', '4x BB'],
     correct: 1,
-    explanation: 'In 6-max, the Button opens to 2.5x BB. Early position (UTG) uses 3x; late position (CO, BTN) uses 2.5x to account for better position and wider range.',
+    explanation: 'BTN opens 2.5x BB in 6-max; EP uses 3x, LP uses 2.5x for wider ranges.',
   },
   {
     id: 2,
@@ -43,7 +43,7 @@ export const quizQuestions = [
       '3-Bet or call (mixed) — GTO mixes both actions to keep your range balanced',
     ],
     correct: 3,
-    explanation: 'JTs is a strong hand with great playability. In GTO, BTN uses JTs as a mix of 3-bet and call vs UTG — 3-betting adds value/fold equity; calling keeps range balanced with speculative hands.',
+    explanation: 'GTO mixes JTs as 3-bet and call vs UTG from BTN to keep the range balanced.',
   },
   {
     id: 3,
@@ -58,7 +58,7 @@ export const quizQuestions = [
       '4-bet or call (mixed) — solver mixes both at meaningful frequencies',
     ],
     correct: 2,
-    explanation: 'AKs is a premium value 4-bet. It is too strong to fold and often too strong to flat call — 4-betting extracts value and denies equity. GTO recommends 4-betting AKs at high frequency vs BTN 3-bet.',
+    explanation: 'AKs is a premium 4-bet for value; too strong to flat, extracts value and denies equity.',
   },
   {
     id: 4,
@@ -68,7 +68,7 @@ export const quizQuestions = [
     question: 'The SB RFI range is roughly what percentage of hands vs the BB?',
     options: ['15–20%', '25–30%', '35–40%', '50–55%'],
     correct: 2,
-    explanation: 'The SB opens wide (~38%) vs the BB because it is heads-up and the BB already has 1 BB invested. The SB range is the widest RFI range in the game.',
+    explanation: 'SB opens ~38% vs BB — widest RFI range since it\'s heads-up with BB already invested.',
   },
   {
     id: 5,
@@ -83,7 +83,7 @@ export const quizQuestions = [
       'Depends entirely on stack depth — the action changes based on SPR',
     ],
     correct: 0,
-    explanation: '98s loses value vs two opponents in a multiway pot. Cold-calling is generally -EV here (dead money + OOP vs CO). Squeezing needs more equity to barrel. GTO predominantly folds 98s in this multi-opponent squeeze spot.',
+    explanation: 'GTO folds 98s here; cold-calling is -EV and squeezing needs more equity vs two opponents.',
   },
   {
     id: 6,
@@ -98,7 +98,7 @@ export const quizQuestions = [
       '4-bet at high frequency, rarely call — mix in some flats to stay balanced',
     ],
     correct: 3,
-    explanation: 'QQ vs a BB 3-bet is a clear 4-bet at high frequency. The BB 3-bet range is wide (bluff-heavy), so QQ has strong equity. Occasionally calling keeps range balanced. Folding is always wrong here.',
+    explanation: 'QQ is a high-frequency 4-bet vs the BB\'s wide 3-bet range; occasionally flat for balance.',
   },
   {
     id: 7,
@@ -108,7 +108,7 @@ export const quizQuestions = [
     question: 'The BB defense range in 6-max vs a BTN open is approximately what width?',
     options: ['20–25% of hands', '30–35% of hands', '40–45% of hands', '50–55% of hands'],
     correct: 2,
-    explanation: 'The BB defends ~40–45% vs the BTN open — the widest defense range in the game. The BB already has 1 BB invested, gets a great price (call 1.5 more into ~4 pot), and BTN has the widest opening range.',
+    explanation: 'BB defends ~40-45% vs BTN — widest defense due to great price and BTN\'s wide open range.',
   },
   {
     id: 8,
@@ -123,7 +123,7 @@ export const quizQuestions = [
       'Shove all-in preflop with premium hands to avoid difficult postflop spots',
     ],
     correct: 2,
-    explanation: 'At 40 BB, pot commitment thresholds change. Opening smaller (2x) is correct — your SPR with standard 3x opens becomes very low, making fold equity with 3-bets/4-bets unreliable. Smaller opens preserve stack-to-pot flexibility.',
+    explanation: 'At 40 BB, open 2x to preserve SPR flexibility; standard 3x creates awkward pot commitment.',
   },
 
   // ── POSTFLOP (8) ─────────────────────────────────────────────────────────────
@@ -140,7 +140,7 @@ export const quizQuestions = [
       'Bet medium (50% pot) selectively with top pair or better for value only',
     ],
     correct: 2,
-    explanation: 'On dry ace-high boards the PFR has strong range advantage (lots of Ax in UTG range). GTO bets small and frequently — a small bet pressures all villain hands and doesn\'t require a polar distribution.',
+    explanation: 'PFR has strong range advantage with Ax on dry A-high boards; small frequent bets pressure villain.',
   },
   {
     id: 10,
@@ -155,7 +155,7 @@ export const quizQuestions = [
       'All hands equally at the same frequency — remain perfectly balanced on every street',
     ],
     correct: 1,
-    explanation: 'On a wet board with a blank turn, continue barreling with strong made hands AND combo draws/flush draws that have equity. Pure air bluffs without equity (outs) are much less effective — you need a reason to continue.',
+    explanation: 'Barrel strong made hands and combo draws with equity; pure air bluffs are ineffective on wet boards.',
   },
   {
     id: 11,
@@ -170,7 +170,7 @@ export const quizQuestions = [
       'Raise to 3x to define villain\'s range and price out draws on future streets',
     ],
     correct: 2,
-    explanation: 'Medium-strength hands (middle pair) are classic check-call hands OOP. You have pot odds, showdown value, and don\'t want to bloat the pot. Check-raise turns this into a bluff-catcher or value hand depending on run-out.',
+    explanation: 'Middle pair is a classic check-call OOP; preserve showdown value without bloating the pot.',
   },
   {
     id: 12,
@@ -185,7 +185,7 @@ export const quizQuestions = [
       'Donk lead the turn if called — take an unusual line to win the pot OOP',
     ],
     correct: 1,
-    explanation: 'A♣5♣ has backdoor flush, backdoor straight potential, and ace-high has some showdown value vs underpairs/air. Floating a small c-bet on dry boards OOP is a viable GTO play — you can pick up the pot on favorable turns.',
+    explanation: 'A♣5♣ has backdoor draws and ace-high showdown value; floating small c-bets OOP is viable GTO.',
   },
   {
     id: 13,
@@ -200,7 +200,7 @@ export const quizQuestions = [
       'Check to protect your range and avoid putting more money in with air',
     ],
     correct: 2,
-    explanation: 'The river is where polarization is maximized. With a polarized range (strong hands + bluffs), use large sizes (75–100%+ pot). This forces villain to face a difficult decision and maximizes EV from both your value hands and bluffs.',
+    explanation: 'River polarization calls for large sizes (75-100%+ pot) to maximize EV from value and bluffs.',
   },
   {
     id: 14,
@@ -210,7 +210,7 @@ export const quizQuestions = [
     question: 'At what frequency must villain call to prevent you from profiting with any two cards?',
     options: ['33% of the time', '43% of the time', '50% of the time', '57% of the time'],
     correct: 3,
-    explanation: 'MDF = pot / (pot + bet). At 75% pot: pot = 1, bet = 0.75, MDF = 1 / 1.75 ≈ 57%. Villain must call at least 57% of the time to prevent you from profiting with any bluff. They can fold at most 43%.',
+    explanation: 'MDF = pot / (pot + bet) = 1 / 1.75 ≈ 57%. Villain must call 57% to prevent profitable bluffs.',
   },
   {
     id: 15,
@@ -225,7 +225,7 @@ export const quizQuestions = [
       'Call or raise depending on stack depth — both can be correct at different SPRs',
     ],
     correct: 3,
-    explanation: 'NFD has ~36% equity (two cards to come). Pot odds for a call vs pot-bet = 33% needed equity, so calling is profitable. But raising adds fold equity. The correct play (call vs raise) depends on SPR and stack depth. Both can be correct.',
+    explanation: 'NFD has ~36% equity; calling is profitable at 33% needed, but raising adds fold equity. Both depend on SPR.',
   },
   {
     id: 16,
@@ -240,7 +240,7 @@ export const quizQuestions = [
       'Use an overbet to maximize fold equity against capped calling range on turn',
     ],
     correct: 2,
-    explanation: 'After a monotone flop, a paired turn helps the caller\'s range (they have full houses now) and reduces villain\'s drawing hands. GTO slows down with most hands, barreling only with flush+FH draws or made hands strong enough to continue.',
+    explanation: 'Paired turn on monotone flop helps caller\'s range (full houses); slow down, bet only strong hands.',
   },
 
   // ── SIZING (6) ──────────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ export const quizQuestions = [
     question: 'What is the Stack-to-Pot Ratio (SPR) in this situation?',
     options: ['~6', '~9', '~16', '~94'],
     correct: 2,
-    explanation: 'SPR = effective stack ÷ pot. 94 BB ÷ 6 BB ≈ 15.7, roughly 16. High SPR means you should be very careful about committing — you need a very strong hand to stack off.',
+    explanation: 'SPR = stack / pot = 94 / 6 ≈ 16. High SPR means you need a very strong hand to commit.',
   },
   {
     id: 18,
@@ -262,7 +262,7 @@ export const quizQuestions = [
     question: 'What is the minimum equity you need to call this bet profitably?',
     options: ['25%', '33%', '40%', '50%'],
     correct: 0,
-    explanation: 'Equity needed = call / (total pot after call) = 50 / (100 + 50 + 50) = 50 / 200 = 25%. You need 25% equity to profitably call a 50% pot bet.',
+    explanation: 'Equity needed = call / total pot = 50 / 200 = 25% to profitably call a 50% pot bet.',
   },
   {
     id: 19,
@@ -272,7 +272,7 @@ export const quizQuestions = [
     question: 'What is the Minimum Defense Frequency (MDF) you must maintain vs this pot-size bet?',
     options: ['33%', '50%', '67%', '75%'],
     correct: 1,
-    explanation: 'MDF = pot / (pot + bet) = 100 / (100 + 100) = 50%. You must defend (call or raise) at least 50% of your range vs a pot-size bet to prevent villain from profitably bluffing with any two cards.',
+    explanation: 'MDF = pot / (pot + bet) = 100 / 200 = 50%. Defend at least 50% vs a pot-size bet.',
   },
   {
     id: 20,
@@ -287,7 +287,7 @@ export const quizQuestions = [
       'Check and pot control — protect your hand against draws and suckouts on later streets',
     ],
     correct: 2,
-    explanation: 'At SPR < 4, TPTK and better are generally strong enough to commit. Low SPR means you can\'t make enough "pot-sized mistakes" by folding — the math favors getting it in with strong one-pair hands.',
+    explanation: 'At SPR < 4, TPTK is strong enough to stack off; the math favors committing with strong one-pair.',
   },
   {
     id: 21,
@@ -302,7 +302,7 @@ export const quizQuestions = [
       'Overbet (150%+ pot) — exploit the nut advantage against a capped range',
     ],
     correct: 3,
-    explanation: 'Overbets are optimal when you have nut advantage and villain is range-capped. Villain cannot have the nuts so cannot raise you off your hand. Your strong hands extract maximum value; your bluffs are also more profitable because villain must call more to defend.',
+    explanation: 'Overbets exploit nut advantage vs capped ranges; villain can\'t have the nuts or raise you.',
   },
   {
     id: 22,
@@ -317,7 +317,7 @@ export const quizQuestions = [
       'With any pair for set value — pairs have strong equity when called by overcards',
     ],
     correct: 1,
-    explanation: 'At 100 BB, 5-bet shoving is profitable with AA, KK (value) and AKs (thin value). Bluff 5-bets with suited broadway blockers. QQ is often a call vs a 4-bet (too strong to fold, too risky to shove into a polar 4-bet range).',
+    explanation: '5-bet shove AA, KK, AKs for value plus suited broadway blockers as bluffs; QQ often calls.',
   },
 
   // ── EQUITY (5) ──────────────────────────────────────────────────────────────
@@ -329,7 +329,7 @@ export const quizQuestions = [
     question: 'Using the Rule of 2 & 4, what is your approximate equity to hit by the river?',
     options: ['8%', '16%', '32%', '48%'],
     correct: 2,
-    explanation: 'Rule of 4: outs × 4 = 8 × 4 = 32% with two cards to come (flop to river). The actual probability is about 31.5%. Rule of 4 is accurate to within 1–2% for most draws.',
+    explanation: 'Rule of 4: 8 outs × 4 = 32% with two cards to come. Actual is ~31.5%.',
   },
   {
     id: 24,
@@ -339,7 +339,7 @@ export const quizQuestions = [
     question: 'Using the Rule of 2, what is your approximate river hit rate?',
     options: ['9%', '18%', '27%', '36%'],
     correct: 1,
-    explanation: 'Rule of 2: outs × 2 = 9 × 2 = 18% on the turn with one card to come. The actual probability is ~19.6%. Rule of 2 slightly underestimates but is a useful quick calculation.',
+    explanation: 'Rule of 2: 9 outs × 2 = 18% with one card to come. Actual is ~19.6%.',
   },
   {
     id: 25,
@@ -349,7 +349,7 @@ export const quizQuestions = [
     question: 'What is Hero\'s approximate all-in equity with AA vs KK?',
     options: ['65%', '75%', '80%', '95%'],
     correct: 2,
-    explanation: 'AA vs KK all-in preflop is approximately 80% for AA. Villain has two outs to hit a set (two kings remaining). The exact figure is ~80.2% for AA.',
+    explanation: 'AA vs KK is ~80% for AA; villain has only two outs to hit a set.',
   },
   {
     id: 26,
@@ -359,7 +359,7 @@ export const quizQuestions = [
     question: 'What is the approximate all-in equity for AKo vs QQ (classic coin flip)?',
     options: ['30%', '43%', '57%', '70%'],
     correct: 1,
-    explanation: 'AKo vs QQ is approximately 43% for AKo — a slight underdog. The pair has a slight edge. Suited AKs improves to ~46% due to flush draw equity. This is the classic "coin flip" or "race" spot.',
+    explanation: 'AKo vs QQ is ~43% for AKo — a slight underdog in this classic "coin flip" race.',
   },
   {
     id: 27,
@@ -369,7 +369,7 @@ export const quizQuestions = [
     question: 'How many outs does 65 have to make a straight on this board?',
     options: ['4 outs', '6 outs', '8 outs', '10 outs'],
     correct: 2,
-    explanation: '65 on 7-4-2 needs a 3 (makes 3-4-5-6-7 straight — wait, 65 on 742: needs an 8 (5-6-7-8?) no. 6-5 on 7-4-2: 3 makes A-2-3-4-5 no. 8 makes 4-5-6-7-8. 3 makes 3-4-5-6-7. That\'s 8 outs total — 4 threes + 4 eights. Open-ended straight draw = 8 outs.',
+    explanation: '65 on 7-4-2: a 3 makes 3-4-5-6-7, an 8 makes 4-5-6-7-8 = 8 outs (OESD).',
   },
 
   // ── MULTIWAY (3) ────────────────────────────────────────────────────────────
@@ -386,7 +386,7 @@ export const quizQuestions = [
       '0% — always check in 3-way pots because bluffing is never profitable',
     ],
     correct: 2,
-    explanation: 'On a very wet board 3-way, GTO c-bet frequency drops sharply to ~15–25%. You need strong made hands or nut draws to bet. Bluffing is unprofitable with two opponents — one is likely to have connected with the board.',
+    explanation: 'Wet board 3-way drops c-bet to ~15-25%; need strong hands, bluffing is unprofitable multiway.',
   },
   {
     id: 29,
@@ -401,7 +401,7 @@ export const quizQuestions = [
       'Speculative hands should always fold — multiway pots reduce your chance of winning',
     ],
     correct: 2,
-    explanation: 'Multiway pots improve implied odds for speculative hands. More opponents means more chances for someone to have a strong hand willing to pay off when you hit your set, flush, or straight. This is why speculative hands (pairs, suited connectors) gain value multiway.',
+    explanation: 'More opponents means more chances someone pays you off when you hit sets, flushes, or straights.',
   },
   {
     id: 30,
@@ -416,7 +416,7 @@ export const quizQuestions = [
       'Always bet — a flush draw has enough equity to build the pot in any situation',
     ],
     correct: 2,
-    explanation: 'Semi-bluffs require fold equity to be profitable. In a 4-way pot, all three opponents must fold for your bluff to work — this is extremely unlikely. GTO recommends rarely bluffing multiway without additional equity (backdoor draws, pair outs). Pure draws are better as calls or check-calls.',
+    explanation: 'In 4-way pots, all three opponents must fold for bluffs to work — extremely unlikely.',
   },
 
   // ══════════════════════════════════════════════════════════════════════════════
@@ -437,7 +437,7 @@ export const quizQuestions = [
       'Any time the blinds increase and players must adjust their ranges accordingly',
     ],
     correct: 1,
-    explanation: 'The bubble is the critical phase right before the payout threshold. In this case, with 50 left and 45 paid, 5 more players must bust before everyone locks up a min-cash. ICM pressure is highest here, dramatically changing optimal strategy.',
+    explanation: 'The bubble is right before the payout threshold; ICM pressure is highest here.',
   },
   {
     id: 32,
@@ -452,7 +452,7 @@ export const quizQuestions = [
       'Always fold — never risk any chips on the bubble regardless of hand strength',
     ],
     correct: 1,
-    explanation: 'ICM (Independent Chip Model) means tournament chips have diminishing value. On the bubble, busting costs you the entire min-cash payout. Even though you have odds in chip EV, your calling range should tighten significantly. Only call with hands that are strong favorites against the shover\'s range.',
+    explanation: 'ICM means chips have diminishing value; busting on the bubble costs the entire min-cash.',
   },
   {
     id: 33,
@@ -467,7 +467,7 @@ export const quizQuestions = [
       'Shove all-in frequently to build a big stack before the short stacks can double up',
     ],
     correct: 2,
-    explanation: 'With a medium stack at a final table with multiple short stacks, selective aggression is optimal. You want to pressure the short stacks (who are under ICM pressure), but avoid tangling with the chip leader who can bust you. Each short stack bust-out increases your payout significantly.',
+    explanation: 'Pressure short stacks under ICM pressure but avoid the chip leader who can bust you.',
   },
   {
     id: 34,
@@ -482,7 +482,7 @@ export const quizQuestions = [
       'Limp in and see cheap flops to conserve chips while looking for strong board connections',
     ],
     correct: 1,
-    explanation: 'At 12 BB with antes, the pot already contains ~2.4 BB of dead money before action. Push/fold charts recommend shoving roughly the top 15–20% of hands from late position (wider from BTN/SB). Min-raising wastes fold equity and limping bleeds chips. This stack depth is too shallow for post-flop play.',
+    explanation: 'At 12 BB with antes (~2.4 BB dead money), shove top 15-20% from LP; too shallow for postflop.',
   },
   {
     id: 35,
@@ -497,7 +497,7 @@ export const quizQuestions = [
       'Bluff aggressively to build a big stack early while opponents are playing cautiously',
     ],
     correct: 1,
-    explanation: 'In early tournament stages with deep stacks, chips are worth less per unit (ICM), so risking your stack for small pots is suboptimal. Focus on playing speculative hands (suited connectors, small pairs) that can make big hands. Implied odds are excellent because stacks are deep.',
+    explanation: 'Deep stacks favor speculative hands (pairs, suited connectors) with excellent implied odds.',
   },
   {
     id: 36,
@@ -512,7 +512,7 @@ export const quizQuestions = [
       '90–100% — open virtually every hand',
     ],
     correct: 2,
-    explanation: 'Heads-up at 30 BB, the SB (who acts first preflop but has position postflop) should open roughly 70–80% of hands. With only one opponent to get through and the BB already posting, folding the SB is extremely costly. This is significantly wider than 6-max ranges.',
+    explanation: 'HU at 30 BB, SB opens ~70-80%; folding the SB is extremely costly with one opponent.',
   },
   {
     id: 37,
@@ -527,7 +527,7 @@ export const quizQuestions = [
       'Shove all-in',
     ],
     correct: 3,
-    explanation: 'At 8 BB, you are in push/fold territory. K7o in the SB vs the BB is a clear shove — you have fold equity against the BB\'s range, and K7o has reasonable equity when called. Limping or min-raising commits chips without maximizing fold equity. Push/fold charts confirm K7o is a profitable shove here.',
+    explanation: 'At 8 BB, push/fold territory. K7o SB vs BB is a clear shove with fold equity.',
   },
   {
     id: 38,
@@ -542,7 +542,7 @@ export const quizQuestions = [
       'Chip utility only applies to the final table',
     ],
     correct: 1,
-    explanation: 'Near the bubble, chips have diminishing marginal utility — the chip you lose is worth more (in $EV) than the chip you win. Doubling your stack does not double your tournament equity, but losing your stack costs you 100% of your equity. This is a core ICM principle that makes tighter play correct in many bubble spots.',
+    explanation: 'Chips have diminishing utility near the bubble; losing a chip costs more $EV than winning one gains.',
   },
   {
     id: 39,
@@ -557,7 +557,7 @@ export const quizQuestions = [
       'Only play shove-or-fold once you drop to 10 BB or less and wait until then',
     ],
     correct: 1,
-    explanation: 'In turbo/fast structures, blinds increase rapidly and you cannot afford to wait for premiums. Aggression and stealing blinds becomes critical. At 20 BB with fast levels, you should be actively looking for spots to pick up pots preflop. Waiting will leave you short-stacked and desperate.',
+    explanation: 'Fast structures demand more aggression and blind stealing; waiting bleeds your stack.',
   },
   {
     id: 40,
@@ -572,7 +572,7 @@ export const quizQuestions = [
       'Antes only change the strategy for the big blind since they post the ante directly',
     ],
     correct: 1,
-    explanation: 'Antes add dead money to every pot. In a 9-handed table with a BB ante, roughly 2.5 BB is in the pot before action begins (vs 1.5 BB without antes). This extra money makes stealing attempts more profitable and incentivizes wider opening ranges, especially from late position.',
+    explanation: 'Antes add ~1 BB of dead money per pot, making steals and wider opens more profitable.',
   },
   {
     id: 41,
@@ -587,7 +587,7 @@ export const quizQuestions = [
       'The pay jumps only matter when heads-up since earlier spots are too close in value to affect strategy',
     ],
     correct: 2,
-    explanation: 'Significant pay jumps create asymmetric risk. Short stacks gain the most by surviving (laddering from $500 to $800), so they should tighten. Big stacks can exploit this by applying pressure since busting is less catastrophic for them. This ICM-aware approach captures value from the payout structure.',
+    explanation: 'Short stacks tighten to ladder up; big stacks pressure them since busting is less costly.',
   },
   {
     id: 42,
@@ -602,7 +602,7 @@ export const quizQuestions = [
       'Only play premium hands for the first two hours to observe table dynamics and gather reads on opponents',
     ],
     correct: 1,
-    explanation: 'At the start of a new day, you should play your normal strategy based on your stack depth, position, and opponents. The game state (blind level, stack sizes, payout proximity) determines strategy, not the arbitrary day change. Some players over-adjust at day starts, which you can exploit by playing fundamentally sound poker.',
+    explanation: 'Strategy depends on blinds, stacks, and payouts — not the arbitrary day change.',
   },
 
   // ── HAND READING (12) ─────────────────────────────────────────────────────────
@@ -619,7 +619,7 @@ export const quizQuestions = [
       'Top 50% — open anything reasonable, since you want to build pots and take initiative from early position',
     ],
     correct: 1,
-    explanation: 'UTG in 6-max opens roughly 15–18% of hands: all pairs, suited broadways, AJo+, KQo, and suited connectors down to about 78s or 67s. Understanding starting range width by position is the foundation of hand reading.',
+    explanation: 'UTG opens ~15-18%: all pairs, suited broadways, AJo+, KQo, suited connectors to ~78s.',
   },
   {
     id: 44,
@@ -634,7 +634,7 @@ export const quizQuestions = [
       'The check is meaningless for hand reading since c-bet strategy varies too widely between players',
     ],
     correct: 1,
-    explanation: 'When the PFR checks a wet, coordinated board, their range is usually capped. Strong hands (overpairs, sets) would typically c-bet for protection on this draw-heavy board. A check suggests medium-strength hands (overcards, weak pairs) or missed hands that gave up. This is a key hand reading principle — actions reveal range composition.',
+    explanation: 'PFR checking a wet board caps their range; strong hands would c-bet for protection here.',
   },
   {
     id: 45,
@@ -649,7 +649,7 @@ export const quizQuestions = [
       'Villain has exactly pocket aces and is using deceptive sizing to disguise the strength of their hand',
     ],
     correct: 1,
-    explanation: 'A small flop c-bet on a dry AK-high board is a standard range bet (villain bets their entire range cheaply). The large turn barrel is a polarizing size. Combined, this line is consistent with strong Ax (AQ, AJ), AK, or KK that bets big on the turn after establishing range advantage. Weaker hands in villain\'s range check back the turn.',
+    explanation: 'Small flop = range bet; large turn = polarizing. Consistent with strong Ax, AK, or KK.',
   },
   {
     id: 46,
@@ -664,7 +664,7 @@ export const quizQuestions = [
       'Villain is trapping with a monster like a set or two pair, planning to check-raise your river bet',
     ],
     correct: 1,
-    explanation: 'When the aggressor checks back the turn after betting the flop, they usually have a medium-strength hand seeking to control the pot. Hands like KT, JT, A4, or pairs like 88-JJ that want to get to showdown cheaply. Very strong hands (QQ, TT, QT) would keep betting, and very weak hands might check the flop. This narrows their range significantly for the river.',
+    explanation: 'Turn check-back after flop bet = medium-strength hand (Tx, weak Qx, 88-JJ) pot-controlling.',
   },
   {
     id: 47,
@@ -679,7 +679,7 @@ export const quizQuestions = [
       'Always a bluff — strong hands would bet a normal size to ensure they get called and extract value',
     ],
     correct: 1,
-    explanation: 'River overbets represent extreme polarization. The bettor either has a very strong hand (sets, two pair, straights) extracting maximum value, or a complete bluff with no showdown value. Medium-strength hands cannot profitably overbet because they get called only by better hands. Reading an overbet correctly means asking: does this line make sense for the nuts or for air?',
+    explanation: 'Overbets = extreme polarization: either the nuts or a bluff, never medium-strength hands.',
   },
   {
     id: 48,
@@ -694,7 +694,7 @@ export const quizQuestions = [
       'Exactly AA or KK only — no tight player would ever 3-bet early position with anything less than kings',
     ],
     correct: 1,
-    explanation: 'Player profiling is a key hand reading skill. A tight player who 3-bets from early position after folding extensively has a very narrow range, typically QQ+, AKs, and sometimes AKo. They are not balancing — they are playing their cards. Adjust your response accordingly by folding all but your strongest hands.',
+    explanation: 'Tight player 3-betting EP = very narrow range (QQ+, AKs); fold all but your strongest hands.',
   },
   {
     id: 49,
@@ -709,7 +709,7 @@ export const quizQuestions = [
       'Only top pair with a strong kicker — the BB check-raises to protect against overcards and draw-heavy runouts',
     ],
     correct: 1,
-    explanation: 'A balanced check-raise range on T-7-3 from the BB includes value (sets TT/77/33, two pair T7) and semi-bluffs (straight draws 98s/86s/65s, possibly overcards with backdoor equity). GTO check-raise ranges combine hands strong enough to value raise and draws that benefit from fold equity. Understanding both halves is essential for hand reading.',
+    explanation: 'Balanced check-raise = value (sets, two pair) plus semi-bluffs (straight draws, backdoor equity).',
   },
   {
     id: 50,
@@ -724,7 +724,7 @@ export const quizQuestions = [
       'Nothing meaningful — limping is a standard play from UTG and doesn\'t reveal much about their holdings',
     ],
     correct: 2,
-    explanation: 'An open-limp from UTG in a raising environment is polarized. The player either has a monster (AA, KK) trying to limp-reraise trap, or a weak speculative hand (small pair, suited connector) trying to see a cheap flop. Hands in between (AJ, KQ, QQ) would just raise. This read lets you adjust — consider isolating wider to punish the weak portion of their range.',
+    explanation: 'UTG limp is polarized: monster trapping (AA/KK) or weak speculative hand; middle hands would raise.',
   },
   {
     id: 51,
@@ -739,7 +739,7 @@ export const quizQuestions = [
       'This pattern is always a bluff designed to represent strength, since real value hands bet smaller to get called',
     ],
     correct: 1,
-    explanation: 'Geometric sizing (escalating across streets) is the mathematically optimal way to get all the money in by the river. Betting 33% flop, 50% turn, 75% river achieves this precisely. This pattern is most consistent with strong value hands that want to build the pot. Bluffs that use this pattern are well-constructed but less common, especially at lower stakes.',
+    explanation: 'Geometric sizing (33%/50%/75%) builds the pot to get stacks in; consistent with strong value.',
   },
   {
     id: 52,
@@ -754,7 +754,7 @@ export const quizQuestions = [
       'This board means everyone has the nuts since the straight and flush are on the board for all players',
     ],
     correct: 2,
-    explanation: 'When the board contains a flush and straight, most players are playing the board (chop). However, anyone holding the A♣ has the nut flush. Board reading is critical — recognizing that this specific texture limits the number of possible strong holdings to essentially one card (A♣) is fundamental to hand reading.',
+    explanation: 'Most players chop the board, but anyone holding A♣ has the nut flush and wins outright.',
   },
   {
     id: 53,
@@ -769,7 +769,7 @@ export const quizQuestions = [
       'Blockers don\'t matter when you have an overpair — your hand strength alone determines the correct action',
     ],
     correct: 1,
-    explanation: 'Blocker analysis is advanced hand reading. Holding AA means there are fewer combos of AK and AQ in villain\'s range (you block the aces). However, you do not block the straight cards (any 9 or A makes a straight on this KQJT board). Understanding what you block and unblock helps determine whether villain\'s betting range is weighted toward value or bluffs.',
+    explanation: 'AA blocks AK/AQ combos, making top two less likely, but doesn\'t block straights (any 9).',
   },
   {
     id: 54,
@@ -784,7 +784,7 @@ export const quizQuestions = [
       'Donk betting is a theoretically optimal play that reveals nothing useful about the bettor\'s range',
     ],
     correct: 2,
-    explanation: 'Donk bets (leading into the preflop raiser) are typically non-standard and often indicate: medium-strength hands trying to control pot size, draws that want to set their own price, or sometimes polarized hands. In GTO, donk betting occurs at low frequency on specific board textures. In practice, reading a donk bet means the player usually has a specific hand type they feel uncomfortable checking.',
+    explanation: 'Donk bets typically indicate medium-strength hands or draws trying to set their own price.',
   },
 
   // ── POSITION (10) ─────────────────────────────────────────────────────────────
@@ -801,7 +801,7 @@ export const quizQuestions = [
       'Being in position means you statistically receive better starting hands due to the deal order',
     ],
     correct: 1,
-    explanation: 'Position is paramount because acting last on every postflop street gives you: (1) information — you see opponent\'s action before deciding, (2) pot control — you can check behind for a free card, (3) equity realization — you see all 5 cards more often, and (4) bluff efficiency — your bets carry more credibility.',
+    explanation: 'Acting last gives information, pot control, better equity realization, and more credible bluffs.',
   },
   {
     id: 56,
@@ -816,7 +816,7 @@ export const quizQuestions = [
       'The BTN is the third most profitable position, falling behind UTG and CO in overall win rate numbers',
     ],
     correct: 1,
-    explanation: 'The Button is by far the most profitable seat in poker. Studies of winning players show the BTN generates roughly 60–70% of total profit. This is because you always act last postflop, have the widest playable range, and can exploit information advantages on every street. Positional advantage compounds across all three postflop streets.',
+    explanation: 'BTN generates ~60-70% of a winning player\'s profit due to always acting last postflop.',
   },
   {
     id: 57,
@@ -831,7 +831,7 @@ export const quizQuestions = [
       'A preflop strategy for flatting 3-bets in position to keep the pot small and see a flop with odds',
     ],
     correct: 0,
-    explanation: 'Floating is calling a bet (usually a c-bet) in position with the plan to take the pot on a later street — either by betting when checked to or by bluffing on favorable turn/river cards. KJo on the BTN is a good float candidate vs a CO open on many flops because you have position, potential equity, and can apply pressure when villain slows down.',
+    explanation: 'Floating = calling IP to take the pot later when villain shows weakness on a future street.',
   },
   {
     id: 58,
@@ -846,7 +846,7 @@ export const quizQuestions = [
       'Position doesn\'t matter in SB vs BB since both players are already committed with forced blind bets',
     ],
     correct: 2,
-    explanation: 'The BB gets excellent pot odds vs a SB raise (call 2 more into ~4.5), which justifies a wide defense of ~55-60%. However, the BB still has an inherent EV disadvantage because it plays every postflop street OOP. The price is good enough to continue with many hands, but the positional disadvantage means BB cannot profitably defend as wide as raw pot odds suggest.',
+    explanation: 'BB defends ~55-60% with great pot odds, but OOP disadvantage limits how wide it can go.',
   },
   {
     id: 59,
@@ -861,7 +861,7 @@ export const quizQuestions = [
       'UTG is tighter only because of poker tradition and table etiquette, not because of any mathematical basis',
     ],
     correct: 1,
-    explanation: 'UTG plays tight for two reasons: (1) with 5 players left to act, the probability of facing a strong hand is higher, and (2) if called, UTG will be out of position against most opponents postflop. This combination of being likely dominated and positionally disadvantaged means only strong hands can profitably open.',
+    explanation: 'UTG faces 5 players behind and is OOP postflop vs most callers; only strong hands profit.',
   },
   {
     id: 60,
@@ -876,7 +876,7 @@ export const quizQuestions = [
       'Never open from the CO if the BTN is aggressive, since you will be forced to play OOP in bloated pots',
     ],
     correct: 1,
-    explanation: 'An aggressive BTN who 3-bets frequently reduces the profitability of marginal CO opens. Hands like K9o or Q8s that would be opens vs passive players become folds when you expect to face a 3-bet. Tightening your CO range against an aggressive BTN preserves fold equity and avoids playing bloated pots OOP.',
+    explanation: 'Aggressive BTN 3-betting often makes marginal CO opens unprofitable; tighten to avoid bloated pots.',
   },
   {
     id: 61,
@@ -891,7 +891,7 @@ export const quizQuestions = [
       'This line only works as a bluff on the river and never as a value bet since you showed weakness on the turn',
     ],
     correct: 1,
-    explanation: 'Delayed aggression from position is powerful. By checking back the turn, you: (1) pot control with medium-strength hands, (2) induce villain to bluff the river, (3) bet the river against a range that is now defined and can\'t improve. This line works for both thin value (betting against capped checking range) and bluffs (representing hands that checked turn for pot control).',
+    explanation: 'Checking turn controls pot, defines villain\'s range, and lets you bet river vs a capped range.',
   },
   {
     id: 62,
@@ -906,7 +906,7 @@ export const quizQuestions = [
       'Stealing is an exploitative tactic that is not part of GTO strategy and should be avoided in tough games',
     ],
     correct: 1,
-    explanation: 'A steal is a preflop raise designed to pick up the blinds and antes. From the BTN, only the SB and BB remain, so you only need to get through 2 players. Even if called, you have position postflop. This makes BTN steals extremely profitable — you can open 40-50% of hands profitably, and the dead money in the blinds makes even marginal hands +EV opens.',
+    explanation: 'BTN steals only need to get through 2 players and you have position if called; open 40-50%.',
   },
   {
     id: 63,
@@ -921,7 +921,7 @@ export const quizQuestions = [
       'The SB is actually the most profitable position because you get a discount on entering the pot',
     ],
     correct: 1,
-    explanation: 'The SB is the biggest money loser because: (1) you post a forced half-blind bet, (2) you are out of position against every player at the table postflop, and (3) even when you open, the BB has position on you. This combination of forced investment and perpetual positional disadvantage makes the SB a structural loss position.',
+    explanation: 'SB posts a forced bet and is OOP vs every player postflop — structural money loser.',
   },
   {
     id: 64,
@@ -936,7 +936,7 @@ export const quizQuestions = [
       'OOP players always realize more equity because they act first and can set the pace of betting each street',
     ],
     correct: 1,
-    explanation: 'Equity realization (EqR) measures the gap between your raw equity and your actual profit. A hand with 40% equity might realize 110% of that equity IP (gaining ~44% of the pot) due to superior decision-making, free cards, and bluff opportunities. The same hand OOP might only realize 70% (gaining ~28%). This is why position transforms marginal hands into profitable ones.',
+    explanation: 'EqR = how much raw equity becomes profit; IP might realize 110%, OOP only ~70%.',
   },
 
   // ── BANKROLL MANAGEMENT (8) ───────────────────────────────────────────────────
@@ -953,7 +953,7 @@ export const quizQuestions = [
       '200+ buy-ins for your stake',
     ],
     correct: 1,
-    explanation: 'The standard recommendation for a winning cash game player is 20–30 buy-ins (where 1 buy-in = 100 BB). This provides a cushion against natural variance (downswings). A 20 BI bankroll gives a skilled player less than a 5% risk of ruin. More conservative players or those moving up should use 30+ buy-ins.',
+    explanation: '20-30 buy-ins (1 BI = 100 BB) cushions against variance; <5% risk of ruin at 20 BI.',
   },
   {
     id: 66,
@@ -968,7 +968,7 @@ export const quizQuestions = [
       'Quit poker — a 10 buy-in downswing is strong evidence that your edge is smaller than you believed',
     ],
     correct: 1,
-    explanation: '20 buy-ins for $1/$2 ($4,000) is still within a reasonable range for a winning player. A downswing of 10 buy-ins is normal variance. If you remain a winning player, staying at your current stake is fine. Moving up to chase losses is the worst option (tilted bankroll management). Moving down is only necessary if you drop below ~15 buy-ins.',
+    explanation: '20 BI is still adequate; a 10 BI downswing is normal variance. Move down only below ~15 BI.',
   },
   {
     id: 67,
@@ -983,7 +983,7 @@ export const quizQuestions = [
       '$50 tournaments — 100 buy-ins is the standard recommendation for tournament variance levels',
     ],
     correct: 3,
-    explanation: 'Tournaments have much higher variance than cash games because you only cash in ~15-20% of events. The standard recommendation is 100+ buy-ins for tournaments. With $5,000, targeting $50 tournaments (100 buy-ins) provides adequate protection against the long stretches without cashing that are normal in tournament poker.',
+    explanation: 'Tournaments need 100+ buy-ins due to high variance (cash ~15-20%); $5K = $50 tourneys.',
   },
   {
     id: 68,
@@ -998,7 +998,7 @@ export const quizQuestions = [
       'Move your entire bankroll to the higher stake immediately to maximize your profit from the weak players',
     ],
     correct: 2,
-    explanation: 'Shot-taking is a disciplined approach to moving up: set a clear stop-loss (e.g., if you lose 3–5 buy-ins at $5/$10, move back to $2/$5). Good game conditions (weak players) justify the shot. Having a plan prevents emotional decision-making. Never risk your entire bankroll, and have clear criteria for both staying and dropping back down.',
+    explanation: 'Set a stop-loss of 3-5 buy-ins at the higher stake; move back down if you hit it.',
   },
   {
     id: 69,
@@ -1013,7 +1013,7 @@ export const quizQuestions = [
       'It helps you play at the highest stakes possible so you can maximize your hourly rate from the start',
     ],
     correct: 1,
-    explanation: 'Even a player who wins 10 BB/100 hands (an excellent win rate) will experience multi-thousand hand downswings. A 10 buy-in downswing can happen to any winning player. Bankroll management ensures you can survive these natural fluctuations and continue playing your best. Without it, even a skilled player can go broke from variance alone.',
+    explanation: 'Even winning players face 10+ BI downswings from variance; BRM prevents going broke.',
   },
   {
     id: 70,
@@ -1028,7 +1028,7 @@ export const quizQuestions = [
       'Standard deviation doesn\'t matter if you have a positive win rate since the edge overcomes all variance over time',
     ],
     correct: 2,
-    explanation: 'With a win rate of 5 BB/100 and standard deviation of 80 BB/100, the variance is enormous relative to your edge. Over 10,000 hands, your expected profit is 500 BB, but the 95% confidence interval is roughly 500 +/- 1,600 BB. This means you could be down 1,100 BB over 10K hands and still be a winning player. You need 50,000+ hands to have reasonable confidence in your win rate.',
+    explanation: 'Over 10K hands, expected +500 BB but 95% CI is +/-1,600 BB; need 50K+ hands for confidence.',
   },
   {
     id: 71,
@@ -1043,7 +1043,7 @@ export const quizQuestions = [
       'Only play one format at a time — mixing cash and tournaments splits your focus and prevents you from mastering either game type',
     ],
     correct: 2,
-    explanation: 'Maintaining separate bankrolls for cash and tournaments is best practice because they have vastly different variance profiles. Tournaments need 100+ buy-ins while cash needs 20–30. Mixing them with one bankroll leads to unclear risk management. Allocate based on how much you play each format and maintain appropriate buy-in levels for each.',
+    explanation: 'Separate bankrolls needed because tournaments (100+ BI) and cash (20-30 BI) have different variance.',
   },
   {
     id: 72,
@@ -1058,7 +1058,7 @@ export const quizQuestions = [
       'A 15 buy-in downswing proves your strategy is fundamentally flawed — stop playing entirely and rebuild your game from scratch',
     ],
     correct: 2,
-    explanation: 'A 15 BI downswing requires both strategic and mental adjustment: (1) review sessions for leaks — downswings can mask tilt-induced mistakes, (2) consider dropping stakes to reduce financial pressure and rebuild confidence, (3) take breaks to reset mentally, (4) only play when in good mental shape. Playing more or moving up while tilted compounds losses. A 15 BI downswing is within normal variance for a winning player.',
+    explanation: 'Review for leaks, consider dropping stakes, take breaks, and only play your A-game.',
   },
 
   // ── COMMON MISTAKES (8) ───────────────────────────────────────────────────────
@@ -1075,7 +1075,7 @@ export const quizQuestions = [
       'Limping is the correct play with pocket pairs because it disguises your hand strength and sets up implied odds for flopping a set',
     ],
     correct: 1,
-    explanation: 'Open-limping is a fundamental error because: (1) it gives the blinds a free or cheap look with any two cards, (2) it builds no pot when you have a strong hand, (3) it shows weakness and invites raises, (4) you lose the initiative (being the preflop raiser gives c-bet opportunities). The only exception in GTO is the SB vs BB in some solving configurations.',
+    explanation: 'Limping gives blinds cheap looks, builds no pot, shows weakness, and loses initiative.',
   },
   {
     id: 74,
@@ -1090,7 +1090,7 @@ export const quizQuestions = [
       'Folding at any point is the real mistake — any time you have a pair you should call because the pot odds justify continuing',
     ],
     correct: 1,
-    explanation: 'Calling all three streets with marginal holdings (just top pair) when villain shows sustained aggression is a classic calling station mistake. Each street of aggression narrows villain\'s range toward strong hands. By the river, top pair is often a bluff-catcher at best. The key mistake is not adjusting to the information each street provides.',
+    explanation: 'Calling station leak: sustained aggression narrows villain to strong hands; top pair becomes a bluff-catcher.',
   },
   {
     id: 75,
@@ -1105,7 +1105,7 @@ export const quizQuestions = [
       'Sizing doesn\'t matter at all — only the binary decision of whether to bet or check has a meaningful impact on your expected value',
     ],
     correct: 1,
-    explanation: 'A common beginner mistake is betting the same dollar amount across streets rather than sizing relative to the pot. The pot grows after each bet and call, so $20 on the flop might be 66% pot (strong), while $20 on the turn could be 28% pot (weak). Always think in terms of pot percentage to maintain proper geometric sizing toward getting stacks in or pot-controlling correctly.',
+    explanation: 'Same dollar amount ignores pot growth; $20 into $30 = 66%, $20 into $70 = 28%. Size as % of pot.',
   },
   {
     id: 76,
@@ -1120,7 +1120,7 @@ export const quizQuestions = [
       'You should always play until you are even for the session — leaving while stuck locks in losses and prevents natural variance recovery',
     ],
     correct: 1,
-    explanation: 'This is a textbook tilt/loss chasing mistake. Your previous losses are sunk costs — they have zero bearing on future hands. Playing "to get even" leads to: (1) extending sessions when mentally fatigued, (2) taking marginal spots to win pots, (3) playing loose/aggressive out of frustration. Each hand is an independent decision. The correct approach is to evaluate whether you are playing your A-game, regardless of session results.',
+    explanation: 'Loss chasing is tilt; previous losses are sunk costs with zero bearing on future hands.',
   },
   {
     id: 77,
@@ -1135,7 +1135,7 @@ export const quizQuestions = [
       'Suited connectors are premium hands from any position because their ability to make flushes and straights gives them hidden value preflop',
     ],
     correct: 1,
-    explanation: 'Opening 76s from UTG in full ring is a clear leak. With 8 players behind you, the chances of facing a 3-bet are high. If called, you\'ll be OOP against tighter ranges. 76s needs multiway pots with good implied odds to be profitable — UTG provides neither. This hand belongs in your late position opening range only.',
+    explanation: '76s from UTG in full ring is a leak; 8 players behind, high 3-bet risk, OOP postflop.',
   },
   {
     id: 78,
@@ -1150,7 +1150,7 @@ export const quizQuestions = [
       'Folding would be the mistake — you have an ace-high hand that unblocks villain\'s bluffs and should be near the top of your calling range',
     ],
     correct: 1,
-    explanation: 'On a K-high board after checking the flop and turn, villain\'s river bet is heavily weighted toward value (Kx, two pair, sets). AQ-high loses to every value hand and only beats pure bluffs. The mistake is using a hand with zero board interaction as a bluff-catcher in a spot where villain\'s bluff frequency is likely low. Better bluff-catchers would be hands that block villain\'s value range.',
+    explanation: 'AQ-high loses to all value (Kx, sets); poor bluff-catcher with no blockers to villain\'s value range.',
   },
   {
     id: 79,
@@ -1165,7 +1165,7 @@ export const quizQuestions = [
       'KJo should always fold preflop from any position because offsuit broadway hands are fundamentally unprofitable in raised pots at any depth',
     ],
     correct: 1,
-    explanation: 'Calling 3-bets OOP with offsuit broadways like KJo is a common intermediate player mistake. KJo is dominated by the 3-bettor\'s value range (AK, KQ, AJ all dominate one of your cards). Playing OOP in a bloated pot with a dominated hand is a recipe for losing big pots. GTO recommends folding KJo to a 3-bet when OOP.',
+    explanation: 'KJo is dominated by AK, KQ, AJ in the 3-bet range; fold OOP to avoid losing big pots.',
   },
   {
     id: 80,
@@ -1180,7 +1180,7 @@ export const quizQuestions = [
       'This isn\'t a mistake — confidence demonstrably improves performance, and the best players consistently use positive results to fuel strong play',
     ],
     correct: 1,
-    explanation: 'Winner\'s tilt (or euphoric tilt) is a common but often overlooked mistake. After a big win, players feel invincible and start playing suboptimally — opening wider, bluffing more, calling lighter. Every hand is independent, and your previous result has zero impact on future hand probabilities. Emotional highs can be just as damaging as emotional lows.',
+    explanation: 'Winner\'s tilt: feeling invincible after a big win leads to playing wider and looser suboptimally.',
   },
 
   // ── SOLVER CONCEPTS (8) ───────────────────────────────────────────────────────
@@ -1197,7 +1197,7 @@ export const quizQuestions = [
       'The probability of winning any single hand based on your exact cards, the board texture, and your estimated range advantage',
     ],
     correct: 1,
-    explanation: 'Poker solvers compute Nash Equilibrium (GTO) strategies where neither player can improve their expected value by unilaterally changing strategy. The solver finds the balanced frequencies for betting, checking, calling, raising, and folding at every decision point. This is the baseline "unexploitable" strategy against a perfect opponent.',
+    explanation: 'Solvers compute Nash Equilibrium — the balanced, unexploitable strategy at every decision point.',
   },
   {
     id: 82,
@@ -1212,7 +1212,7 @@ export const quizQuestions = [
       'The solver is only 67% confident that betting is correct — the remaining 33% represents uncertainty due to incomplete convergence',
     ],
     correct: 1,
-    explanation: 'Solver frequencies indicate mixed strategies. Betting ATo at 67% means in equilibrium, you should bet this hand about 2 out of 3 times and check the remaining 1 out of 3 times. Mixed strategies keep your opponent indifferent between actions. In practice, most humans simplify by choosing one action, but understanding frequencies helps you grasp which hands are close between actions.',
+    explanation: 'Bet ATo 67% = bet 2/3 of the time, check 1/3; mixed strategy keeps opponent indifferent.',
   },
   {
     id: 83,
@@ -1227,7 +1227,7 @@ export const quizQuestions = [
       'This only happens when the solver hasn\'t fully converged — with enough computation time, the strategy collapses to one or two bet sizes',
     ],
     correct: 1,
-    explanation: 'Solvers use multiple sizes because different hand types have different optimal bet sizes. Small bets (25%) work for range bets with slight equity advantage. Medium bets (50%) are for merged ranges with value and equity denial. Large bets/overbets (150%) are for polarized ranges (nuts or air). The solver finds the EV-maximizing size for each hand, which naturally creates a multi-size strategy.',
+    explanation: 'Different hands maximize EV at different sizes: 25% for range bets, 50% merged, 150% polarized.',
   },
   {
     id: 84,
@@ -1242,7 +1242,7 @@ export const quizQuestions = [
       'This means the hand should always fold instead — when two aggressive actions show similar EV, the passive line usually dominates both',
     ],
     correct: 1,
-    explanation: 'When EVs are within a few hundredths of a BB, the hand is nearly indifferent between actions. In equilibrium, the solver mixes between them. In practice, this means either action is fine — the difference is negligible over thousands of hands. Focus your study on spots with large EV differences between actions, where choosing wrong costs significantly more.',
+    explanation: 'Near-identical EVs mean the hand is indifferent; either action is fine in practice.',
   },
   {
     id: 85,
@@ -1257,7 +1257,7 @@ export const quizQuestions = [
       'Only the largest size matters in practice — smaller sizes get absorbed into the strategy as low-frequency noise without meaningful impact',
     ],
     correct: 1,
-    explanation: 'Solvers find the Nash Equilibrium within the constraints you set. If you only allow 33% and 66% pot bets, the solver can\'t discover that 150% overbets might be optimal for some hands. More sizing options create a richer strategy space and a closer approximation to the true unlimited equilibrium. However, more options exponentially increase solve time. Finding the right balance of complexity and accuracy is key to practical solver use.',
+    explanation: 'Solvers optimize within allowed actions; more sizes approximate true equilibrium but increase solve time.',
   },
   {
     id: 86,
@@ -1272,7 +1272,7 @@ export const quizQuestions = [
       'The solver always recommends low check-raise frequencies regardless of board texture — check-raising is rarely part of optimal defense',
     ],
     correct: 1,
-    explanation: 'A low check-raise frequency indicates the defender (BB) has a range disadvantage on this texture. On dry A-high boards, the PFR has most of the Ax combos. The BB\'s range has fewer strong hands to check-raise for value, which limits profitable bluff check-raises too (you need value raises to balance bluffs). Board texture directly dictates optimal check-raise frequency.',
+    explanation: 'Low check-raise = BB has range disadvantage; PFR holds most Ax combos on A-high boards.',
   },
   {
     id: 87,
@@ -1287,7 +1287,7 @@ export const quizQuestions = [
       'Only when you are losing — if your GTO strategy isn\'t producing results over a meaningful sample, switch to exploitative play to recover',
     ],
     correct: 2,
-    explanation: 'GTO is a defensive baseline that cannot be exploited, but it leaves money on the table against imperfect opponents. Exploitative adjustments deviate from GTO to target specific leaks: vs calling stations, cut bluffs and increase value bets; vs tight players, increase bluffs and steal frequency. The key is recognizing when you have a reliable read and how far to deviate. Against unknowns or strong players, staying close to GTO is safest.',
+    explanation: 'Deviate when opponents have clear leaks: vs calling stations bluff less, vs nits bluff more.',
   },
   {
     id: 88,
@@ -1302,7 +1302,7 @@ export const quizQuestions = [
       'The solver figures out everything automatically with no inputs — you just press solve and it generates the full equilibrium from scratch',
     ],
     correct: 1,
-    explanation: 'Solvers require precise inputs: (1) both players\' preflop ranges (what hands each player can have), (2) the board cards, (3) pot size and stack sizes, and (4) the allowed bet sizes for each player. The quality of your solver study depends entirely on accurate inputs — garbage in, garbage out. Incorrect preflop ranges lead to incorrect postflop strategies.',
+    explanation: 'Solvers need both ranges, board, pot/stack sizes, and allowed bet sizes — garbage in, garbage out.',
   },
 
   // ── EXTRA PREFLOP (2) ──────────────────────────────────────────────────────────
@@ -1319,7 +1319,7 @@ export const quizQuestions = [
       'A5s should always fold to a 3-bet — suited aces below A9s don\'t have enough equity or playability to continue against a tight 3-bet range',
     ],
     correct: 1,
-    explanation: 'A5s is one of the best 4-bet bluff candidates in GTO. It blocks AA (one ace removed), has suited wheel potential if called, and is not strong enough to flat call a 3-bet profitably (poor postflop playability vs a 3-bet range). Using it as a 4-bet bluff is higher EV than calling or folding. This is a key concept in constructing balanced 4-bet ranges.',
+    explanation: 'A5s blocks AA, has wheel potential, and is too weak to flat — ideal 4-bet bluff.',
   },
   {
     id: 90,
@@ -1334,7 +1334,7 @@ export const quizQuestions = [
       'Shove all-in for maximum fold equity — pushing all-in puts enormous pressure on both players and can win the dead money immediately',
     ],
     correct: 1,
-    explanation: 'When there is an open and a 3-bet ahead of you, the ranges involved are very strong. The UTG open range is already narrow (~15%), and the HJ 3-bet range over UTG is even narrower (QQ+, AK mainly). TT is behind this combined range and has poor equity in a multi-way pot. Folding is correct to avoid playing a dominated hand in a bloated pot.',
+    explanation: 'TT is behind UTG\'s narrow range and HJ\'s even narrower 3-bet range (QQ+, AK); fold.',
   },
 
   // ── EXTRA POSTFLOP (2) ─────────────────────────────────────────────────────────
@@ -1351,7 +1351,7 @@ export const quizQuestions = [
       'Bet only with trips or better for value and check everything else — mixed strategies on paired boards are too complicated to implement',
     ],
     correct: 2,
-    explanation: 'On low paired boards (like 5-5-3), the PFR retains significant range advantage with overpairs and overcards. A small c-bet at high frequency is correct because: (1) villain\'s BB range has mostly missed, (2) the small size doesn\'t risk much, (3) even overcards like AK have good equity. Villain must fold a large portion of their range to even small bets here.',
+    explanation: 'PFR has range advantage on low paired boards; small c-bet works since BB range mostly missed.',
   },
   {
     id: 92,
@@ -1366,7 +1366,7 @@ export const quizQuestions = [
       'Shove all-in regardless of hand strength — after a check-raise, committing your stack applies maximum pressure and simplifies decisions',
     ],
     correct: 2,
-    explanation: 'After check-raising the flop and getting called, villain\'s range is strong (they called a raise on a wet board). On the turn, split your check-raise range: bet with your strongest hands (sets, two pair, nut draws) and check your weaker check-raise hands (marginal draws, medium pairs). This creates balanced betting and checking ranges for future streets.',
+    explanation: 'Split your range: bet strongest hands and nut draws, check weaker check-raise hands for balance.',
   },
 
   // ── EXTRA EQUITY (2) ──────────────────────────────────────────────────────────
@@ -1383,7 +1383,7 @@ export const quizQuestions = [
       '17 outs — add all 9 flush outs and all 8 straight outs together since they represent distinct ways to make two different hand types',
     ],
     correct: 2,
-    explanation: 'This is a combo draw. The flush draw gives 9 outs (remaining hearts). The straight draw gives 8 outs (four 7s and four Qs). However, the 7♥ and Q♥ are counted in both categories, so you subtract 2 to avoid double-counting: 9 + 8 - 2 = 15 outs. With 15 outs on the flop, the Rule of 4 gives ~60% equity to hit by the river — this is a monster draw.',
+    explanation: 'Combo draw: 9 flush + 8 straight - 2 overlap (7♥, Q♥) = 15 outs, ~60% equity.',
   },
   {
     id: 94,
@@ -1395,7 +1395,7 @@ export const quizQuestions = [
       '40% for 77', '53% for 77', '65% for 77', '75% for 77',
     ],
     correct: 1,
-    explanation: '77 vs AKo is approximately 53% for the pair — a very close spot often called a "coin flip" or "race." The small pair has a slight edge because villain needs to hit an A or K to improve. AKs (suited) would be closer to 47-53, and the presence of suit blockers can matter. This is one of the most common all-in matchups in tournament poker.',
+    explanation: '77 vs AKo is ~53% for the pair — a classic "coin flip" with the pair slightly ahead.',
   },
 
   // ── EXTRA SIZING (2) ──────────────────────────────────────────────────────────
@@ -1412,7 +1412,7 @@ export const quizQuestions = [
       'Overbetting the flop and checking the turn — front-loading bets gets more money in early when your equity advantage is highest vs draws',
     ],
     correct: 1,
-    explanation: 'Geometric sizing means choosing a bet size as a consistent percentage of the pot across all remaining streets to end up exactly all-in on the last street. With a pot of $10 and $90 behind, betting ~75% pot on flop, turn, and river achieves this. The formula finds the size where (pot × (1 + 2×r)^n) = stacks, where r is the fraction of pot bet. This is the most efficient way to build the pot to extract maximum value.',
+    explanation: 'Bet ~75% pot each street to get exactly all-in by the river; consistent % across streets.',
   },
   {
     id: 96,
@@ -1427,7 +1427,7 @@ export const quizQuestions = [
       'Check back — thin value is not worth the risk because a check-raise from villain would put you in an extremely difficult spot',
     ],
     correct: 2,
-    explanation: 'Thin value bets should use small sizing (25–40% pot) because: (1) you want calls from weaker hands that fold to bigger bets, (2) you lose less when villain has you beat, and (3) the small size makes villain less likely to raise as a bluff. Large sizes only get called by hands that beat you. Small sizes keep more of villain\'s weaker range in the calling threshold.',
+    explanation: 'Small sizing (25-40%) gets calls from weaker hands and loses less when beaten.',
   },
 
   // ── EXTRA MULTIWAY (2) ────────────────────────────────────────────────────────
@@ -1444,7 +1444,7 @@ export const quizQuestions = [
       'Always check to trap with strong hands — in multiway pots, letting others bet is more profitable than leading out yourself',
     ],
     correct: 1,
-    explanation: 'In a 4-way pot, your c-bet frequency should drop dramatically to roughly 20–25%. With three opponents, the probability that at least one has connected with the board is very high. Only hands strong enough to withstand multiple callers (top pair good kicker+, sets, nut draws) should bet. Bluffing is futile when you need three players to fold.',
+    explanation: 'C-bet drops to ~20-25% in 4-way pots; only bet hands that withstand multiple callers.',
   },
   {
     id: 98,
@@ -1459,7 +1459,7 @@ export const quizQuestions = [
       'You should always fold in the sandwich position — the risk-reward ratio of acting between two opponents is too unfavorable to continue',
     ],
     correct: 1,
-    explanation: 'The sandwich position is strategically challenging because you are caught between two opponents. If you call, the player behind may raise (squeezing you). If you raise, you face two potential callers or re-raisers. This limits your range to very strong hands (for raising) or hands with good implied odds (for calling). Marginal hands that play well heads-up become folds in the sandwich.',
+    explanation: 'Sandwiched between a bettor and a player behind; calling risks a squeeze, raising faces two opponents.',
   },
 
   // ── EXTRA BLUFFING (2) ────────────────────────────────────────────────────────
@@ -1476,7 +1476,7 @@ export const quizQuestions = [
       'Only bluff if the pot is very large — the bigger the pot, the more incentive villain has to fold because they risk more by calling wrong',
     ],
     correct: 1,
-    explanation: 'Successful river bluffs depend on several factors: (1) Does your betting line tell a credible story? (2) Do you hold blockers to villain\'s calling range — A♠ blocks nut flush draws that villain might have called with. (3) Is villain capable of folding marginal hands? Blindly bluffing or blindly giving up are both mistakes. Evaluate the spot on its merits.',
+    explanation: 'Evaluate your story, blockers (A♠ blocks NFDs), and villain\'s folding tendencies.',
   },
   {
     id: 100,
@@ -1491,7 +1491,7 @@ export const quizQuestions = [
       'No bluffs on the river — only bet for value because the river is the last street and there are no future cards to improve your bluffs',
     ],
     correct: 1,
-    explanation: 'The bluff-to-value ratio is determined by the bet size. At 66% pot, villain needs to call with ~60% of their range (MDF). To make villain indifferent, your bluffs should be: bet/(pot+bet) = 0.66/1.66 = ~40% of your betting range should be bluffs, or roughly 1 bluff for every 2 value bets. This keeps your opponent mathematically indifferent to calling.',
+    explanation: 'At 66% pot, ~40% of your betting range should be bluffs (1 bluff per 2 value bets) for MDF.',
   },
 
   // ── EXTRA TOURNAMENT (1) ──────────────────────────────────────────────────────
@@ -1508,7 +1508,7 @@ export const quizQuestions = [
       'Only play AA and KK — reduce your range to the absolute nuts so you never risk elimination on the bubble with a marginal holding',
     ],
     correct: 1,
-    explanation: 'In satellite bubbles with equal prizes, ICM pressure is extreme. Accumulating extra chips has zero value — winning with 100 BB or 1 BB earns the same prize. The only thing that matters is surviving. This means: fold all marginal spots, avoid all confrontations with other medium/big stacks, and only risk chips when short-stacked and desperate. This is the most extreme ICM spot in poker.',
+    explanation: 'Equal prizes means extra chips have zero value; survival is everything, fold all marginal spots.',
   },
 
   // ── EXTRA HAND READING (1) ────────────────────────────────────────────────────
@@ -1525,7 +1525,7 @@ export const quizQuestions = [
       'How fast they bet — snap decisions indicate strong hands or scripted plays, while long tanks suggest marginal holdings and difficult decisions',
     ],
     correct: 1,
-    explanation: 'VPIP (Voluntarily Put money In Pot) is the foundational hand reading stat. A player who enters 15% of pots is tight (narrow range); 25–30% is average; 40%+ is loose (wide range). Simply tracking how often opponents play hands gives you a rough range estimate for every future decision against them. This is the first step in building a player profile.',
+    explanation: 'VPIP tells you range width: 15% = tight, 25-30% = average, 40%+ = loose.',
   },
 
   // ── EXTRA POSITION (1) ────────────────────────────────────────────────────────
@@ -1542,7 +1542,7 @@ export const quizQuestions = [
       'The BB never has a range advantage against the raiser — the preflop aggressor always maintains an equity edge on every board texture',
     ],
     correct: 1,
-    explanation: 'The BB defends wide vs the SB (suited connectors, small pairs, Axs, etc.) and these hands connect well with low/medium flops. On boards like 8-6-3 or 7-5-2, the BB\'s range actually has more sets, two pairs, and strong pairs than the SB\'s wider raising range. This is why the BB donk-bets at higher frequencies vs the SB than in any other spot — range advantage on favorable board textures.',
+    explanation: 'BB\'s wide defense (suited connectors, pairs, Axs) hits low/medium boards better than SB\'s raising range.',
   },
 
   // ── EXTRA COMMON MISTAKES (1) ─────────────────────────────────────────────────
@@ -1559,7 +1559,7 @@ export const quizQuestions = [
       'The specific mistake was checking the river, not the turn — one delayed barrel on the river would have been enough to win this pot',
     ],
     correct: 1,
-    explanation: 'The "one and done" leak is c-betting without a plan for later streets. Before betting the flop, you should already know: "If called, will I barrel the turn? With what hands? What rivers am I betting?" Without this plan, you bet the flop reflexively, then give up when called, turning your c-bet into a wasted chip. Strong players plan their entire line before betting the flop.',
+    explanation: 'C-betting without a turn/river plan wastes chips; plan your entire line before betting the flop.',
   },
 
   // ── EXTRA SOLVER CONCEPTS (1) ─────────────────────────────────────────────────
@@ -1576,6 +1576,6 @@ export const quizQuestions = [
       'Checking is always wrong with a set because you lose too much value from hands that would have called a bet but now get a free card',
     ],
     correct: 2,
-    explanation: 'On dry boards (K-7-2), there are few draws to protect against. Bottom set (22) benefits from slow-playing because: (1) villain has very few draws that might get away, (2) checking protects your checking range (giving you strong hands when you check back), (3) villain may bet the turn with hands they would have folded to a flop bet. This is a key solver insight — not all strong hands should bet on all textures.',
+    explanation: 'Dry board = few draws to protect against; checking 22 protects your checking range and traps value.',
   },
 ];
