@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Quiz Mode — 105 GTO-accurate questions
+// Quiz Mode — 113 GTO-accurate questions
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const quizCategories = [
@@ -1577,5 +1577,127 @@ export const quizQuestions = [
     ],
     correct: 2,
     explanation: 'Dry board = few draws to protect against; checking 22 protects your checking range and traps value.',
+  },
+
+  // ── EXTRA BLUFFING (8) ──────────────────────────────────────────────────────
+  {
+    id: 106,
+    category: 'Bluffing',
+    difficulty: 'easy',
+    scenario: 'You are on the river with 8♣7♣ (busted flush draw). The board is A♣-K♦-9♣-4♠-2♥. Your opponent is a calling station (VPIP 45%, fold to river bet < 30%).',
+    question: 'Should you bluff the river against this opponent?',
+    options: [
+      'Yes — you have no showdown value so betting is always better than checking since you can only win by bluffing',
+      'Yes — the A-K board is scary and even loose players fold to river aggression on high boards',
+      'No — against a calling station, bluffs are -EV because they call too often; accept the loss and check',
+      'No — but only because your hand is too strong; 8-high has enough showdown value to win at showdown',
+    ],
+    correct: 2,
+    explanation: 'Against calling stations, all bluffs are -EV. Their fold frequency is too low to make bluffing profitable. Value-bet relentlessly instead.',
+  },
+  {
+    id: 107,
+    category: 'Bluffing',
+    difficulty: 'easy',
+    scenario: 'You are heads-up in position on the BTN. Villain in the BB check-called flop and check-called turn. The river checks to you.',
+    question: 'Why is villain\'s range considered "capped" in this spot?',
+    options: [
+      'Because villain has a maximum number of chips they can bet — the cap refers to their stack size limiting their options',
+      'Because by only calling twice without raising, villain has shown they likely don\'t have a very strong hand like a set or two pair',
+      'Because villain is out of position — OOP players always have capped ranges on every street regardless of their actions',
+      'Because villain checked the river — checking the river always means they have exactly a medium-strength hand',
+    ],
+    correct: 1,
+    explanation: 'A capped range means the prior passive actions (call-call-check) indicate villain likely lacks very strong hands — they would have raised at some point with sets or two pair.',
+  },
+  {
+    id: 108,
+    category: 'Bluffing',
+    difficulty: 'medium',
+    scenario: 'River board: J♠-T♠-5♦-3♥-8♠. You hold A♠4♦ (missed everything, but you have the A♠).',
+    question: 'Why is A♠4♦ a strong bluffing hand on this river?',
+    options: [
+      'Because Ace-high has decent showdown value and might win without betting — it beats all busted draws',
+      'Because the A♠ blocks villain\'s nut flush, meaning they are far less likely to have the strongest hand and will fold more often',
+      'Because A4 suited is always a good bluffing hand regardless of the board — it\'s in every solver bluffing range',
+      'Because you have a pair of fours which gives you some equity to fall back on if villain calls the bluff',
+    ],
+    correct: 1,
+    explanation: 'The A♠ blocks the nut flush (villain can\'t hold A♠x♠). This removes their strongest combos, so they must fold second-nut flush and worse at a high frequency facing a large bet.',
+  },
+  {
+    id: 109,
+    category: 'Bluffing',
+    difficulty: 'medium',
+    scenario: 'You 3-bet preflop from the CO, c-bet a Q♦-7♥-3♣ flop, and barreled the T♠ turn. The river is the 2♦. You hold K♠J♠ (complete air).',
+    question: 'Is this a good spot for a triple-barrel river bluff?',
+    options: [
+      'Yes — your line tells a credible story of AA/KK/QQ/AQ, and the brick river changes nothing; villain\'s calling range is weak after two calls',
+      'Yes — you should always fire the third barrel because giving up on the river after two barrels is always a mistake',
+      'No — triple-barreling is never profitable in any situation; the math never works because villain\'s range is too strong after calling twice',
+      'No — the board is too dry for a triple barrel; villain would have folded all weak hands on earlier streets',
+    ],
+    correct: 0,
+    explanation: 'Your 3-bet + c-bet + turn barrel on Q-7-3-T credibly reps QQ+/AQ. The brick river doesn\'t help villain\'s capped range. KJ has zero showdown value making it an ideal bluff candidate.',
+  },
+  {
+    id: 110,
+    category: 'Bluffing',
+    difficulty: 'medium',
+    scenario: 'Villain checked the flop in position after being the preflop raiser. The turn comes a K♠. You are OOP in the BB.',
+    question: 'Why is leading (probe betting) the turn a strong bluffing opportunity?',
+    options: [
+      'Because you should always bet when villain checks — any check from the opponent signals weakness and you must punish it',
+      'Because villain\'s flop check caps their range (likely no strong Kx, overpairs, or sets); the K♠ is a scare card that favors your perceived range',
+      'Because the BB always has a range advantage on the turn regardless of board texture — you retain more strong hands than the preflop raiser',
+      'Because betting out of position is always correct on scare cards — position doesn\'t matter when the turn card is favorable',
+    ],
+    correct: 1,
+    explanation: 'When the PFR checks back the flop, their range is capped (they would bet strong hands). A scare card turn like the K♠ favors your range and makes a probe bet profitable.',
+  },
+  {
+    id: 111,
+    category: 'Bluffing',
+    difficulty: 'hard',
+    scenario: 'You are deciding between two hands to bluff the river with. The board is Q♥-J♦-8♣-4♠-2♥. Hand A: 6♠5♠ (complete air). Hand B: T♦9♣ (missed open-ended straight draw).',
+    question: 'Which hand is the WORSE bluff, and why?',
+    options: [
+      'Hand A (65s) is worse — it has less equity so it\'s a weaker hand to bluff with',
+      'Hand B (T9o) is worse — it blocks villain\'s folding range (T and 9 are cards in villain\'s missed straight draws that would fold)',
+      'Both are equally bad — neither hand has showdown value, so any air hand bluffs at the same frequency',
+      'Hand B (T9o) is worse — it blocks straights that villain could have, meaning they are more likely to have strong hands that call',
+    ],
+    correct: 1,
+    explanation: 'T9 blocks hands like T9, T8, 97 that villain would fold. You WANT those hands in villain\'s range (so they fold). 65s doesn\'t block the folding range, making it the superior bluff — an "unblocker" concept.',
+  },
+  {
+    id: 112,
+    category: 'Bluffing',
+    difficulty: 'hard',
+    scenario: 'You are on the river facing a decision. The pot is $200. You want to bluff. You are considering a pot-sized bet ($200) vs a half-pot bet ($100).',
+    question: 'How does bet sizing affect the required fold frequency for a bluff to be profitable?',
+    options: [
+      'Sizing doesn\'t matter — a bluff either works or it doesn\'t, so always bet the maximum to put pressure on your opponent',
+      'Smaller bets need higher fold frequency — a half-pot bluff needs villain to fold 66% while a pot-sized bluff only needs 50%',
+      'Larger bets need higher fold frequency — a pot-sized bluff needs villain to fold 50% while a half-pot bluff only needs 33%',
+      'Both bets need the same fold frequency (50%) — the break-even point is always 50% regardless of sizing',
+    ],
+    correct: 2,
+    explanation: 'Break-even fold frequency = bet / (bet + pot). Half-pot: 100/300 = 33%. Pot-sized: 200/400 = 50%. Larger bluffs need more folds but also make villain\'s calling range worse.',
+  },
+  {
+    id: 113,
+    category: 'Bluffing',
+    difficulty: 'hard',
+    scenario: 'You are playing a 3-way pot on a J♥-T♥-4♠ flop. You hold 6♥5♥ (flush draw). You are considering a check-raise semi-bluff.',
+    question: 'Why should you be much less inclined to bluff in multiway pots compared to heads-up?',
+    options: [
+      'Because flush draws have less equity multiway — the more opponents, the less likely your draw will hit on the turn or river',
+      'Because bluffing multiway is illegal in tournament play — you can only bluff heads-up per official poker rules',
+      'Because each additional opponent multiplicatively reduces your fold equity — if one player folds 50% heads-up, two players together fold only ~25%',
+      'Because multiway pots are always smaller — there is less money to win so bluffing has a lower expected payoff',
+    ],
+    correct: 2,
+    explanation: 'Fold equity compounds against multiple opponents. If each folds 50% HU, both folding = 50% × 50% = 25%. Multiway bluffs need much stronger hands or better blockers to compensate.',
   },
 ];

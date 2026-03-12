@@ -640,10 +640,92 @@ export const handScenarios = [
   },
 
   // ============================================================
-  // HARD #2
+  // HARD #2 — Bluff-Catching on a Scary River
   // ============================================================
   {
     id: 8,
+    title: "Bluff-Catching with Top Pair on a Four-Flush Board",
+    difficulty: "hard",
+    setup:
+      "You hold K♦ Q♦ in the CO. 100bb effective stacks. You open to 2.5bb. The BTN calls, blinds fold.",
+    streets: [
+      {
+        street: "flop",
+        board: "Q♠ 7♠ 3♣",
+        pot: "6 BB",
+        narrative:
+          "You flop top pair with a good kicker on a board with a flush draw. You c-bet 2bb and Villain calls.",
+        options: [
+          {
+            label: "This is a summary of what happened. Continue to the turn.",
+            correct: true,
+            feedback:
+              "Standard play — c-betting top pair on a board where you have a range advantage. The flush draw is present but you're ahead of most of Villain's range."
+          }
+        ]
+      },
+      {
+        street: "turn",
+        board: "Q♠ 7♠ 3♣ 5♠",
+        pot: "10 BB",
+        narrative:
+          "The turn brings the 5♠, putting three spades on board. This completes some flush draws. Villain checks to you.",
+        options: [
+          {
+            label: "Check",
+            correct: true,
+            feedback:
+              "Correct. The third spade dramatically changes the board texture. Villain's calling range on the flop included many spade draws that just got there. Betting allows Villain to check-raise with flushes and puts you in a terrible spot. Checking keeps the pot small and lets you get to showdown with a one-pair hand on a wet board."
+          },
+          {
+            label: "Bet ~5 BB (half pot)",
+            correct: false,
+            feedback:
+              "Betting into a three-flush board with a non-spade top pair is risky. Villain's flop calling range is loaded with spade hands (suited connectors, suited aces, suited broadways) that just made a flush. A bet here either gets called by flushes or folds out the hands you beat."
+          },
+          {
+            label: "Bet ~7 BB (3/4 pot)",
+            correct: false,
+            feedback:
+              "A large bet on a three-flush turn is a mistake. You're turning your top pair into a bluff against a range that hit many flush combos. This size especially invites check-raises from made flushes."
+          }
+        ]
+      },
+      {
+        street: "river",
+        board: "Q♠ 7♠ 3♣ 5♠ T♥",
+        pot: "10 BB",
+        narrative:
+          "Both players checked the turn. The river is the T♥, a non-spade. Villain now bets 8bb into the 10bb pot.",
+        options: [
+          {
+            label: "Fold",
+            correct: false,
+            feedback:
+              "Folding top pair to a single bet after checking back the turn is too tight. Villain knows you showed weakness by checking the turn and is likely to stab with a wide range of bluffs and thin value. KQ is near the top of your range here."
+          },
+          {
+            label: "Call",
+            correct: true,
+            feedback:
+              "Correct. After checking the turn, your range is capped — and Villain knows it. This means they will bet the river with both value hands (flushes, two pair) AND bluffs (missed draws, air). KQ is one of the strongest hands in your turn-checking range, making it a clear bluff-catcher. You don't need to beat everything, just enough of their bluffs to make calling profitable."
+          },
+          {
+            label: "Raise to 24 BB",
+            correct: false,
+            feedback:
+              "Raising with one pair as a bluff-catch makes no sense. You'd only get called by better (flushes, sets, two pair) and fold out all the bluffs you currently beat. KQ is a hand that wants to call and showdown, not raise."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // HARD #3 — Multiway Pot with a Vulnerable Overpair
+  // ============================================================
+  {
+    id: 9,
     title: "Multiway Pot with a Vulnerable Overpair",
     difficulty: "hard",
     setup:
@@ -737,5 +819,363 @@ export const handScenarios = [
         ]
       }
     ]
-  }
+  },
+
+  // ============================================================
+  // MEDIUM #4 — Delayed C-Bet with Position
+  // ============================================================
+  {
+    id: 10,
+    title: "Delayed C-Bet After Checking the Flop",
+    difficulty: "medium",
+    setup:
+      "You hold A♦ K♣ on the BTN. 100bb effective stacks. You open to 2.5bb. The BB calls.",
+    streets: [
+      {
+        street: "flop",
+        board: "J♥ 8♥ 6♣",
+        pot: "5.5 BB",
+        narrative:
+          "You completely miss this coordinated flop. BB checks to you. This board favors BB's range (lots of Jx, 8x, 67, 78, suited hearts).",
+        options: [
+          {
+            label: "Check",
+            correct: true,
+            feedback:
+              "Correct. On a J-8-6 two-tone board, the BB's range connects heavily (Jx, 8x, 67s, 78s, flush draws). Your AK has very little equity when called. Checking preserves your equity (6 outs to top pair) and avoids burning chips into a board that doesn't favor your range. You can also represent a slow-play on later streets."
+          },
+          {
+            label: "Bet 1/3 pot (~2 BB)",
+            correct: false,
+            feedback:
+              "Even a small c-bet on this board is suboptimal with AK. The BB's calling range is strong here — Jx, 8x, draws, and two pairs. You'd be c-betting with no pair, no draw, and very little fold equity against a range that connects with this texture."
+          },
+          {
+            label: "Bet 2/3 pot (~4 BB)",
+            correct: false,
+            feedback:
+              "Betting large on a board that heavily favors the BB's range is a mistake. Your AK has very little equity when called, and the BB will rarely fold hands that beat you. Save your chips for better spots."
+          }
+        ]
+      },
+      {
+        street: "turn",
+        board: "J♥ 8♥ 6♣ K♠",
+        pot: "5.5 BB",
+        narrative:
+          "Both players checked the flop. The turn is the K♠, giving you top pair top kicker! BB checks again.",
+        options: [
+          {
+            label: "Check",
+            correct: false,
+            feedback:
+              "Checking again would be too passive. You now have top pair top kicker and need to start building the pot. After checking the flop, your hand is hidden — Villain won't expect you to have a K since you checked back a coordinated flop."
+          },
+          {
+            label: "Bet ~3 BB (half pot)",
+            correct: true,
+            feedback:
+              "Correct. A delayed c-bet after the K♠ turn is a strong play. Your hand was hidden by the flop check, so Villain won't put you on Kx easily. A half-pot bet extracts value from BB's Jx hands, 8x, and draws while not overcommitting with one pair on a still-coordinated board."
+          },
+          {
+            label: "Bet ~5 BB (pot)",
+            correct: false,
+            feedback:
+              "A pot-sized bet is too aggressive. While you have top pair, the board is still very coordinated with straight and flush draws. A moderate sizing keeps in the hands you beat while managing the pot size with one pair."
+          }
+        ]
+      },
+      {
+        street: "river",
+        board: "J♥ 8♥ 6♣ K♠ 3♥",
+        pot: "11.5 BB",
+        narrative:
+          "Villain calls your turn bet. The river is the 3♥, completing the flush draw. Villain checks.",
+        options: [
+          {
+            label: "Check",
+            correct: true,
+            feedback:
+              "Correct. The 3♥ completes the heart flush draw that was present from the flop. Villain's calling range on the turn included many heart combos (suited connectors, A♥x♥, suited Jx). Betting the river risks getting check-raised by flushes, and the hands you beat (Jx, 8x) will be reluctant to call on a three-flush board. Check and showdown your top pair."
+          },
+          {
+            label: "Bet ~4 BB (1/3 pot)",
+            correct: false,
+            feedback:
+              "Even a small bet is risky here. The completed flush draw means much of Villain's turn-calling range now beats you. Hands you beat (Jx) will often fold the river facing a flush-completing card. You'd be betting into a range that either has you crushed or won't call."
+          },
+          {
+            label: "Bet ~8 BB (2/3 pot)",
+            correct: false,
+            feedback:
+              "A large river bet when the flush completes is a significant error. You're turning your top pair into a bluff — only flushes and better call, and everything you beat folds. Check and hope to win at showdown."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // EASY #4 — Playing the Nut Straight
+  // ============================================================
+  {
+    id: 11,
+    title: "Flopping the Nut Straight",
+    difficulty: "easy",
+    setup:
+      "You hold T♠ 9♠ on the BTN. 100bb effective stacks. The CO opens to 2.5bb. You call. Blinds fold.",
+    streets: [
+      {
+        street: "flop",
+        board: "8♦ 7♣ 6♥",
+        pot: "6 BB",
+        narrative:
+          "You flop the nut straight on a rainbow board. Villain c-bets 3bb.",
+        options: [
+          {
+            label: "Call",
+            correct: true,
+            feedback:
+              "Correct. With the nut straight on a rainbow board, there's no rush. No flush draws can hit on the turn, and the board is unlikely to pair. Slow-playing by calling keeps Villain's bluffs in their range and lets them continue barreling on the turn with their overpairs and top pairs. You can raise the turn or river for maximum value."
+          },
+          {
+            label: "Raise to 9 BB",
+            correct: false,
+            feedback:
+              "Raising the flop isn't wrong per se, but on a rainbow board with the nuts, it's premature. A raise folds out Villain's bluffs and weaker hands immediately. By calling, you let them keep betting into you on later streets with overpairs and top pair, extracting more value over multiple streets."
+          },
+          {
+            label: "Fold",
+            correct: false,
+            feedback:
+              "Never fold the nut straight. You have the absolute best hand possible right now."
+          }
+        ]
+      },
+      {
+        street: "turn",
+        board: "8♦ 7♣ 6♥ K♠",
+        pot: "12 BB",
+        narrative:
+          "Villain bets 8bb on the K♠ turn. This is a great card for you — it likely improved Villain's hand (KK, AK, KQ all hit) while keeping your straight as the nuts.",
+        options: [
+          {
+            label: "Call",
+            correct: false,
+            feedback:
+              "Calling the turn is too slow. The K♠ likely improved Villain's hand and they're betting large. If you just call, you might miss value on the river if a scary card comes (a board pair) or Villain checks. Now is the time to raise and build the pot."
+          },
+          {
+            label: "Raise to 24 BB",
+            correct: true,
+            feedback:
+              "Correct. The K♠ is an excellent action card. Villain likely improved to top pair or better (AK, KQ, KK) and is betting for value. Raising now builds a huge pot while Villain is committed with their strong-but-second-best hand. A raise to 3x sets up a river all-in with the remaining stacks."
+          },
+          {
+            label: "All-in (~86 BB)",
+            correct: false,
+            feedback:
+              "An immediate all-in overbet is too large and looks incredibly strong. It folds out Villain's Kx hands that would have put in more money on a standard raise. A raise to ~3x the bet builds the pot while keeping Villain invested."
+          }
+        ]
+      },
+      {
+        street: "river",
+        board: "8♦ 7♣ 6♥ K♠ 2♣",
+        pot: "56 BB",
+        narrative:
+          "Villain calls your raise. The river is the 2♣, a complete blank. Villain checks. You have ~52bb behind.",
+        options: [
+          {
+            label: "Check",
+            correct: false,
+            feedback:
+              "Checking the river with the nuts after building a massive pot would be leaving huge value on the table. Villain's range is loaded with Kx, overpairs, and possibly sets that will call a shove."
+          },
+          {
+            label: "Bet ~18 BB (1/3 pot)",
+            correct: false,
+            feedback:
+              "Undersized. You've built the pot specifically to jam the river. Villain has invested significant chips and their range is strong — they'll call much more than 1/3 pot with their Kx and overpair hands."
+          },
+          {
+            label: "All-in (~52 BB)",
+            correct: true,
+            feedback:
+              "Correct. After raising the turn and getting called, Villain's range is very strong — top pair, overpairs, and possibly sets. These hands are committed to calling a river shove given the pot odds. Jamming extracts maximum value from the nut straight and is the natural culmination of your line."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // MEDIUM #5 — River Overbet for Value
+  // ============================================================
+  {
+    id: 12,
+    title: "River Overbet with the Second Nut Flush",
+    difficulty: "medium",
+    setup:
+      "You hold K♥ J♥ in the CO. 100bb effective stacks. You open to 2.5bb. The BTN calls. Blinds fold.",
+    streets: [
+      {
+        street: "flop",
+        board: "T♥ 5♥ 2♣",
+        pot: "6 BB",
+        narrative:
+          "You flop a strong flush draw with two overcards. You c-bet 2bb, and Villain calls.",
+        options: [
+          {
+            label: "This is a summary of what happened. Continue to the turn.",
+            correct: true,
+            feedback:
+              "Standard semi-bluff c-bet with the second nut flush draw plus two overcards. Let's see the turn."
+          }
+        ]
+      },
+      {
+        street: "turn",
+        board: "T♥ 5♥ 2♣ 8♥",
+        pot: "10 BB",
+        narrative:
+          "The 8♥ completes your flush — you have the K-high flush (second nuts). Villain checks.",
+        options: [
+          {
+            label: "Check",
+            correct: false,
+            feedback:
+              "Checking here is too conservative. You have the second nut flush and there are many hands in Villain's range that will pay you off — top pair, overpairs, lower flushes, and straight draws. You should bet to build the pot."
+          },
+          {
+            label: "Bet ~5 BB (half pot)",
+            correct: true,
+            feedback:
+              "Correct. A moderate turn bet with the K-high flush is ideal. It extracts value from Villain's top pairs, overpairs, and lower heart hands while also building the pot for a big river bet. Betting too small lets draws in cheaply; betting too large folds out the hands you want to keep in."
+          },
+          {
+            label: "Bet ~10 BB (pot)",
+            correct: false,
+            feedback:
+              "A pot-sized bet risks folding out the medium-strength hands (top pair, overpairs) you want to keep in. These hands will call a half-pot bet but fold to a full-pot bet. Save the large sizing for the river."
+          }
+        ]
+      },
+      {
+        street: "river",
+        board: "T♥ 5♥ 2♣ 8♥ T♣",
+        pot: "20 BB",
+        narrative:
+          "Villain calls. The river pairs the board with the T♣. Villain checks. You have ~86bb behind.",
+        options: [
+          {
+            label: "Check",
+            correct: false,
+            feedback:
+              "Checking the river with the second nut flush is far too passive. The board pairing is scary (full houses are possible), but Villain's range after calling flop and turn is heavily weighted toward one-pair hands and lower flushes that will pay off a big bet."
+          },
+          {
+            label: "Bet ~10 BB (half pot)",
+            correct: false,
+            feedback:
+              "A half-pot bet is undersized given the situation. Villain's range after calling two streets on a flushing board includes many hands that are committed to paying more. You should use a larger sizing to maximize value from lower flushes and hands like TT that improved to trips."
+          },
+          {
+            label: "Bet ~30 BB (1.5x pot overbet)",
+            correct: true,
+            feedback:
+              "Correct. An overbet is the optimal river sizing here. Villain's calling range is polarized — they either have a flush (which calls any size) or a strong one-pair hand that may hero-call an overbet. Lower flushes like Q♥x♥ or J♥x♥ are never folding. Even TT (now trips) is committed. The overbet maximizes value against the inelastic portion of Villain's range."
+          }
+        ]
+      }
+    ]
+  },
+
+  // ============================================================
+  // EASY #5 — Facing a Check-Raise on the Flop
+  // ============================================================
+  {
+    id: 13,
+    title: "Reacting to a Flop Check-Raise",
+    difficulty: "easy",
+    setup:
+      "You hold A♣ K♠ in the CO. 100bb effective stacks. You open to 2.5bb. The BB calls.",
+    streets: [
+      {
+        street: "flop",
+        board: "A♦ 9♣ 4♥",
+        pot: "5.5 BB",
+        narrative:
+          "You flop top pair top kicker on a dry board. You c-bet 2bb. The BB check-raises to 7bb.",
+        options: [
+          {
+            label: "Fold",
+            correct: false,
+            feedback:
+              "Never fold TPTK on a dry board to a single check-raise. You have one of the strongest hands possible here. The BB could be check-raising with a wide range including top pair worse kicker, middle pair, and draws."
+          },
+          {
+            label: "Call",
+            correct: true,
+            feedback:
+              "Correct. Calling is the best play with TPTK on a dry board. You're ahead of almost all of Villain's check-raising range (A9, A4, 99, 44, flush draws, bluffs). Calling keeps their bluffs in and avoids bloating the pot against the small portion of their range that has you beat (sets). You can re-evaluate on the turn."
+          },
+          {
+            label: "Re-raise to 20 BB",
+            correct: false,
+            feedback:
+              "3-betting the flop with top pair is too aggressive on a dry board. It folds out all the bluffs and worse hands in Villain's range and only gets action from sets and two pair that beat you. Calling keeps the pot manageable and preserves Villain's wide range."
+          }
+        ]
+      },
+      {
+        street: "turn",
+        board: "A♦ 9♣ 4♥ 6♠",
+        pot: "19.5 BB",
+        narrative:
+          "You called the check-raise. The turn is the 6♠, a brick. Villain bets 10bb.",
+        options: [
+          {
+            label: "Fold",
+            correct: false,
+            feedback:
+              "Folding top pair top kicker to a turn bet after calling the flop check-raise is too tight. Villain can still be value-betting worse (A9, A6, 99) or semi-bluffing. Your hand is too strong to give up."
+          },
+          {
+            label: "Call",
+            correct: true,
+            feedback:
+              "Correct. Continue calling. The 6♠ doesn't change much. Villain could be barreling with A9 (two pair that you beat on some boards), 99, a turned two pair like 96s, or semi-bluffs. AK is still ahead of most of their betting range. Calling controls the pot while keeping you in against a wide range."
+          },
+          {
+            label: "Raise to 28 BB",
+            correct: false,
+            feedback:
+              "Raising the turn with one pair is too aggressive. If Villain is bluffing, a raise folds them out. If they have a set or strong two pair, you're in trouble. Calling lets you get to the river with a strong hand at a reasonable price."
+          }
+        ]
+      },
+      {
+        street: "river",
+        board: "A♦ 9♣ 4♥ 6♠ 2♦",
+        pot: "39.5 BB",
+        narrative:
+          "The river is the 2♦, another brick. Villain shoves all-in for 61bb into the 39.5bb pot.",
+        options: [
+          {
+            label: "Fold",
+            correct: false,
+            feedback:
+              "While the overbet shove is scary, folding TPTK on a completely dry run-out is too exploitable. Villain's line is consistent with both nutted hands (44, 99) AND bluffs. At this pot price, you need to be right less than 40% of the time. AK blocks AA and is near the top of your range."
+          },
+          {
+            label: "Call",
+            correct: true,
+            feedback:
+              "Correct. This is a tough but necessary call. On A-9-4-6-2 with no draws completing, Villain's shoving range is polarized: sets (99, 44) and bluffs. You need to call with your strongest hands to avoid being exploited, and AK is near the top of your range. You block AA (reducing their value combos) and the board runout didn't improve any draws. Call and accept the result."
+          }
+        ]
+      }
+    ]
+  },
 ];
