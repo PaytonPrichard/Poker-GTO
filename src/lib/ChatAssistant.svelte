@@ -24,8 +24,17 @@
     }, 20);
   }
 
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
   function formatAnswer(text) {
-    let html = text;
+    // Escape HTML entities first to prevent XSS
+    let html = escapeHtml(text);
 
     // Bold: **text** → <strong>
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
