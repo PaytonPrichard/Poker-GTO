@@ -212,6 +212,7 @@
               class="sr-tick"
               class:active={srNearestBP === bp}
               onclick={() => srBB = bp}
+              style="left: {(bp - 5) / 95 * 100}%"
             >
               {bp}
             </button>
@@ -621,11 +622,12 @@
   }
 
   .sr-ticks {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 2px;
+    position: relative;
+    height: 22px;
   }
   .sr-tick {
+    position: absolute;
+    transform: translateX(-50%);
     font-size: 11px;
     font-weight: 600;
     color: var(--c-text-4);
