@@ -196,7 +196,16 @@
       <div class="sr-bb-section">
         <div class="sr-bb-display">
           <span class="sr-bb-value">{srBB} BB</span>
-          <span class="sr-stage-badge" style="background:{srStage.color}">{srStage.name}</span>
+          <select
+            class="sr-stage-select"
+            style="border-color:{srStage.color}; color:{srStage.color}"
+            value={srNearestBP}
+            onchange={e => srBB = Number(e.target.value)}
+          >
+            {#each bbBreakpoints.slice().reverse() as bp}
+              <option value={bp}>{stageInfo[bp].name} ({bp} BB)</option>
+            {/each}
+          </select>
           <span class="sr-action-label">{srStage.action}</span>
         </div>
         <input
@@ -566,15 +575,24 @@
     color: var(--c-text-h);
     min-width: 70px;
   }
-  .sr-stage-badge {
-    font-size: 11px;
+  .sr-stage-select {
+    font-size: 13px;
     font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 4px;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
+    padding: 4px 10px;
+    border-radius: 5px;
+    background: var(--c-bg-card);
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.15s;
+    appearance: auto;
+  }
+  .sr-stage-select:hover {
+    filter: brightness(1.2);
+  }
+  .sr-stage-select option {
+    background: var(--c-bg-card);
+    color: var(--c-text);
+    font-weight: 600;
   }
   .sr-action-label {
     font-size: 12px;
