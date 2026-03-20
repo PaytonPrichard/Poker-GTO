@@ -9,8 +9,10 @@
     bbBreakpoints,
     positions,
     stageInfo,
+    icmPhases,
     getNearestBreakpoint,
     getTournamentRange,
+    applyIcmModifier,
   } from './data/tournamentRanges.js';
   import HandMatrix from './HandMatrix.svelte';
 
@@ -25,9 +27,12 @@
   // Stage Ranges state
   let srBB = $state(40);
   let srPosition = $state('BTN');
+  let srPhaseIdx = $state(0);
   let srNearestBP = $derived(getNearestBreakpoint(srBB));
   let srStage = $derived(stageInfo[srNearestBP]);
-  let srRange = $derived(getTournamentRange(srBB, srPosition));
+  let srPhase = $derived(icmPhases[srPhaseIdx]);
+  let srBaseRange = $derived(getTournamentRange(srBB, srPosition));
+  let srRange = $derived(applyIcmModifier(srBaseRange, srPhase.modifier));
 
   // Push/Fold Trainer
   let pfMode = $state(false);
@@ -240,6 +245,28 @@
           </button>
         {/each}
       </div>
+
+      <div class="sr-phase-row">
+        <label class="sr-phase-label" for="sr-phase-select">Tournament Phase</label>
+        <select
+          id="sr-phase-select"
+          class="sr-phase-select"
+          bind:value={srPhaseIdx}
+          onchange={e => srPhaseIdx = Number(e.target.value)}
+        >
+          {#each icmPhases as phase, i}
+            <option value={i}>{phase.name}</option>
+          {/each}
+        </select>
+      </div>
+      {#if srPhase.modifier !== 0}
+        <p class="sr-phase-desc">
+          {srPhase.description}
+          <span class="sr-phase-modifier" class:widen={srPhase.modifier > 0}>
+            {srPhase.modifier > 0 ? '+' : ''}{srPhase.modifier}% range adjustment
+          </span>
+        </p>
+      {/if}
     </div>
 
     {#if srNearestBP !== srBB}
@@ -690,6 +717,56 @@
     background: #1d4ed8;
     border-color: #1d4ed8;
     color: #bfdbfe;
+  }
+
+  .sr-phase-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sr-phase-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--c-text-3);
+    white-space: nowrap;
+  }
+  .sr-phase-select {
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border);
+    color: var(--c-text);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .sr-phase-select:hover {
+    border-color: var(--c-accent-dark);
+  }
+  .sr-phase-select option {
+    background: var(--c-bg-card);
+    color: var(--c-text);
+  }
+  .sr-phase-desc {
+    font-size: 12px;
+    color: var(--c-text-3);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .sr-phase-modifier {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 3px;
+    margin-left: 6px;
+    background: rgba(239,68,68,0.12);
+    color: #ef4444;
+  }
+  .sr-phase-modifier.widen {
+    background: rgba(45,106,79,0.15);
+    color: #52b788;
   }
 
   .sr-snap-note {

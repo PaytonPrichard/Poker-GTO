@@ -129,6 +129,100 @@ export function getTournamentRange(bb, position) {
 
 export const positions = ['UTG', 'HJ', 'CO', 'BTN', 'SB'];
 
+// ── Hand strength scoring (for ICM range adjustments) ────────────────────────
+function handScore(hand) {
+  const v = c => 14 - RANKS.indexOf(c);
+
+  if (hand.length === 2) {
+    // Pairs: AA=308, KK=286, ..., TT=220, ..., 22=44
+    return v(hand[0]) * 22;
+  }
+
+  const hi = v(hand[0]);
+  const lo = v(hand[1]);
+  const suited = hand[2] === 's';
+  const gap = hi - lo;
+
+  let s = hi * 10 + lo * 5;
+  if (suited) s += 16;
+  if (gap <= 2) s += 4;
+  if (gap <= 1) s += 3;
+  return s;
+}
+
+// All 169 unique hands
+const allHands = [];
+for (let i = 0; i < 13; i++) {
+  allHands.push(RANKS[i] + RANKS[i]);
+  for (let j = i + 1; j < 13; j++) {
+    allHands.push(RANKS[i] + RANKS[j] + 's');
+    allHands.push(RANKS[i] + RANKS[j] + 'o');
+  }
+}
+
+// ── ICM phases ───────────────────────────────────────────────────────────────
+export const icmPhases = [
+  {
+    id: 'normal',
+    name: 'No ICM Pressure',
+    modifier: 0,
+    description: 'Far from the money — play standard ranges based on stack depth.',
+  },
+  {
+    id: 'approaching',
+    name: 'Approaching Bubble',
+    modifier: -20,
+    description: 'Tighten marginal opens. Medium stacks should avoid risking elimination.',
+  },
+  {
+    id: 'bubble',
+    name: 'On the Bubble',
+    modifier: -35,
+    description: 'Maximum ICM pressure. Survival > chips for medium and short stacks.',
+  },
+  {
+    id: 'bubble-big',
+    name: 'Bubble — Big Stack',
+    modifier: 15,
+    description: 'Exploit ICM pressure — opponents can\'t call light, so steal wider.',
+  },
+  {
+    id: 'itm',
+    name: 'In the Money',
+    modifier: -10,
+    description: 'ICM pressure eases but pay jumps still matter. Slight tightening.',
+  },
+  {
+    id: 'final-table',
+    name: 'Final Table',
+    modifier: -25,
+    description: 'Significant pay jumps — tighten ranges, especially with medium stacks.',
+  },
+];
+
+export function applyIcmModifier(baseRange, modifier) {
+  if (modifier === 0 || baseRange.size === 0) return baseRange;
+
+  const scored = [...baseRange].map(h => ({ hand: h, score: handScore(h) }));
+  scored.sort((a, b) => b.score - a.score);
+
+  if (modifier < 0) {
+    // Tighten: keep top (100 + modifier)% of hands
+    const keepCount = Math.max(1, Math.round(scored.length * (100 + modifier) / 100));
+    return new Set(scored.slice(0, keepCount).map(s => s.hand));
+  }
+
+  // Widen: add next N strongest hands not in range
+  const notInRange = allHands
+    .filter(h => !baseRange.has(h))
+    .map(h => ({ hand: h, score: handScore(h) }))
+    .sort((a, b) => b.score - a.score);
+
+  const addCount = Math.round(scored.length * modifier / 100);
+  const toAdd = notInRange.slice(0, addCount).map(s => s.hand);
+  return new Set([...baseRange, ...toAdd]);
+}
+
 // ── Stage info with insights per stack depth ─────────────────────────────────
 export const stageInfo = {
   100: {
