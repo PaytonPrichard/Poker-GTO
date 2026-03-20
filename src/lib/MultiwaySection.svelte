@@ -6,13 +6,13 @@
     multiwayPrinciples,
   } from './data/multiway.js';
 
-  let activeTab = $state('preflop');
+  let activeTab = $state('concepts');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['preflop', 'flop', 'turnriver', 'concepts'];
-  const tabLabels = { preflop: 'Preflop', flop: 'Flop', turnriver: 'Turn / River', concepts: 'Concepts' };
+  const tabs = ['concepts', 'flop', 'turnriver', 'preflop'];
+  const tabLabels = { concepts: 'Concepts', flop: 'Flop', turnriver: 'Turn / River', preflop: 'Preflop' };
 
   function freqColor(pct) {
     if (pct >= 25) return '#52b788';

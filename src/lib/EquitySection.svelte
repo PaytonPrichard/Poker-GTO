@@ -3,11 +3,11 @@
   import { estimateEquity, describeMatchup, allHands } from './data/equityCalc.js';
   import RangeVisualizer from './RangeVisualizer.svelte';
 
-  let activeTab = $state('calculator');
+  let activeTab = $state('matchups');
   let activeCategory = $state('All');
 
-  const tabs = ['matchups', 'outs', 'vsrange', 'calculator'];
-  const tabLabels = { matchups: 'Matchups', outs: 'Outs & Draws', vsrange: 'vs Range', calculator: 'Calculator' };
+  const tabs = ['matchups', 'calculator', 'outs', 'vsrange'];
+  const tabLabels = { matchups: 'Matchups', calculator: 'Calculator', outs: 'Outs & Draws', vsrange: 'vs Range' };
 
   // ── Equity Calculator ───────────────────────────────────────────────────────
   let calcHand1 = $state('AA');

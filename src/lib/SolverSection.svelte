@@ -6,13 +6,13 @@
     practicalTips,
   } from './data/solver.js';
 
-  let activeTab = $state('reading');
+  let activeTab = $state('practical');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['reading', 'frequencies', 'deviate', 'practical'];
-  const tabLabels = { reading: 'Reading Output', frequencies: 'Frequencies', deviate: 'When to Deviate', practical: 'Practical Tips' };
+  const tabs = ['practical', 'frequencies', 'reading', 'deviate'];
+  const tabLabels = { practical: 'Practical Tips', frequencies: 'Frequencies', reading: 'Reading Output', deviate: 'When to Deviate' };
 </script>
 
 <div class="solver" bind:this={sectionEl}>

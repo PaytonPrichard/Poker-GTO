@@ -6,13 +6,13 @@
     movingStakes,
   } from './data/bankroll.js';
 
-  let activeTab = $state('cash');
+  let activeTab = $state('variance');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['cash', 'tournament', 'variance', 'moving'];
-  const tabLabels = { cash: 'Cash Game', tournament: 'Tournament', variance: 'Variance', moving: 'Moving Stakes' };
+  const tabs = ['variance', 'cash', 'tournament', 'moving'];
+  const tabLabels = { variance: 'Variance', cash: 'Cash Game', tournament: 'Tournament', moving: 'Moving Stakes' };
 </script>
 
 <div class="bankroll" bind:this={sectionEl}>

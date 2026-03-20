@@ -7,13 +7,13 @@
     bluffPrinciples,
   } from './data/bluffing.js';
 
-  let activeTab = $state('when');
+  let activeTab = $state('spots');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['when', 'blockers', 'profiles', 'spots'];
-  const tabLabels = { when: 'When to Bluff', blockers: 'Blocker Theory', profiles: 'Player Profiles', spots: 'Common Spots' };
+  const tabs = ['spots', 'blockers', 'profiles', 'when'];
+  const tabLabels = { spots: 'Common Spots', blockers: 'Blocker Theory', profiles: 'Player Profiles', when: 'When to Bluff' };
 
   function impactColor(level) {
     if (level === 'high') return '#52b788';

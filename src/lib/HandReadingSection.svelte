@@ -6,13 +6,13 @@
     streetByStreet,
   } from './data/handReading.js';
 
-  let activeTab = $state('narrowing');
+  let activeTab = $state('examples');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['narrowing', 'boards', 'sizing', 'examples'];
-  const tabLabels = { narrowing: 'Range Narrowing', boards: 'Board Texture', sizing: 'Sizing Tells', examples: 'Street-by-Street' };
+  const tabs = ['examples', 'boards', 'narrowing', 'sizing'];
+  const tabLabels = { examples: 'Street-by-Street', boards: 'Board Texture', narrowing: 'Range Narrowing', sizing: 'Sizing Tells' };
 
   function rangeColor(fav) {
     if (fav === 'PFR') return '#1d4ed8';

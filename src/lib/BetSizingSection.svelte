@@ -8,13 +8,13 @@
     sprGuide,
   } from './data/betSizing.js';
 
-  let activeTab = $state('overview');
+  let activeTab = $state('potodds');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['overview', 'preflop', 'postflop', 'potodds'];
-  const tabLabels = { overview: 'Overview', preflop: 'Preflop', postflop: 'Postflop', potodds: 'Pot Odds' };
+  const tabs = ['potodds', 'postflop', 'preflop', 'overview'];
+  const tabLabels = { potodds: 'Pot Odds', postflop: 'Postflop', preflop: 'Preflop', overview: 'Overview' };
 
   const playerCounts = [4, 5, 6, 7];
 

@@ -6,13 +6,13 @@
     exploitingPosition,
   } from './data/position.js';
 
-  let activeTab = $state('basics');
+  let activeTab = $state('ev');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['basics', 'ev', 'plays', 'exploiting'];
-  const tabLabels = { basics: 'Why Position Matters', ev: 'EV by Seat', plays: 'Positional Plays', exploiting: 'Exploiting Position' };
+  const tabs = ['ev', 'plays', 'exploiting', 'basics'];
+  const tabLabels = { ev: 'EV by Seat', plays: 'Positional Plays', exploiting: 'Exploiting Position', basics: 'Why Position Matters' };
 
   function evColor(val) {
     if (val.includes('+')) return '#52b788';
