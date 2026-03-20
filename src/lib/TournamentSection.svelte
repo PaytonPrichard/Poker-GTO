@@ -16,13 +16,13 @@
   } from './data/tournamentRanges.js';
   import HandMatrix from './HandMatrix.svelte';
 
-  let activeTab = $state('fundamentals');
+  let activeTab = $state('stageranges');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['fundamentals', 'stages', 'stageranges', 'icm', 'pushfold'];
-  const tabLabels = { fundamentals: 'Fundamentals', stages: 'Stage Strategy', stageranges: 'Stage Ranges', icm: 'ICM & Bubble', pushfold: 'Push/Fold' };
+  const tabs = ['stageranges', 'fundamentals', 'stages', 'icm', 'pushfold'];
+  const tabLabels = { stageranges: 'Stage Ranges', fundamentals: 'Fundamentals', stages: 'Stage Strategy', icm: 'ICM & Bubble', pushfold: 'Push/Fold' };
 
   // Stage Ranges state
   let srBB = $state(40);
