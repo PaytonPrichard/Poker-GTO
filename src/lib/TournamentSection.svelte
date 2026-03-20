@@ -5,14 +5,29 @@
     icmConcepts,
     pushFoldRanges,
   } from './data/tournament.js';
+  import {
+    bbBreakpoints,
+    positions,
+    stageInfo,
+    getNearestBreakpoint,
+    getTournamentRange,
+  } from './data/tournamentRanges.js';
+  import HandMatrix from './HandMatrix.svelte';
 
   let activeTab = $state('fundamentals');
   let sectionEl;
   let allOpen = $state(false);
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
 
-  const tabs = ['fundamentals', 'stages', 'icm', 'pushfold'];
-  const tabLabels = { fundamentals: 'Fundamentals', stages: 'Stage Strategy', icm: 'ICM & Bubble', pushfold: 'Push/Fold' };
+  const tabs = ['fundamentals', 'stages', 'stageranges', 'icm', 'pushfold'];
+  const tabLabels = { fundamentals: 'Fundamentals', stages: 'Stage Strategy', stageranges: 'Stage Ranges', icm: 'ICM & Bubble', pushfold: 'Push/Fold' };
+
+  // Stage Ranges state
+  let srBB = $state(40);
+  let srPosition = $state('BTN');
+  let srNearestBP = $derived(getNearestBreakpoint(srBB));
+  let srStage = $derived(stageInfo[srNearestBP]);
+  let srRange = $derived(getTournamentRange(srBB, srPosition));
 
   // Push/Fold Trainer
   let pfMode = $state(false);
@@ -164,6 +179,76 @@
           </div>
         </details>
       {/each}
+    </div>
+    </div>
+
+  <!-- ── STAGE RANGES ── -->
+  {:else if activeTab === 'stageranges'}
+    <div role="tabpanel">
+    <div class="section-header">
+      <h3>Tournament Opening Ranges</h3>
+      <p class="section-note">
+        Adjust your stack size and position to see how opening ranges shift throughout a tournament.
+      </p>
+    </div>
+
+    <div class="sr-controls">
+      <div class="sr-bb-section">
+        <div class="sr-bb-display">
+          <span class="sr-bb-value">{srBB} BB</span>
+          <span class="sr-stage-badge" style="background:{srStage.color}">{srStage.name}</span>
+          <span class="sr-action-label">{srStage.action}</span>
+        </div>
+        <input
+          type="range"
+          min="5"
+          max="100"
+          bind:value={srBB}
+          class="sr-slider"
+        />
+        <div class="sr-ticks">
+          {#each bbBreakpoints as bp}
+            <button
+              class="sr-tick"
+              class:active={srNearestBP === bp}
+              onclick={() => srBB = bp}
+            >
+              {bp}
+            </button>
+          {/each}
+        </div>
+      </div>
+
+      <div class="sr-position-row">
+        {#each positions as pos}
+          <button
+            class="sr-pos-btn"
+            class:active={srPosition === pos}
+            onclick={() => srPosition = pos}
+          >
+            {pos}
+          </button>
+        {/each}
+      </div>
+    </div>
+
+    {#if srNearestBP !== srBB}
+      <p class="sr-snap-note">Showing ranges for {srNearestBP} BB (nearest reference depth)</p>
+    {/if}
+
+    <HandMatrix raiseSet={srRange} scenario={srStage.scenario} />
+
+    <div class="callout" style="margin-top:4px;">
+      <span class="callout-icon">♠</span>
+      <div>
+        <strong>{srStage.name} — {srNearestBP} BB</strong>
+        <p class="callout-body">{srStage.insight}</p>
+        <ul class="sr-tips">
+          {#each srStage.tips as tip}
+            <li>{tip}</li>
+          {/each}
+        </ul>
+      </div>
     </div>
     </div>
 
@@ -456,6 +541,156 @@
   .pf-next:hover { border-color: var(--c-accent-dark); color: var(--c-accent); }
   .pf-score { font-size: 13px; color: var(--c-text-4); font-weight: 600; }
   .pf-alltime { font-size: 11px; color: var(--c-text-4); font-weight: 600; text-align: center; }
+
+  /* ── Stage Ranges ── */
+  .sr-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .sr-bb-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sr-bb-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .sr-bb-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--c-text-h);
+    min-width: 70px;
+  }
+  .sr-stage-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .sr-action-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--c-text-3);
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--c-border);
+    white-space: nowrap;
+  }
+
+  .sr-slider {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--c-bg-subtle);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  .sr-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--c-accent, #60a5fa);
+    border: 2px solid var(--c-bg);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .sr-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+  .sr-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--c-accent, #60a5fa);
+    border: 2px solid var(--c-bg);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+
+  .sr-ticks {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+  }
+  .sr-tick {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-text-4);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: all 0.15s;
+  }
+  .sr-tick:hover {
+    color: var(--c-text);
+    background: var(--c-bg-card);
+  }
+  .sr-tick.active {
+    color: var(--c-accent);
+    font-weight: 700;
+  }
+
+  .sr-position-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .sr-pos-btn {
+    padding: 7px 18px;
+    border-radius: 5px;
+    border: 1px solid var(--c-border);
+    background: var(--c-bg-card);
+    color: var(--c-text-3);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .sr-pos-btn:hover {
+    border-color: var(--c-accent-dark);
+    color: var(--c-text);
+  }
+  .sr-pos-btn.active {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+    color: #bfdbfe;
+  }
+
+  .sr-snap-note {
+    font-size: 12px;
+    color: var(--c-text-4);
+    margin: 0;
+    font-style: italic;
+  }
+
+  .sr-tips {
+    margin: 6px 0 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .sr-tips li {
+    font-size: 13px;
+    color: var(--c-text-3);
+    line-height: 1.5;
+  }
 
   /* Collapsible cards */
   summary { cursor: pointer; list-style: none; user-select: none; }

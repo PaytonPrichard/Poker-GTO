@@ -14,9 +14,10 @@
   } = $props();
 
   const labels = {
-    'rfi':     { raise: 'Raise', call: 'Call',  fold: 'Fold' },
-    'vs-open': { raise: '3-Bet', call: 'Call',  fold: 'Fold' },
-    'vs-3bet': { raise: '4-Bet', call: 'Call',  fold: 'Fold' },
+    'rfi':      { raise: 'Raise', call: 'Call',  fold: 'Fold' },
+    'vs-open':  { raise: '3-Bet', call: 'Call',  fold: 'Fold' },
+    'vs-3bet':  { raise: '4-Bet', call: 'Call',  fold: 'Fold' },
+    'pushfold': { raise: 'Shove', call: 'Call',  fold: 'Fold' },
   };
 
   let hoveredHand = $state(null);
