@@ -2,7 +2,7 @@
   import HandMatrix     from './HandMatrix.svelte';
   import HandBreakdown  from './HandBreakdown.svelte';
   import { positionsByCount } from './data/hands.js';
-  import { rfiRanges, openSizes, threeBetSizes } from './data/ranges.js';
+  import { rfiRanges, mixedRanges, openSizes, threeBetSizes } from './data/ranges.js';
   import { vsOpenRanges, vs3betRanges, positionOrder } from './data/vsRanges.js';
 
   let { onTakePostflop = null } = $props();
@@ -116,6 +116,13 @@
       : scenario === 'vs-3bet'
         ? (vs3betRanges[yourPos]?.[threePos]?.call ?? new Set())
         : new Set()
+  );
+
+  // Mixed/judgment-call overlay — only populated for RFI right now
+  let mixedFreqs = $derived(
+    scenario === 'rfi'
+      ? (mixedRanges[playerCount]?.[yourPos] ?? new Map())
+      : new Map()
   );
 
   let hasData = $derived(raiseSet.size > 0 || callSet.size > 0);
@@ -280,7 +287,7 @@
   <!-- Matrix or no-data state -->
   {#if hasData}
     <HandMatrix
-      {raiseSet} {callSet} {scenario}
+      {raiseSet} {callSet} {mixedFreqs} {scenario}
       {selectedHand}
       onCellClick={handleCellClick}
     />
@@ -306,10 +313,13 @@
     <div>
       <strong>Pure vs mixed strategies</strong>
       <p class="callout-body">
-        This chart shows <em>pure strategies</em> (always raise, call, or fold). Solvers use <em>mixed strategies</em> for borderline hands (e.g., "raise KTo 65%, fold 35%"). Core hands like AA are always 100% one action; edge hands mix.
+        Core hands like AA are 100% one action. Edge hands are <em>mixed</em> — solver opens them part of the time and folds the rest. We render mixed hands as a two-tone split cell (raise color on the left, fold color on the right) with the boundary at the raise frequency. Hover any cell for exact percentages where we have them.
       </p>
       <p class="callout-body" style="margin-top: 6px;">
-        <strong>In practice:</strong> Pick one action for borderline hands and stick with it — the EV difference is tiny. Focus on avoiding big mistakes over nailing exact frequencies.
+        <strong>Coverage:</strong> Mixed data is currently populated for the cash 6-max BTN open. Other ranges still show pure raise/fold and will be backfilled over time.
+      </p>
+      <p class="callout-body" style="margin-top: 6px;">
+        <strong>In practice:</strong> Pick one action for borderline hands and stick with it. The EV difference between, say, "open 98o 70%" and "open 98o always" is tiny. Focus on avoiding big mistakes over nailing exact frequencies.
       </p>
     </div>
   </div>

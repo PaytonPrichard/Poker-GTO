@@ -70,7 +70,7 @@ const BTN_6 = [
   'Q9o','Q8o',
   'J9o','J8o',
   'T8o','T7o',
-  '97o','87o','76o','65o',
+  '98o','97o','87o','76o','65o',
 ];
 
 // SB opens vs BB only — can play wide but must still be +EV OOP
@@ -161,16 +161,63 @@ const BTN_4 = [
 const SB_4  = [...SB_6];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Mixed / judgment-call hands per position.
+// Map<hand, { raise?, call?, fold? }> — values are 0..1 frequencies.
+// Hand in this map = solver mixes its action. Empty object {} means "we know
+// it's mixed but don't claim a specific frequency." A hand can be in both the
+// raise list AND this map; the visual treats it as mixed (striped cell).
+// Frequencies below are approximate solver consensus for 100bb cash 6-max,
+// rounded to nearest 5%. Refine when authoritative solver data is sourced.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const BTN_6_MIXED = {
+  // Offsuit connectors / gappers — classic judgment-call territory
+  '98o': { raise: 0.70 },
+  '97o': { raise: 0.35 },
+  '87o': { raise: 0.60 },
+  '76o': { raise: 0.75 },
+  '65o': { raise: 0.40 },
+  // Offsuit kings / aces (bottom of range)
+  'K5o': { raise: 0.45 },
+  'K6o': {},
+  'K7o': {},
+  'A2o': {},
+  'A3o': {},
+  'A4o': {},
+  // Offsuit broadway-gap / suited-disconnected
+  'J8o': { raise: 0.55 },
+  'T7o': { raise: 0.30 },
+  'T8o': {},
+  // Suited bottom of range — frequencies vary too much to claim specifics
+  'K2s': {}, 'K3s': {}, 'K4s': {},
+  'Q2s': {}, 'Q3s': {}, 'Q4s': {},
+  'J4s': {}, 'J5s': {},
+  'T4s': {}, 'T5s': {},
+  '95s': {}, '84s': {}, '73s': {}, '62s': {}, '52s': {}, '42s': {}, '32s': {},
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Exported lookup: rfiRanges[playerCount][position] → Set of hand strings
 // ─────────────────────────────────────────────────────────────────────────────
 
 const s = arr => new Set(arr);
+const m = (obj = {}) => new Map(Object.entries(obj));
 
 export const rfiRanges = {
   4: { UTG: s(UTG_4), BTN: s(BTN_4), SB: s(SB_4) },
   5: { UTG: s(UTG_5), CO: s(CO_5), BTN: s(BTN_5), SB: s(SB_5) },
   6: { UTG: s(UTG_6), HJ: s(HJ_6), CO: s(CO_6), BTN: s(BTN_6), SB: s(SB_6) },
   7: { UTG: s(UTG_7), 'UTG+1': s(UTG1_7), HJ: s(HJ_7), CO: s(CO_7), BTN: s(BTN_7), SB: s(SB_7) },
+};
+
+// Mixed-frequency overlay. Missing positions = no mixed data yet (empty Map).
+const EMPTY = m();
+const BTN_MIXED_MAP = m(BTN_6_MIXED);
+export const mixedRanges = {
+  4: { UTG: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
+  5: { UTG: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
+  6: { UTG: EMPTY, HJ: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
+  7: { UTG: EMPTY, 'UTG+1': EMPTY, HJ: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
 };
 
 // Standard open sizes (in BBs) per position

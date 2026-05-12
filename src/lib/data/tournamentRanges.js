@@ -65,14 +65,14 @@ const rangeStrings = {
     UTG: '77+, ATs+, KQs, QJs, JTs, AJo+, KQo',
     HJ:  '55+, A9s+, KTs+, QTs+, JTs, T9s, ATo+, KJo+, QJo',
     CO:  '22+, A4s+, K9s+, QTs+, J9s+, T9s, 98s, A9o+, KTo+, QJo, JTo',
-    BTN: '22+, A2s+, K7s+, Q8s+, J8s+, T7s+, 97s+, 87s, 76s, 65s, A3o+, KTo+, QTo+, JTo, T9o',
+    BTN: '22+, A2s+, K7s+, Q8s+, J8s+, T7s+, 97s+, 87s, 76s, 65s, A3o+, KTo+, QTo+, JTo, T9o, 98o',
     SB:  '22+, A2s+, K9s+, Q9s+, J9s+, T8s+, 98s, 87s, A7o+, KTo+, QJo, JTo',
   },
   40: {
     UTG: '88+, AJs+, KQs, AQo+',
     HJ:  '66+, ATs+, KJs+, QJs, JTs, AJo+, KQo',
     CO:  '33+, A5s+, KTs+, QTs+, JTs, T9s, ATo+, KJo+, QJo',
-    BTN: '22+, A2s+, K9s+, Q9s+, J9s+, T8s+, 98s, 87s, 76s, A5o+, KTo+, QTo+, JTo',
+    BTN: '22+, A2s+, K9s+, Q9s+, J9s+, T8s+, 98s, 87s, 76s, A5o+, KTo+, QTo+, JTo, T9o, 98o',
     SB:  '22+, A2s+, K9s+, Q9s+, J9s+, T9s, 98s, A7o+, KTo+, QJo, JTo',
   },
   25: {
