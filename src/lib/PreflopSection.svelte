@@ -144,70 +144,55 @@
 <div class="preflop">
   <h2>Preflop Ranges</h2>
 
-  <!-- Player count -->
-  <div class="selector-group">
-    <div class="group-label">Players at table</div>
-    <div class="btn-group">
-      {#each [4, 5, 6, 7] as n}
-        <button class="tab-btn" class:active={playerCount === n} onclick={() => setPlayerCount(n)}>
-          {n}-handed
-        </button>
-      {/each}
-    </div>
-  </div>
-
-  <!-- Scenario selector -->
-  <div class="selector-group">
-    <div class="group-label">Situation</div>
-    <div class="btn-group">
-      <button class="tab-btn scenario" class:active={scenario === 'rfi'}     onclick={() => setScenario('rfi')}
-        data-tooltip-title="RFI — Raise First In"
-        data-tooltip="Opening the pot with a raise when all players before you have folded. Size: 3x from EP, 2.5x from LP.">
-        Opening (RFI)
-      </button>
-      <button class="tab-btn scenario" class:active={scenario === 'vs-open'} onclick={() => setScenario('vs-open')}
-        data-tooltip-title="Facing a Raise"
-        data-tooltip="Action folds to an opener and then to you. Your options: 3-bet (re-raise), cold call, or fold.">
-        Facing a Raise
-      </button>
-      <button class="tab-btn scenario" class:active={scenario === 'vs-3bet'} onclick={() => setScenario('vs-3bet')}
-        data-tooltip-title="Facing a 3-Bet"
-        data-tooltip="You opened and an opponent re-raised (3-bet). Your options: 4-bet, call the 3-bet, or fold.">
-        Facing a 3-Bet
-      </button>
-    </div>
-  </div>
-
-  <!-- ── RFI position selector ── -->
-  {#if scenario === 'rfi'}
+  <!-- Compact selector toolbar — all controls inline -->
+  <div class="toolbar">
     <div class="selector-group">
-      <div class="group-label">Your position</div>
+      <span class="group-label">Players</span>
       <div class="btn-group">
-        {#each rfiPositions as pos}
-          <button class="tab-btn pos" class:active={yourPos === pos} onclick={() => yourPos = pos}
-            data-tooltip={posDesc[pos] ?? pos}>
-            {pos}
+        {#each [4, 5, 6, 7] as n}
+          <button class="tab-btn" class:active={playerCount === n} onclick={() => setPlayerCount(n)}>
+            {n}-handed
           </button>
         {/each}
       </div>
     </div>
 
-    <div class="info-bar">
-      <div class="info-item">
-        <span class="info-label">Position</span>
-        <span class="info-value">{posDesc[yourPos] ?? yourPos}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">Standard open size</span>
-        <span class="info-value highlight">{openSize} BB</span>
+    <div class="selector-group">
+      <span class="group-label">Situation</span>
+      <div class="btn-group">
+        <button class="tab-btn scenario" class:active={scenario === 'rfi'}     onclick={() => setScenario('rfi')}
+          data-tooltip-title="RFI — Raise First In"
+          data-tooltip="Opening the pot with a raise when all players before you have folded. Size: 3x from EP, 2.5x from LP.">
+          Opening (RFI)
+        </button>
+        <button class="tab-btn scenario" class:active={scenario === 'vs-open'} onclick={() => setScenario('vs-open')}
+          data-tooltip-title="Facing a Raise"
+          data-tooltip="Action folds to an opener and then to you. Your options: 3-bet (re-raise), cold call, or fold.">
+          Facing a Raise
+        </button>
+        <button class="tab-btn scenario" class:active={scenario === 'vs-3bet'} onclick={() => setScenario('vs-3bet')}
+          data-tooltip-title="Facing a 3-Bet"
+          data-tooltip="You opened and an opponent re-raised (3-bet). Your options: 4-bet, call the 3-bet, or fold.">
+          Facing a 3-Bet
+        </button>
       </div>
     </div>
 
-  <!-- ── vs Open position selectors ── -->
-  {:else if scenario === 'vs-open'}
-    <div class="dual-selectors">
+    {#if scenario === 'rfi'}
       <div class="selector-group">
-        <div class="group-label">Raiser's position</div>
+        <span class="group-label">Your position</span>
+        <div class="btn-group">
+          {#each rfiPositions as pos}
+            <button class="tab-btn pos" class:active={yourPos === pos} onclick={() => yourPos = pos}
+              data-tooltip={posDesc[pos] ?? pos}>
+              {pos}
+            </button>
+          {/each}
+        </div>
+      </div>
+    {:else if scenario === 'vs-open'}
+      <div class="selector-group">
+        <span class="group-label">Raiser</span>
         <div class="btn-group">
           {#each rfiPositions as pos}
             <button class="tab-btn pos raiser" class:active={raiserPos === pos} onclick={() => setRaiserPos(pos)}>
@@ -217,7 +202,7 @@
         </div>
       </div>
       <div class="selector-group">
-        <div class="group-label">Your position</div>
+        <span class="group-label">Your position</span>
         <div class="btn-group">
           {#each defenderPositions as pos}
             <button class="tab-btn pos" class:active={yourPos === pos} onclick={() => yourPos = pos}>
@@ -226,28 +211,9 @@
           {/each}
         </div>
       </div>
-    </div>
-
-    <div class="info-bar">
-      <div class="info-item">
-        <span class="info-label">Situation</span>
-        <span class="info-value">{raiserPos} opens → {yourPos} responds</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">3-Bet sizing (IP)</span>
-        <span class="info-value">{threeBetSizes.IP}</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">3-Bet sizing (OOP)</span>
-        <span class="info-value">{threeBetSizes.OOP}</span>
-      </div>
-    </div>
-
-  <!-- ── vs 3-Bet position selectors ── -->
-  {:else if scenario === 'vs-3bet'}
-    <div class="dual-selectors">
+    {:else if scenario === 'vs-3bet'}
       <div class="selector-group">
-        <div class="group-label">You opened from</div>
+        <span class="group-label">You opened from</span>
         <div class="btn-group">
           {#each rfiPositions as pos}
             <button class="tab-btn pos" class:active={yourPos === pos} onclick={() => setYourPos3bet(pos)}>
@@ -257,7 +223,7 @@
         </div>
       </div>
       <div class="selector-group">
-        <div class="group-label">3-Bettor's position</div>
+        <span class="group-label">3-Bettor</span>
         <div class="btn-group">
           {#each threeBettorPositions as pos}
             <button class="tab-btn pos raiser" class:active={threePos === pos} onclick={() => threePos = pos}>
@@ -266,17 +232,29 @@
           {/each}
         </div>
       </div>
-    </div>
+    {/if}
+  </div>
 
-    <div class="info-bar">
-      <div class="info-item">
-        <span class="info-label">Situation</span>
-        <span class="info-value">{yourPos} opens → {threePos} 3-bets → {yourPos} responds</span>
-      </div>
-      <div class="info-item">
-        <span class="info-label">Key concept</span>
-        <span class="info-value">4-bet polarized. Call with medium-strong hands.</span>
-      </div>
+  <!-- Inline context strip (replaces the boxy info-bar) -->
+  {#if scenario === 'rfi'}
+    <div class="context-strip">
+      <span class="ctx-text">{posDesc[yourPos] ?? yourPos}</span>
+      <span class="ctx-divider">·</span>
+      <span class="ctx-text">Open <strong class="ctx-highlight">{openSize} BB</strong></span>
+    </div>
+  {:else if scenario === 'vs-open'}
+    <div class="context-strip">
+      <span class="ctx-text">{raiserPos} opens → {yourPos} responds</span>
+      <span class="ctx-divider">·</span>
+      <span class="ctx-text">3-bet IP <strong>{threeBetSizes.IP}</strong></span>
+      <span class="ctx-divider">·</span>
+      <span class="ctx-text">OOP <strong>{threeBetSizes.OOP}</strong></span>
+    </div>
+  {:else if scenario === 'vs-3bet'}
+    <div class="context-strip">
+      <span class="ctx-text">{yourPos} opens → {threePos} 3-bets → {yourPos} responds</span>
+      <span class="ctx-divider">·</span>
+      <span class="ctx-text">4-bet polarized; call with medium-strong hands</span>
     </div>
   {/if}
 
@@ -359,30 +337,44 @@
 </div>
 
 <style>
-  .preflop { display: flex; flex-direction: column; gap: 20px; }
+  .preflop { display: flex; flex-direction: column; gap: 14px; }
 
   h2 { font-size: 22px; font-weight: 700; color: var(--c-text-h); margin: 0; }
   h3 { font-size: 15px; font-weight: 600; color: var(--c-text); margin: 0 0 12px; }
 
-  .selector-group { display: flex; flex-direction: column; gap: 8px; }
+  /* Toolbar: every selector group inline, wrapping on narrow screens */
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 22px;
+  }
+
+  .selector-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
 
   .group-label {
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--c-text-3);
+    white-space: nowrap;
   }
 
-  .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
 
   .tab-btn {
-    padding: 6px 14px;
+    padding: 5px 11px;
     border-radius: 5px;
     border: 1px solid var(--c-border);
     background: var(--c-bg-card);
     color: var(--c-text-3);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s;
@@ -390,39 +382,27 @@
   .tab-btn:hover         { border-color: var(--c-accent-dark); color: var(--c-text); }
   .tab-btn.active        { background: var(--c-accent-dark); border-color: var(--c-accent-dark); color: #fff; }
 
-  /* Scenario tabs — slightly wider */
-  .tab-btn.scenario      { padding: 6px 18px; }
+  .tab-btn.scenario      { padding: 5px 14px; }
 
-  /* Position buttons — your position (blue) */
   .tab-btn.pos.active    { background: #1d4ed8; border-color: #3b82f6; }
   .tab-btn.pos:hover     { border-color: #3b82f6; color: var(--c-text); }
 
-  /* Raiser position (orange) */
   .tab-btn.pos.raiser.active { background: #92400e; border-color: #f59e0b; }
   .tab-btn.pos.raiser:hover  { border-color: #f59e0b; color: var(--c-text); }
 
-  .dual-selectors {
+  /* Inline context strip — replaces the old boxy info-bar */
+  .context-strip {
     display: flex;
-    gap: 28px;
+    align-items: center;
     flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--c-text-3);
+    padding: 0 2px;
   }
-
-  .info-bar {
-    display: flex;
-    gap: 24px;
-    padding: 12px 16px;
-    background: var(--c-bg-card);
-    border: 1px solid var(--c-border);
-    border-radius: 7px;
-    flex-wrap: wrap;
-  }
-  .info-item   { display: flex; flex-direction: column; gap: 2px; }
-  .info-label  {
-    font-size: 11px; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.08em; color: var(--c-text-3);
-  }
-  .info-value  { font-size: 14px; color: var(--c-text); }
-  .info-value.highlight { color: var(--c-accent); font-weight: 700; font-size: 17px; }
+  .ctx-text strong { color: var(--c-text); font-weight: 700; }
+  .ctx-text strong.ctx-highlight { color: var(--c-accent); font-size: 15px; }
+  .ctx-divider { color: var(--c-text-4); }
 
   .matrix-hint {
     font-size: 12px; color: var(--c-text-4); margin: 0;
