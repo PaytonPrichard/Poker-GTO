@@ -90,6 +90,65 @@
     drillTotal = 0;
     drillOrder = cbetData.map((_, i) => i).sort(() => Math.random() - 0.5);
   }
+
+  // ── Action category badges (for Turn / River guide cards) ──────────────────
+  function actionCategory(action) {
+    const a = action.toLowerCase();
+    if (a.includes('donk')) return 'rare';
+    if (a.includes('check')) return 'check';
+    if (a.includes('barrel') || a.includes('lead') || a.includes('bet')) return 'bet';
+    if (a.includes('fold')) return 'fold';
+    return 'other';
+  }
+
+  // ── Quick Test (inline mini-quiz for Turn / River / Concepts) ──────────────
+  // Distractor pool for action questions — used to build 3-option multiple choice
+  const actionDistractors = ['Double barrel', 'Check turn', 'Check river', 'Lead turn', 'Triple barrel', 'Bet as bluff', 'Donk-bet turn'];
+
+  function pickThree(correct, pool) {
+    const others = pool.filter(x => x !== correct);
+    const shuffled = others.sort(() => Math.random() - 0.5).slice(0, 2);
+    return [correct, ...shuffled].sort(() => Math.random() - 0.5);
+  }
+
+  // Per-tab state. quizIdx is the index into the source array, quizPicked is the user's answer.
+  let turnQuizIdx = $state(Math.floor(Math.random() * turnGuide.length));
+  let turnQuizPicked = $state(null);
+  let turnQuiz = $derived(turnGuide[turnQuizIdx]);
+  let turnQuizOptions = $derived.by(() => pickThree(turnGuide[turnQuizIdx].action, actionDistractors));
+
+  let riverQuizIdx = $state(Math.floor(Math.random() * riverGuide.length));
+  let riverQuizPicked = $state(null);
+  let riverQuiz = $derived(riverGuide[riverQuizIdx]);
+  let riverQuizOptions = $derived.by(() => pickThree(riverGuide[riverQuizIdx].action, actionDistractors));
+
+  let conceptQuizIdx = $state(Math.floor(Math.random() * principles.length));
+  let conceptQuizPicked = $state(null);
+  let conceptQuiz = $derived(principles[conceptQuizIdx]);
+  let conceptQuizOptions = $derived.by(() => {
+    const correct = principles[conceptQuizIdx].title;
+    const others = principles.filter((_, i) => i !== conceptQuizIdx).sort(() => Math.random() - 0.5).slice(0, 2).map(p => p.title);
+    return [correct, ...others].sort(() => Math.random() - 0.5);
+  });
+
+  function nextTurnQuiz() {
+    let next = Math.floor(Math.random() * turnGuide.length);
+    if (next === turnQuizIdx && turnGuide.length > 1) next = (next + 1) % turnGuide.length;
+    turnQuizIdx = next;
+    turnQuizPicked = null;
+  }
+  function nextRiverQuiz() {
+    let next = Math.floor(Math.random() * riverGuide.length);
+    if (next === riverQuizIdx && riverGuide.length > 1) next = (next + 1) % riverGuide.length;
+    riverQuizIdx = next;
+    riverQuizPicked = null;
+  }
+  function nextConceptQuiz() {
+    let next = Math.floor(Math.random() * principles.length);
+    if (next === conceptQuizIdx && principles.length > 1) next = (next + 1) % principles.length;
+    conceptQuizIdx = next;
+    conceptQuizPicked = null;
+  }
 </script>
 
 <div class="postflop" bind:this={sectionEl}>
@@ -277,12 +336,35 @@
         <h3>Turn Decisions</h3>
         <p class="section-note">How to proceed after your flop c-bet is called.</p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{turnQuiz.situation}</span>
+        </div>
+        {#if turnQuizPicked === null}
+          <div class="qt-options">
+            {#each turnQuizOptions as opt}
+              <button class="qt-option" onclick={() => turnQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = turnQuizPicked === turnQuiz.action}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Answer: <strong>{turnQuiz.action}</strong> — {turnQuiz.notes}</span>
+            <button class="qt-next" onclick={nextTurnQuiz}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="guide-cards">
         {#each turnGuide as item}
           <details class="guide-card">
             <summary class="guide-header">
               <span class="situation">{item.situation}</span>
-              <span class="action-badge"
+              <span class="action-badge cat-{actionCategory(item.action)}"
                 data-tooltip-title="{item.action}" data-tooltip="Recommended action: {item.action}. Hands: {item.hands}. Frequency: {item.frequency}.">{item.action}</span>
             </summary>
             <div class="guide-body">
@@ -315,6 +397,28 @@
         <p class="section-note">Polarize: size big with value, balance with bluffs.</p>
       </div>
 
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{riverQuiz.situation}</span>
+        </div>
+        {#if riverQuizPicked === null}
+          <div class="qt-options">
+            {#each riverQuizOptions as opt}
+              <button class="qt-option" onclick={() => riverQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = riverQuizPicked === riverQuiz.action}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Answer: <strong>{riverQuiz.action}</strong> — {riverQuiz.notes}</span>
+            <button class="qt-next" onclick={nextRiverQuiz}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="callout">
         <span class="callout-icon">♠</span>
         <div>
@@ -332,7 +436,7 @@
           <details class="guide-card">
             <summary class="guide-header">
               <span class="situation">{item.situation}</span>
-              <span class="action-badge"
+              <span class="action-badge cat-{actionCategory(item.action)}"
                 data-tooltip-title="{item.action}" data-tooltip="Recommended action: {item.action}. Hands: {item.hands}. Frequency: {item.frequency}.">{item.action}</span>
             </summary>
             <div class="guide-body">
@@ -364,6 +468,29 @@
         <h3>Core Postflop Principles</h3>
         <p class="section-note">Foundational GTO concepts for postflop play.</p>
       </div>
+
+      <!-- Quick Test — match principle to description -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{conceptQuiz.body}</span>
+        </div>
+        {#if conceptQuizPicked === null}
+          <div class="qt-options">
+            {#each conceptQuizOptions as opt}
+              <button class="qt-option" onclick={() => conceptQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = conceptQuizPicked === conceptQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Concept: <strong>{conceptQuiz.title}</strong></span>
+            <button class="qt-next" onclick={nextConceptQuiz}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each principles as p}
           <details class="concept-card">
@@ -457,6 +584,54 @@
 
   .section-header { display: flex; flex-direction: column; gap: 8px; }
   .section-note   { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
+
+  /* ── Quick Test (inline mini-quiz) ── */
+  .quick-test {
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border-accent, var(--c-accent));
+    border-left: 3px solid var(--c-accent);
+    border-radius: 7px;
+    padding: 12px 14px;
+    margin: 4px 0 8px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .qt-header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .qt-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--c-accent);
+  }
+  .qt-situation { font-size: 14px; color: var(--c-text); font-weight: 500; line-height: 1.5; }
+  .qt-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .qt-option {
+    padding: 6px 14px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .qt-option:hover { border-color: var(--c-accent); background: var(--c-bg-subtle, var(--c-bg-card)); }
+  .qt-result {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 13px; color: var(--c-text-2); line-height: 1.5;
+  }
+  .qt-result.correct { color: var(--c-text); }
+  .qt-result.wrong   { color: var(--c-text); }
+  .qt-mark {
+    font-size: 16px; font-weight: 800;
+    width: 22px; height: 22px; display: inline-flex;
+    align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  .qt-result.correct .qt-mark { background: #14532d; color: #d1fae5; }
+  .qt-result.wrong .qt-mark   { background: #7f1d1d; color: #fecaca; }
+  .qt-result strong { color: var(--c-text); }
+  .qt-next {
+    margin-left: auto;
+    padding: 4px 12px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text-3); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qt-next:hover { color: var(--c-text); border-color: var(--c-accent); }
 
   .badge {
     display: inline-block;
@@ -556,7 +731,12 @@
   .size-text { color: var(--c-text-2); font-size: 12px; }
 
   /* ── Guide cards ── */
-  .guide-cards { display: flex; flex-direction: column; gap: 12px; }
+  .guide-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
   .guide-card {
     background: var(--c-bg-card);
     border: 1px solid var(--c-border);
@@ -581,6 +761,10 @@
     text-transform: uppercase; letter-spacing: 0.05em;
     white-space: nowrap;
   }
+  .action-badge.cat-bet   { background: #2d6a4f; color: #b7e4c7; }   /* aggressive — green */
+  .action-badge.cat-check { background: #1e3a8a; color: #bfdbfe; }   /* passive — blue */
+  .action-badge.cat-rare  { background: #3f3f46; color: #d4d4d8; }   /* GTO avoids — gray */
+  .action-badge.cat-fold  { background: #7f1d1d; color: #fecaca; }   /* fold — red */
   .guide-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; }
   .guide-row  { display: flex; gap: 10px; align-items: baseline; }
   .guide-label {
@@ -616,8 +800,9 @@
   /* ── Concepts ── */
   .concepts-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 10px;
+    align-items: start;
   }
   .concept-card {
     background: var(--c-bg-card);
