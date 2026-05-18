@@ -14,6 +14,7 @@ import { positionBasics, evBySeat, positionalPlays, exploitingPosition } from '.
 import { cashBrm, tournamentBrm, varianceInfo, movingStakes } from './bankroll.js';
 import { preflopLeaks, postflopLeaks, mentalGame, sizingMistakes } from './mistakes.js';
 import { readingOutput, frequencyConcepts, whenToDeviate, practicalTips } from './solver.js';
+import { statDefinitions, playerArchetypes } from './hudStats.js';
 import { quizQuestions } from './quiz.js';
 
 // ── Section label map (matches App.svelte sidebar IDs) ──────────────────────
@@ -28,6 +29,7 @@ export const sectionLabels = {
   sizing:      'Theory › Bet Sizing',
   mistakes:    'Theory › Common Mistakes',
   solver:      'Theory › Solver Guide',
+  hudstats:    'Theory › Reading HUD Stats',
   tournament:  'Tournament › Strategy & ICM',
   bankroll:    'Tournament › Bankroll Mgmt',
   guided:      'Tools › Guided Learning',
@@ -478,6 +480,24 @@ export function buildSearchIndex() {
       [t.title, t.body].join(' '),
       'solver',
       'Tip: ' + t.title
+    ));
+  }
+
+  // ── HUD Stats: Stat definitions ───────────────────────────────────────
+  for (const s of statDefinitions) {
+    idx.push(entry(
+      [s.abbr, s.name, s.definition, s.insight].join(' '),
+      'hudstats',
+      `HUD: ${s.abbr} — ${s.name}`
+    ));
+  }
+
+  // ── HUD Stats: Player archetypes ──────────────────────────────────────
+  for (const a of playerArchetypes) {
+    idx.push(entry(
+      [a.name, a.tagline, a.description, a.fingerprint, a.exploits.join(' ')].join(' '),
+      'hudstats',
+      `HUD: ${a.name}`
     ));
   }
 

@@ -12,6 +12,7 @@
   import BankrollSection    from './lib/BankrollSection.svelte';
   import MistakesSection    from './lib/MistakesSection.svelte';
   import SolverSection      from './lib/SolverSection.svelte';
+  import HudStatsSection    from './lib/HudStatsSection.svelte';
   import SessionNotes       from './lib/SessionNotes.svelte';
   import QuizSection        from './lib/QuizSection.svelte';
   import ChatAssistant      from './lib/ChatAssistant.svelte';
@@ -58,6 +59,7 @@
         { id: 'sizing',   label: 'Bet Sizing' },
         { id: 'mistakes', label: 'Common Mistakes' },
         { id: 'solver',   label: 'Solver Guide' },
+        { id: 'hudstats', label: 'Reading HUD Stats' },
       ],
     },
     {
@@ -134,7 +136,7 @@
   // ── Reading progress (auto-track details opens) ───────────────────────
   const contentSections = new Set([
     'preflop', 'position', 'postflop', 'handreading', 'bluffing', 'multiway',
-    'equity', 'sizing', 'mistakes', 'solver', 'tournament', 'bankroll',
+    'equity', 'sizing', 'mistakes', 'solver', 'hudstats', 'tournament', 'bankroll',
   ]);
 
   let readItems = $state(JSON.parse(localStorage.getItem('readItems') ?? '{}'));
@@ -729,6 +731,8 @@
       <MistakesSection />
     {:else if activeSection === 'solver'}
       <SolverSection />
+    {:else if activeSection === 'hudstats'}
+      <HudStatsSection />
     {:else if activeSection === 'cheatsheet'}
       <CheatSheet />
     {:else if activeSection === 'range-builder'}
