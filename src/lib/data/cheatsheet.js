@@ -5,7 +5,7 @@
 
 /** RFI open-raise sizes by position (6-max, 100bb deep) */
 export const rfiSizes = [
-  { position: "UTG (LJ)", size: "2.5bb", notes: "Tightest range (~18%). Premium hands + suited broadways." },
+  { position: "UTG (LJ)", size: "3bb", notes: "Tightest range (~15%). Premium hands + suited broadways." },
   { position: "HJ", size: "2.5bb", notes: "Slightly wider (~22%). Add suited connectors like 76s, 87s." },
   { position: "CO", size: "2.5bb", notes: "Open wide (~28%). Most suited Ax, suited connectors, broadways." },
   { position: "BTN", size: "2.5bb", notes: "Widest open (~48%). Nearly all pairs, suited hands, offsuit broadways." },
