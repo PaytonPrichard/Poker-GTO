@@ -19,6 +19,40 @@
     if (val.includes('-')) return '#ef4444';
     return 'var(--c-text-2)';
   }
+
+  // ── Quick Test (inline mini-quiz) ────────────────────────────────────────
+  function pickThreeTitles(pool, correctIdx) {
+    const correct = pool[correctIdx].title;
+    const others = pool
+      .filter((_, i) => i !== correctIdx)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2)
+      .map(p => p.title);
+    return [correct, ...others].sort(() => Math.random() - 0.5);
+  }
+
+  let basicsQuizIdx = $state(Math.floor(Math.random() * positionBasics.length));
+  let basicsQuizPicked = $state(null);
+  let basicsQuiz = $derived(positionBasics[basicsQuizIdx]);
+  let basicsQuizOptions = $derived.by(() => pickThreeTitles(positionBasics, basicsQuizIdx));
+
+  let playsQuizIdx = $state(Math.floor(Math.random() * positionalPlays.length));
+  let playsQuizPicked = $state(null);
+  let playsQuiz = $derived(positionalPlays[playsQuizIdx]);
+  let playsQuizOptions = $derived.by(() => pickThreeTitles(positionalPlays, playsQuizIdx));
+
+  function nextBasicsQuiz() {
+    let next = Math.floor(Math.random() * positionBasics.length);
+    if (next === basicsQuizIdx && positionBasics.length > 1) next = (next + 1) % positionBasics.length;
+    basicsQuizIdx = next;
+    basicsQuizPicked = null;
+  }
+  function nextPlaysQuiz() {
+    let next = Math.floor(Math.random() * positionalPlays.length);
+    if (next === playsQuizIdx && positionalPlays.length > 1) next = (next + 1) % positionalPlays.length;
+    playsQuizIdx = next;
+    playsQuizPicked = null;
+  }
 </script>
 
 <div class="position" bind:this={sectionEl}>
@@ -55,6 +89,29 @@
           Acting last influences every decision from preflop to river.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{basicsQuiz.body}</span>
+        </div>
+        {#if basicsQuizPicked === null}
+          <div class="qt-options">
+            {#each basicsQuizOptions as opt}
+              <button class="qt-option" onclick={() => basicsQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = basicsQuizPicked === basicsQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Concept: <strong>{basicsQuiz.title}</strong></span>
+            <button class="qt-next" onclick={nextBasicsQuiz}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each positionBasics as item}
           <details class="concept-card">
@@ -115,6 +172,29 @@
           Tactical plays that require or heavily benefit from position.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{playsQuiz.body}</span>
+        </div>
+        {#if playsQuizPicked === null}
+          <div class="qt-options">
+            {#each playsQuizOptions as opt}
+              <button class="qt-option" onclick={() => playsQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = playsQuizPicked === playsQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Play: <strong>{playsQuiz.title}</strong></span>
+            <button class="qt-next" onclick={nextPlaysQuiz}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each positionalPlays as item}
           <details class="concept-card">
@@ -183,7 +263,58 @@
   .section-header { display: flex; flex-direction: column; gap: 8px; }
   .section-note   { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
 
-  .concepts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  /* ── Quick Test (inline mini-quiz) ── */
+  .quick-test {
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border-accent, var(--c-accent));
+    border-left: 3px solid var(--c-accent);
+    border-radius: 7px;
+    padding: 12px 14px;
+    margin: 4px 0 8px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .qt-header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .qt-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--c-accent);
+  }
+  .qt-situation { font-size: 14px; color: var(--c-text); font-weight: 500; line-height: 1.5; }
+  .qt-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .qt-option {
+    padding: 6px 14px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .qt-option:hover { border-color: var(--c-accent); }
+  .qt-result {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 13px; color: var(--c-text); line-height: 1.5;
+  }
+  .qt-mark {
+    font-size: 16px; font-weight: 800;
+    width: 22px; height: 22px; display: inline-flex;
+    align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  .qt-result.correct .qt-mark { background: #14532d; color: #d1fae5; }
+  .qt-result.wrong .qt-mark   { background: #7f1d1d; color: #fecaca; }
+  .qt-result strong { color: var(--c-text); }
+  .qt-next {
+    margin-left: auto;
+    padding: 4px 12px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text-3); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qt-next:hover { color: var(--c-text); border-color: var(--c-accent); }
+
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
   .concept-card {
     background: var(--c-bg-card); border: 1px solid var(--c-border);
     border-radius: 8px; padding: 14px 16px;
@@ -226,7 +357,12 @@
   .callout-body { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.6; }
 
   /* Comparison cards */
-  .comparison-cards { display: flex; flex-direction: column; gap: 12px; }
+  .comparison-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
   .comparison-card {
     background: var(--c-bg-card); border: 1px solid var(--c-border);
     border-radius: 8px; overflow: hidden;

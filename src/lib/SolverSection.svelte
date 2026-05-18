@@ -13,6 +13,58 @@
 
   const tabs = ['practical', 'frequencies', 'reading', 'deviate'];
   const tabLabels = { practical: 'Practical Tips', frequencies: 'Frequencies', reading: 'Reading Output', deviate: 'When to Deviate' };
+
+  // ── Quick Test (inline mini-quiz) ────────────────────────────────────────
+  function pickThreeTitles(pool, correctIdx) {
+    const correct = pool[correctIdx].title;
+    const others = pool
+      .filter((_, i) => i !== correctIdx)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2)
+      .map(p => p.title);
+    return [correct, ...others].sort(() => Math.random() - 0.5);
+  }
+
+  // One quiz state per tab
+  let readQuizIdx = $state(Math.floor(Math.random() * readingOutput.length));
+  let readQuizPicked = $state(null);
+  let readQuiz = $derived(readingOutput[readQuizIdx]);
+  let readQuizOptions = $derived.by(() => pickThreeTitles(readingOutput, readQuizIdx));
+
+  let freqQuizIdx = $state(Math.floor(Math.random() * frequencyConcepts.length));
+  let freqQuizPicked = $state(null);
+  let freqQuiz = $derived(frequencyConcepts[freqQuizIdx]);
+  let freqQuizOptions = $derived.by(() => pickThreeTitles(frequencyConcepts, freqQuizIdx));
+
+  let devQuizIdx = $state(Math.floor(Math.random() * whenToDeviate.length));
+  let devQuizPicked = $state(null);
+  let devQuiz = $derived(whenToDeviate[devQuizIdx]);
+  let devQuizOptions = $derived.by(() => pickThreeTitles(whenToDeviate, devQuizIdx));
+
+  let pracQuizIdx = $state(Math.floor(Math.random() * practicalTips.length));
+  let pracQuizPicked = $state(null);
+  let pracQuiz = $derived(practicalTips[pracQuizIdx]);
+  let pracQuizOptions = $derived.by(() => pickThreeTitles(practicalTips, pracQuizIdx));
+
+  function nextQuiz(which) {
+    if (which === 'read') {
+      let n = Math.floor(Math.random() * readingOutput.length);
+      if (n === readQuizIdx && readingOutput.length > 1) n = (n + 1) % readingOutput.length;
+      readQuizIdx = n; readQuizPicked = null;
+    } else if (which === 'freq') {
+      let n = Math.floor(Math.random() * frequencyConcepts.length);
+      if (n === freqQuizIdx && frequencyConcepts.length > 1) n = (n + 1) % frequencyConcepts.length;
+      freqQuizIdx = n; freqQuizPicked = null;
+    } else if (which === 'dev') {
+      let n = Math.floor(Math.random() * whenToDeviate.length);
+      if (n === devQuizIdx && whenToDeviate.length > 1) n = (n + 1) % whenToDeviate.length;
+      devQuizIdx = n; devQuizPicked = null;
+    } else if (which === 'prac') {
+      let n = Math.floor(Math.random() * practicalTips.length);
+      if (n === pracQuizIdx && practicalTips.length > 1) n = (n + 1) % practicalTips.length;
+      pracQuizIdx = n; pracQuizPicked = null;
+    }
+  }
 </script>
 
 <div class="solver" bind:this={sectionEl}>
@@ -49,6 +101,29 @@
           Key concepts for interpreting any solver's output.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{readQuiz.body}</span>
+        </div>
+        {#if readQuizPicked === null}
+          <div class="qt-options">
+            {#each readQuizOptions as opt}
+              <button class="qt-option" onclick={() => readQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = readQuizPicked === readQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Concept: <strong>{readQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('read')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each readingOutput as item}
           <details class="concept-card">
@@ -68,6 +143,29 @@
           Why solvers mix actions and how to implement frequencies in practice.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{freqQuiz.body}</span>
+        </div>
+        {#if freqQuizPicked === null}
+          <div class="qt-options">
+            {#each freqQuizOptions as opt}
+              <button class="qt-option" onclick={() => freqQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = freqQuizPicked === freqQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Concept: <strong>{freqQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('freq')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each frequencyConcepts as item}
           <details class="concept-card">
@@ -97,6 +195,29 @@
           GTO is the baseline — deviate when opponents are exploitable.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{devQuiz.body}</span>
+        </div>
+        {#if devQuizPicked === null}
+          <div class="qt-options">
+            {#each devQuizOptions as opt}
+              <button class="qt-option" onclick={() => devQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = devQuizPicked === devQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Concept: <strong>{devQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('dev')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each whenToDeviate as item}
           <details class="concept-card">
@@ -116,6 +237,29 @@
           Translate solver output into actionable table strategy.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{pracQuiz.body}</span>
+        </div>
+        {#if pracQuizPicked === null}
+          <div class="qt-options">
+            {#each pracQuizOptions as opt}
+              <button class="qt-option" onclick={() => pracQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = pracQuizPicked === pracQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Tip: <strong>{pracQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('prac')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each practicalTips as item}
           <details class="concept-card">
@@ -152,7 +296,58 @@
   .section-header { display: flex; flex-direction: column; gap: 8px; }
   .section-note   { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
 
-  .concepts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  /* ── Quick Test (inline mini-quiz) ── */
+  .quick-test {
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border-accent, var(--c-accent));
+    border-left: 3px solid var(--c-accent);
+    border-radius: 7px;
+    padding: 12px 14px;
+    margin: 4px 0 8px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .qt-header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .qt-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--c-accent);
+  }
+  .qt-situation { font-size: 14px; color: var(--c-text); font-weight: 500; line-height: 1.5; }
+  .qt-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .qt-option {
+    padding: 6px 14px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .qt-option:hover { border-color: var(--c-accent); }
+  .qt-result {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 13px; color: var(--c-text); line-height: 1.5;
+  }
+  .qt-mark {
+    font-size: 16px; font-weight: 800;
+    width: 22px; height: 22px; display: inline-flex;
+    align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  .qt-result.correct .qt-mark { background: #14532d; color: #d1fae5; }
+  .qt-result.wrong .qt-mark   { background: #7f1d1d; color: #fecaca; }
+  .qt-result strong { color: var(--c-text); }
+  .qt-next {
+    margin-left: auto;
+    padding: 4px 12px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text-3); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qt-next:hover { color: var(--c-text); border-color: var(--c-accent); }
+
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
   .concept-card {
     background: var(--c-bg-card); border: 1px solid var(--c-border);
     border-radius: 8px; padding: 14px 16px;

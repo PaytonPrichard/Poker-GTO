@@ -24,6 +24,64 @@
     if (sev === 'medium') return 'MED';
     return 'LOW';
   }
+
+  // Sort leaks high → medium → low
+  const sevRank = { high: 3, medium: 2, low: 1 };
+  const sortedPreflopLeaks = [...preflopLeaks].sort((a, b) => (sevRank[b.severity] ?? 0) - (sevRank[a.severity] ?? 0));
+  const sortedPostflopLeaks = [...postflopLeaks].sort((a, b) => (sevRank[b.severity] ?? 0) - (sevRank[a.severity] ?? 0));
+
+  // ── Quick Test (inline mini-quiz, all tabs) ─────────────────────────────
+  function pickThreeTitles(pool, correctIdx) {
+    const correct = pool[correctIdx].title;
+    const others = pool
+      .filter((_, i) => i !== correctIdx)
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 2)
+      .map(p => p.title);
+    return [correct, ...others].sort(() => Math.random() - 0.5);
+  }
+
+  // Preflop/postflop leak tabs: flipped — prompt is the short `fix`, guess the leak title
+  let preflopQuizIdx = $state(Math.floor(Math.random() * preflopLeaks.length));
+  let preflopQuizPicked = $state(null);
+  let preflopQuiz = $derived(preflopLeaks[preflopQuizIdx]);
+  let preflopQuizOptions = $derived.by(() => pickThreeTitles(preflopLeaks, preflopQuizIdx));
+
+  let postflopQuizIdx = $state(Math.floor(Math.random() * postflopLeaks.length));
+  let postflopQuizPicked = $state(null);
+  let postflopQuiz = $derived(postflopLeaks[postflopQuizIdx]);
+  let postflopQuizOptions = $derived.by(() => pickThreeTitles(postflopLeaks, postflopQuizIdx));
+
+  // Mental/sizing tabs: standard — prompt is the short `body`, guess the title
+  let mentalQuizIdx = $state(Math.floor(Math.random() * mentalGame.length));
+  let mentalQuizPicked = $state(null);
+  let mentalQuiz = $derived(mentalGame[mentalQuizIdx]);
+  let mentalQuizOptions = $derived.by(() => pickThreeTitles(mentalGame, mentalQuizIdx));
+
+  let sizingQuizIdx = $state(Math.floor(Math.random() * sizingMistakes.length));
+  let sizingQuizPicked = $state(null);
+  let sizingQuiz = $derived(sizingMistakes[sizingQuizIdx]);
+  let sizingQuizOptions = $derived.by(() => pickThreeTitles(sizingMistakes, sizingQuizIdx));
+
+  function nextQuiz(which) {
+    if (which === 'preflop') {
+      let n = Math.floor(Math.random() * preflopLeaks.length);
+      if (n === preflopQuizIdx && preflopLeaks.length > 1) n = (n + 1) % preflopLeaks.length;
+      preflopQuizIdx = n; preflopQuizPicked = null;
+    } else if (which === 'postflop') {
+      let n = Math.floor(Math.random() * postflopLeaks.length);
+      if (n === postflopQuizIdx && postflopLeaks.length > 1) n = (n + 1) % postflopLeaks.length;
+      postflopQuizIdx = n; postflopQuizPicked = null;
+    } else if (which === 'mental') {
+      let n = Math.floor(Math.random() * mentalGame.length);
+      if (n === mentalQuizIdx && mentalGame.length > 1) n = (n + 1) % mentalGame.length;
+      mentalQuizIdx = n; mentalQuizPicked = null;
+    } else if (which === 'sizing') {
+      let n = Math.floor(Math.random() * sizingMistakes.length);
+      if (n === sizingQuizIdx && sizingMistakes.length > 1) n = (n + 1) % sizingMistakes.length;
+      sizingQuizIdx = n; sizingQuizPicked = null;
+    }
+  }
 </script>
 
 <div class="mistakes" bind:this={sectionEl}>
@@ -60,8 +118,31 @@
           Preflop leaks compound across every hand — fix these first.
         </p>
       </div>
+
+      <!-- Quick Test — show fix, guess the leak -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Fix For Which Leak?</span>
+          <span class="qt-situation">{preflopQuiz.fix}</span>
+        </div>
+        {#if preflopQuizPicked === null}
+          <div class="qt-options">
+            {#each preflopQuizOptions as opt}
+              <button class="qt-option" onclick={() => preflopQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = preflopQuizPicked === preflopQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Leak: <strong>{preflopQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('preflop')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="leak-cards">
-        {#each preflopLeaks as leak}
+        {#each sortedPreflopLeaks as leak}
           <details class="leak-card">
             <summary class="leak-header">
               <span class="leak-title">{leak.title}</span>
@@ -91,8 +172,31 @@
           Costly postflop errors that are harder to spot than preflop leaks.
         </p>
       </div>
+
+      <!-- Quick Test — show fix, guess the leak -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Fix For Which Leak?</span>
+          <span class="qt-situation">{postflopQuiz.fix}</span>
+        </div>
+        {#if postflopQuizPicked === null}
+          <div class="qt-options">
+            {#each postflopQuizOptions as opt}
+              <button class="qt-option" onclick={() => postflopQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = postflopQuizPicked === postflopQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Leak: <strong>{postflopQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('postflop')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="leak-cards">
-        {#each postflopLeaks as leak}
+        {#each sortedPostflopLeaks as leak}
           <details class="leak-card">
             <summary class="leak-header">
               <span class="leak-title">{leak.title}</span>
@@ -122,6 +226,29 @@
           Strategy falls apart when emotions take over.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{mentalQuiz.body}</span>
+        </div>
+        {#if mentalQuizPicked === null}
+          <div class="qt-options">
+            {#each mentalQuizOptions as opt}
+              <button class="qt-option" onclick={() => mentalQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = mentalQuizPicked === mentalQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Concept: <strong>{mentalQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('mental')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each mentalGame as item}
           <details class="concept-card">
@@ -141,6 +268,29 @@
           Sizing errors that leave money on the table or give opponents easy decisions.
         </p>
       </div>
+
+      <!-- Quick Test -->
+      <div class="quick-test">
+        <div class="qt-header">
+          <span class="qt-label">Quick Test</span>
+          <span class="qt-situation">{sizingQuiz.body}</span>
+        </div>
+        {#if sizingQuizPicked === null}
+          <div class="qt-options">
+            {#each sizingQuizOptions as opt}
+              <button class="qt-option" onclick={() => sizingQuizPicked = opt}>{opt}</button>
+            {/each}
+          </div>
+        {:else}
+          {@const correct = sizingQuizPicked === sizingQuiz.title}
+          <div class="qt-result" class:correct class:wrong={!correct}>
+            <span class="qt-mark">{correct ? '✓' : '✗'}</span>
+            <span>Mistake: <strong>{sizingQuiz.title}</strong></span>
+            <button class="qt-next" onclick={() => nextQuiz('sizing')}>Next →</button>
+          </div>
+        {/if}
+      </div>
+
       <div class="concepts-grid">
         {#each sizingMistakes as item}
           <details class="concept-card">
@@ -177,8 +327,59 @@
   .section-header { display: flex; flex-direction: column; gap: 8px; }
   .section-note   { font-size: 13px; color: var(--c-text-3); margin: 0; line-height: 1.5; }
 
+  /* ── Quick Test (inline mini-quiz) ── */
+  .quick-test {
+    background: var(--c-bg-card);
+    border: 1px solid var(--c-border-accent, var(--c-accent));
+    border-left: 3px solid var(--c-accent);
+    border-radius: 7px;
+    padding: 12px 14px;
+    margin: 4px 0 8px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .qt-header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .qt-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--c-accent);
+  }
+  .qt-situation { font-size: 14px; color: var(--c-text); font-weight: 500; line-height: 1.5; }
+  .qt-options { display: flex; gap: 6px; flex-wrap: wrap; }
+  .qt-option {
+    padding: 6px 14px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text); font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .qt-option:hover { border-color: var(--c-accent); }
+  .qt-result {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 13px; color: var(--c-text); line-height: 1.5;
+  }
+  .qt-mark {
+    font-size: 16px; font-weight: 800;
+    width: 22px; height: 22px; display: inline-flex;
+    align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  .qt-result.correct .qt-mark { background: #14532d; color: #d1fae5; }
+  .qt-result.wrong .qt-mark   { background: #7f1d1d; color: #fecaca; }
+  .qt-result strong { color: var(--c-text); }
+  .qt-next {
+    margin-left: auto;
+    padding: 4px 12px; border-radius: 5px;
+    border: 1px solid var(--c-border); background: var(--c-bg-header);
+    color: var(--c-text-3); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qt-next:hover { color: var(--c-text); border-color: var(--c-accent); }
+
   /* Leak cards */
-  .leak-cards { display: flex; flex-direction: column; gap: 12px; }
+  .leak-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
   .leak-card {
     background: var(--c-bg-card); border: 1px solid var(--c-border);
     border-radius: 8px; overflow: hidden;
@@ -210,7 +411,12 @@
   .fix-text { font-size: 13px; color: var(--c-text-2); line-height: 1.5; }
 
   /* Concepts grid */
-  .concepts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
   .concept-card {
     background: var(--c-bg-card); border: 1px solid var(--c-border);
     border-radius: 8px; padding: 14px 16px;
