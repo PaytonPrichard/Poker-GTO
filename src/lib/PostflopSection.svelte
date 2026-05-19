@@ -13,17 +13,26 @@
   function toggleAll() { allOpen = !allOpen; sectionEl?.querySelectorAll('details').forEach(d => d.open = allOpen); }
   let flopSearch = $state('');
 
-  let filteredFlops = $derived(
-    flopSearch.trim() === ''
-      ? cbetData
-      : cbetData.filter(row => {
-          const q = flopSearch.toLowerCase();
-          return row.texture.toLowerCase().includes(q)
-            || row.example.toLowerCase().includes(q)
-            || row.rangeAdv.toLowerCase().includes(q)
-            || row.notes.toLowerCase().includes(q);
-        })
-  );
+  let filteredFlops = $derived.by(() => {
+    const q = flopSearch.toLowerCase().trim();
+    if (q === '') return cbetData;
+    // Also try singular form when query is a plural-looking word (covers
+    // "draws"→"draw", "pairs"→"pair", "cards"→"card", "aces"→"ace", etc.)
+    const qSingular = q.length > 3 && q.endsWith('s') ? q.slice(0, -1) : null;
+    const match = (text) => text.includes(q) || (qSingular !== null && text.includes(qSingular));
+    return cbetData.filter(row =>
+      match(row.texture.toLowerCase())
+      || match(row.example.toLowerCase())
+      || match(row.rangeAdv.toLowerCase())
+      || match(row.notes.toLowerCase())
+      || (row.keywords ?? []).some(k => match(k.toLowerCase()))
+    );
+  });
+
+  // Autofocus the flop search input whenever it mounts (Flop tab landed on, exited drill)
+  function autofocus(el) {
+    el.focus();
+  }
 
   function freqColor(pct) {
     if (pct >= 65) return '#52b788'; // green  — bet frequently
@@ -267,8 +276,9 @@
         <input
           type="text"
           class="flop-search"
-          placeholder="Search flops — texture, board, range advantage, notes…"
+          placeholder="Search flops — texture (wet, dry, paired), board (Ace-high, low), draws…"
           bind:value={flopSearch}
+          use:autofocus
         />
         {#if flopSearch.trim()}
           <span class="result-count">{filteredFlops.length} of {cbetData.length} textures</span>

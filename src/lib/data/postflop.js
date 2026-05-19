@@ -14,6 +14,7 @@ export const cbetData = [
     oopSize:  '25–33%',
     rangeAdv: 'Strong PFR',
     notes:    'PFR hits hard (AK, AQ, AJ, AT). Bet small and frequent for value + protection.',
+    keywords: ['dry', 'static', 'ace-high', 'a-high', 'pfr favored', 'no draws'],
   },
   {
     texture:  'King-high dry',
@@ -24,6 +25,7 @@ export const cbetData = [
     oopSize:  '33%',
     rangeAdv: 'PFR',
     notes:    'PFR connects well. Small bet optimal; caller has few Kx combos.',
+    keywords: ['dry', 'static', 'king-high', 'k-high', 'pfr favored', 'no draws'],
   },
   {
     texture:  'Mid-card dry',
@@ -34,6 +36,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'Caller',
     notes:    'Low boards favor caller (more 8x, 5x, pairs). Check more; bet larger when you do.',
+    keywords: ['dry', 'static', 'middle', 'mid', 'low', 'caller favored'],
   },
   {
     texture:  'Connected 2-tone',
@@ -44,6 +47,7 @@ export const cbetData = [
     oopSize:  '66%',
     rangeAdv: 'Caller',
     notes:    'Wet board favors caller. Bet for protection; size up to charge draws.',
+    keywords: ['wet', 'dynamic', 'coordinated', 'drawy', 'flush draw', 'straight draw', 'two-tone', 'two tone', 'caller favored'],
   },
   {
     texture:  'Connected rainbow',
@@ -54,6 +58,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'Neutral',
     notes:    'Both players connect. Balanced betting; occasionally slow-play sets/straights.',
+    keywords: ['wet', 'coordinated', 'dynamic', 'straight draw', 'rainbow', 'no flush draw', 'drawy'],
   },
   {
     texture:  'Paired board',
@@ -64,6 +69,7 @@ export const cbetData = [
     oopSize:  '25–33%',
     rangeAdv: 'PFR',
     notes:    'PFR has more KK/AK/KQ. Bet small and frequent; most hands have decent equity.',
+    keywords: ['paired', 'pair on board', 'trips possible', 'high pair', 'dry paired'],
   },
   {
     texture:  'Low paired',
@@ -74,6 +80,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'Slight caller',
     notes:    'Caller has more 5x. PFR can bet overcards; medium frequency.',
+    keywords: ['paired', 'pair on board', 'low pair', 'small pair', 'trips possible'],
   },
   {
     texture:  'Monotone',
@@ -84,6 +91,7 @@ export const cbetData = [
     oopSize:  '33%',
     rangeAdv: 'Slight caller',
     notes:    'Caller can have flushes; many bluffs have draws. Check most; bet small when you do.',
+    keywords: ['monotone', 'three to flush', 'flush board', 'very wet', 'drawy', 'flush possible'],
   },
   {
     texture:  'Ace-high 2-tone',
@@ -94,6 +102,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'PFR',
     notes:    'PFR has Ax range advantage + nut advantage. Size up slightly for the flush draws.',
+    keywords: ['ace-high', 'a-high', 'flush draw', 'two-tone', 'two tone', 'semi-wet', 'drawy'],
   },
   {
     texture:  'Queen-high dry',
@@ -104,6 +113,7 @@ export const cbetData = [
     oopSize:  '33–50%',
     rangeAdv: 'PFR',
     notes:    'PFR has QQ/AQ/KQ. Caller also has QJ/QT; less dominant than A/K-high boards.',
+    keywords: ['dry', 'static', 'queen-high', 'q-high', 'no draws'],
   },
   {
     texture:  'Jack-high dry',
@@ -114,6 +124,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'Slight PFR',
     notes:    'PFR has JJ/AJ/KJ but caller has many Jx suited. Medium frequency; bet bigger.',
+    keywords: ['dry', 'static', 'jack-high', 'j-high', 'no draws'],
   },
   {
     texture:  'Ten-high dry',
@@ -124,6 +135,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'Neutral',
     notes:    'Near-neutral range advantage. Caller has many Tx (T9s, JTs, QTs). C-bet mainly overpairs.',
+    keywords: ['dry', 'ten-high', 't-high', 'middle', 'mid', 'static'],
   },
   {
     texture:  'Broadway heavy',
@@ -134,6 +146,7 @@ export const cbetData = [
     oopSize:  '33%',
     rangeAdv: 'PFR',
     notes:    'PFR smashes broadway boards (AK, AQ, KQ, KJ). Bet small and frequent; PFR has nut advantage.',
+    keywords: ['broadway', 'high cards', 'coordinated broadway', 'pfr favored', 'straight draw'],
   },
   {
     texture:  'Low 2-tone',
@@ -144,6 +157,7 @@ export const cbetData = [
     oopSize:  '50–66%',
     rangeAdv: 'Caller',
     notes:    'Strongly favors caller (suited connectors, small pairs, gappers). Bet only strong overpairs.',
+    keywords: ['wet', 'low', 'flush draw', 'two-tone', 'two tone', 'caller favored', 'drawy', 'dynamic'],
   },
   {
     texture:  'Three-to-straight',
@@ -154,6 +168,7 @@ export const cbetData = [
     oopSize:  '66%',
     rangeAdv: 'Caller',
     notes:    'Highly coordinated; favors caller (89, T8, 45, 34 connect). Check most; bet large.',
+    keywords: ['very wet', 'coordinated', 'straight board', 'straight possible', 'three to straight', 'caller favored', 'drawy', 'dynamic'],
   },
   {
     texture:  'Ace-high paired',
@@ -164,6 +179,7 @@ export const cbetData = [
     oopSize:  '25–33%',
     rangeAdv: 'Strong PFR',
     notes:    'PFR dominates with Ax combos. Bet very small, very often; caller rarely has an ace.',
+    keywords: ['paired', 'ace paired', 'aces', 'trips possible', 'pfr smashes', 'dry paired'],
   },
   {
     texture:  'Mid 2-tone',
@@ -174,6 +190,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'Slight caller',
     notes:    'Caller has suited combos and connectors (98, 87, 76). Bet overpairs and nut flush draws only.',
+    keywords: ['wet', 'middle', 'mid', 'flush draw', 'two-tone', 'two tone', 'drawy', 'dynamic'],
   },
   {
     texture:  'Wheel cards rainbow',
@@ -184,6 +201,7 @@ export const cbetData = [
     oopSize:  '50%',
     rangeAdv: 'Caller',
     notes:    'Heavily favors caller. Only bet AA/KK. A5 is premium here (nut straight draw).',
+    keywords: ['wheel', 'low', 'small cards', 'caller favored', 'straight draw', 'rainbow'],
   },
 ];
 
