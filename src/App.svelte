@@ -539,6 +539,10 @@
             </button>
           {/each}
         </div>
+      {:else if searchQuery.trim().length >= 2}
+        <div class="search-results search-empty">
+          <span class="sr-empty-text">No matches for "{searchQuery.trim()}"</span>
+        </div>
       {/if}
     </div>
 
@@ -1060,6 +1064,15 @@
   }
   .search-result-item:last-child { border-bottom: none; }
   .search-result-item:hover { background: var(--c-bg-hover); }
+  .search-empty {
+    padding: 12px;
+    text-align: center;
+  }
+  .sr-empty-text {
+    color: var(--c-text-4);
+    font-size: 13px;
+    font-style: italic;
+  }
   .sr-section {
     font-size: 10px;
     font-weight: 700;

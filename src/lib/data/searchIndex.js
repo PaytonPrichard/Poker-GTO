@@ -15,6 +15,10 @@ import { cashBrm, tournamentBrm, varianceInfo, movingStakes } from './bankroll.j
 import { preflopLeaks, postflopLeaks, mentalGame, sizingMistakes } from './mistakes.js';
 import { readingOutput, frequencyConcepts, whenToDeviate, practicalTips } from './solver.js';
 import { statDefinitions, playerArchetypes } from './hudStats.js';
+import { openSizes } from './ranges.js';
+import { vsOpenRanges, vs3betRanges } from './vsRanges.js';
+import { stageInfo, icmPhases } from './tournamentRanges.js';
+import { rfiSizes, cbetFrequencies, potOdds as csPotOdds, pushFoldChart, commonEquity, bankrollReqs, keyNumbers } from './cheatsheet.js';
 import { quizQuestions } from './quiz.js';
 
 // ── Section label map (matches App.svelte sidebar IDs) ──────────────────────
@@ -480,6 +484,120 @@ export function buildSearchIndex() {
       [t.title, t.body].join(' '),
       'solver',
       'Tip: ' + t.title
+    ));
+  }
+
+  // ── Preflop: RFI open sizes by player count + position ────────────────
+  for (const [count, positions] of Object.entries(openSizes)) {
+    for (const [pos, size] of Object.entries(positions)) {
+      idx.push(entry(
+        `${count}-max ${pos} preflop open raise size ${size} rfi opening range`,
+        'preflop',
+        `Preflop: ${count}-max ${pos} open (${size})`
+      ));
+    }
+  }
+
+  // ── Preflop: vs open response matrix ──────────────────────────────────
+  for (const [yourPos, raisers] of Object.entries(vsOpenRanges)) {
+    for (const raiserPos of Object.keys(raisers)) {
+      idx.push(entry(
+        `vs open from ${raiserPos} responding ${yourPos} preflop 3-bet call defend facing raise`,
+        'preflop',
+        `Preflop: vs ${raiserPos} open from ${yourPos}`
+      ));
+    }
+  }
+
+  // ── Preflop: vs 3-bet response matrix ─────────────────────────────────
+  for (const [yourPos, threeBettors] of Object.entries(vs3betRanges)) {
+    for (const threePos of Object.keys(threeBettors)) {
+      idx.push(entry(
+        `vs 3-bet from ${threePos} facing 3bet ${yourPos} opened preflop 4-bet call`,
+        'preflop',
+        `Preflop: vs ${threePos} 3-bet after ${yourPos} open`
+      ));
+    }
+  }
+
+  // ── Tournament: Stage info by stack depth ─────────────────────────────
+  for (const [bb, info] of Object.entries(stageInfo)) {
+    idx.push(entry(
+      `${bb}bb ${info.name} ${info.label} ${info.action} ${info.insight} ${(info.tips || []).join(' ')} tournament mtt stack depth`,
+      'tournament',
+      `Tournament: ${bb}bb — ${info.name}`
+    ));
+  }
+
+  // ── Tournament: ICM phases ────────────────────────────────────────────
+  for (const phase of icmPhases) {
+    idx.push(entry(
+      `${phase.name} icm bubble ${phase.description} tournament`,
+      'tournament',
+      `ICM: ${phase.name}`
+    ));
+  }
+
+  // ── Cheatsheet: RFI sizes ─────────────────────────────────────────────
+  for (const r of rfiSizes) {
+    idx.push(entry(
+      `${r.position} ${r.size} ${r.notes} rfi open cash 6-max cheatsheet`,
+      'cheatsheet',
+      `Cheatsheet: ${r.position} open (${r.size})`
+    ));
+  }
+
+  // ── Cheatsheet: C-bet frequencies ─────────────────────────────────────
+  for (const c of cbetFrequencies) {
+    idx.push(entry(
+      `${c.texture} cbet c-bet flop ${c.ipFreq} ${c.oopFreq} ${c.size} cheatsheet`,
+      'cheatsheet',
+      `Cheatsheet: ${c.texture} c-bet`
+    ));
+  }
+
+  // ── Cheatsheet: Pot odds + MDF ────────────────────────────────────────
+  for (const p of csPotOdds) {
+    idx.push(entry(
+      `${p.betSize} pot odds ${p.potOdds} mdf ${p.mdf} cheatsheet`,
+      'cheatsheet',
+      `Cheatsheet: ${p.betSize} → ${p.potOdds} needed`
+    ));
+  }
+
+  // ── Cheatsheet: Push/fold ─────────────────────────────────────────────
+  for (const p of pushFoldChart) {
+    idx.push(entry(
+      `${p.bbCount} ${p.positions} push fold shove ${p.hands} cheatsheet tournament`,
+      'cheatsheet',
+      `Cheatsheet: ${p.bbCount} push/fold ${p.positions}`
+    ));
+  }
+
+  // ── Cheatsheet: Common equity ─────────────────────────────────────────
+  for (const e of commonEquity) {
+    idx.push(entry(
+      `${e.matchup} equity ${e.equity} preflop cheatsheet`,
+      'cheatsheet',
+      `Cheatsheet: ${e.matchup} (${e.equity})`
+    ));
+  }
+
+  // ── Cheatsheet: Bankroll requirements ─────────────────────────────────
+  for (const b of bankrollReqs) {
+    idx.push(entry(
+      `${b.gameType} bankroll ${b.buyins} ${b.notes} cheatsheet`,
+      'cheatsheet',
+      `Cheatsheet: ${b.gameType} — ${b.buyins}`
+    ));
+  }
+
+  // ── Cheatsheet: Key numbers ───────────────────────────────────────────
+  for (const k of keyNumbers) {
+    idx.push(entry(
+      `${k.label} ${k.value} ${k.context} cheatsheet key numbers`,
+      'cheatsheet',
+      `Cheatsheet: ${k.label}`
     ));
   }
 
