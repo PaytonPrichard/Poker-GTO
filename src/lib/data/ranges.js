@@ -196,6 +196,104 @@ const BTN_6_MIXED = {
   '95s': {}, '84s': {}, '73s': {}, '62s': {}, '52s': {}, '42s': {}, '32s': {},
 };
 
+// UTG (6-max) — tightest range. Almost every hand is a pure raise or pure
+// fold. A small handful sit on the edge.
+const UTG_6_MIXED = {
+  'ATo': { raise: 0.65 },  // edge: solver mixes vs tighter ranges behind
+  'KJo': { raise: 0.55 },
+  'QJo': { raise: 0.30 },
+  '66':  {},               // sometimes folded preflop in early UTG strategies
+  '22':  {},               // bottom pairs mix more in tighter spots
+};
+
+// HJ (6-max) — opens wider than UTG. More offsuit broadways mix, suited
+// connectors are mostly pure raises but bottom suited Ax edges in.
+const HJ_6_MIXED = {
+  // Offsuit broadways at the edge
+  'KTo': { raise: 0.80 },
+  'QJo': { raise: 0.70 },
+  'QTo': { raise: 0.45 },
+  'JTo': { raise: 0.40 },
+  // Offsuit aces
+  'A8o': { raise: 0.60 },
+  'A7o': { raise: 0.30 },
+  // Suited bottom of range
+  'A2s': {}, 'A3s': {},   // sometimes folded UTG-style by certain solvers
+  '54s': { raise: 0.55 },
+  '65s': { raise: 0.75 },
+  // Small pairs
+  '22':  { raise: 0.70 },
+  '33':  { raise: 0.85 },
+};
+
+// CO (6-max) — significantly wider; lots of mixed bottom-of-range hands.
+const CO_6_MIXED = {
+  // Offsuit aces
+  'A7o': { raise: 0.75 },
+  'A6o': { raise: 0.45 },
+  'A5o': { raise: 0.50 },
+  'A4o': { raise: 0.30 },
+  // Offsuit kings
+  'K9o': { raise: 0.70 },
+  'K8o': { raise: 0.35 },
+  // Offsuit broadways
+  'QTo': { raise: 0.85 },
+  'JTo': { raise: 0.75 },
+  'T9o': { raise: 0.40 },
+  // Offsuit gappers / suited-connector cousins
+  'J9o': { raise: 0.45 },
+  '98o': { raise: 0.30 },
+  '87o': {},
+  // Suited bottom — suited gappers and small Kx/Qx that often mix
+  'K5s': { raise: 0.85 },
+  'K4s': { raise: 0.60 },
+  'K3s': { raise: 0.45 },
+  'K2s': { raise: 0.35 },
+  'Q5s': { raise: 0.60 },
+  'Q4s': { raise: 0.35 },
+  'J6s': { raise: 0.50 },
+  'T6s': { raise: 0.35 },
+  '53s': { raise: 0.45 },
+  '43s': { raise: 0.30 },
+};
+
+// SB (6-max) — RFI is the most complex preflop spot. Solver mixes between
+// open-raise, limp, and fold across many hands. The `raise` value here is the
+// open-raise frequency only; the residual is either limp or fold depending on
+// the hand. For full SB strategy, see Preflop Ranges → SB tab notes.
+const SB_6_MIXED = {
+  // Offsuit aces — frequently mixed between raise/limp/fold
+  'A2o': { raise: 0.60 },
+  'A3o': { raise: 0.65 },
+  'A4o': { raise: 0.70 },
+  'A5o': { raise: 0.80 },
+  'A7o': { raise: 0.75 },
+  // Offsuit kings — bottom mix heavily
+  'K8o': { raise: 0.55 },
+  'K7o': { raise: 0.40 },
+  'K6o': { raise: 0.30 },
+  // Offsuit queens / broadway gaps
+  'Q9o': { raise: 0.55 },
+  'Q8o': { raise: 0.30 },
+  'J9o': { raise: 0.60 },
+  'T9o': { raise: 0.65 },
+  // Offsuit connectors
+  '98o': { raise: 0.40 },
+  '87o': { raise: 0.30 },
+  // Suited bottom — Kx/Qx/Jx and small suited gappers
+  'K3s': { raise: 0.65 },
+  'K2s': { raise: 0.55 },
+  'Q5s': { raise: 0.75 },
+  'Q4s': { raise: 0.55 },
+  'Q3s': { raise: 0.40 },
+  'J5s': { raise: 0.65 },
+  'J4s': { raise: 0.45 },
+  'T5s': { raise: 0.40 },
+  '53s': { raise: 0.55 },
+  '43s': { raise: 0.40 },
+  '32s': { raise: 0.30 },
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Exported lookup: rfiRanges[playerCount][position] → Set of hand strings
 // ─────────────────────────────────────────────────────────────────────────────
@@ -212,11 +310,15 @@ export const rfiRanges = {
 
 // Mixed-frequency overlay. Missing positions = no mixed data yet (empty Map).
 const EMPTY = m();
-const BTN_MIXED_MAP = m(BTN_6_MIXED);
+const UTG_6_MIXED_MAP = m(UTG_6_MIXED);
+const HJ_6_MIXED_MAP  = m(HJ_6_MIXED);
+const CO_6_MIXED_MAP  = m(CO_6_MIXED);
+const BTN_MIXED_MAP   = m(BTN_6_MIXED);
+const SB_6_MIXED_MAP  = m(SB_6_MIXED);
 export const mixedRanges = {
   4: { UTG: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
   5: { UTG: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
-  6: { UTG: EMPTY, HJ: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
+  6: { UTG: UTG_6_MIXED_MAP, HJ: HJ_6_MIXED_MAP, CO: CO_6_MIXED_MAP, BTN: BTN_MIXED_MAP, SB: SB_6_MIXED_MAP },
   7: { UTG: EMPTY, 'UTG+1': EMPTY, HJ: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
 };
 
