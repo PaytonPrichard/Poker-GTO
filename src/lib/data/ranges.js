@@ -257,6 +257,45 @@ const CO_6_MIXED = {
   '43s': { raise: 0.30 },
 };
 
+// UTG (7-max) — even tighter than 6-max UTG (one more player behind).
+// Only a handful of edge hands mix at all.
+const UTG_7_MIXED = {
+  'ATo': { raise: 0.40 },
+  'KJo': { raise: 0.35 },
+  'KQo': { raise: 0.85 },
+  '22':  { raise: 0.65 },
+};
+
+// UTG (4-max) — extends 6-max CO range. New edge hands beyond CO_6_MIXED
+// that mix at the bottom of the wider 4-max UTG range. Specific 4-max solver
+// data is sparse; using {} for hands where mixing is plausible but frequency
+// can't be confidently claimed.
+const UTG_4_EXTRA_MIXED = {
+  // New offsuit aces at the edge
+  'A5o': { raise: 0.55 },
+  'A6o': { raise: 0.40 },
+  // New offsuit kings
+  'K8o': { raise: 0.45 },
+  'K9o': { raise: 0.80 },
+  // Offsuit broadways
+  'QTo': { raise: 0.70 },
+  'JTo': { raise: 0.65 },
+  'T9o': { raise: 0.50 },
+  // Suited gappers / connectors at the edge
+  'K7s': {}, 'Q8s': {}, 'J8s': {}, 'T7s': {}, '97s': {}, '86s': {}, '75s': {},
+};
+
+// BTN (4-max) — extends 6-max BTN with very wide bottom-of-range hands.
+// All of these are deep edge hands; using {} since we can't honestly claim
+// 4-max BTN specific frequencies for hands like J3s or 72s.
+const BTN_4_EXTRA_MIXED = {
+  // Wider suited at the bottom
+  'J3s': {}, 'J2s': {}, 'T3s': {}, 'T2s': {}, '94s': {}, '93s': {}, '83s': {}, '72s': {},
+  // Wider offsuit kings/queens/jacks
+  'K4o': {}, 'K3o': {}, 'K2o': {}, 'Q7o': {}, 'Q6o': {},
+  'J7o': {}, 'T6o': {}, '96o': {}, '86o': {}, '75o': {},
+};
+
 // SB (6-max) — RFI is the most complex preflop spot. Solver mixes between
 // open-raise, limp, and fold across many hands. The `raise` value here is the
 // open-raise frequency only; the residual is either limp or fold depending on
@@ -308,18 +347,30 @@ export const rfiRanges = {
   7: { UTG: s(UTG_7), 'UTG+1': s(UTG1_7), HJ: s(HJ_7), CO: s(CO_7), BTN: s(BTN_7), SB: s(SB_7) },
 };
 
-// Mixed-frequency overlay. Missing positions = no mixed data yet (empty Map).
+// Mixed-frequency overlay. Most non-6-max positions alias the 6-max equivalent
+// since the underlying RFI ranges are also aliased (e.g. UTG_5 = [...HJ_6]).
 const EMPTY = m();
 const UTG_6_MIXED_MAP = m(UTG_6_MIXED);
 const HJ_6_MIXED_MAP  = m(HJ_6_MIXED);
 const CO_6_MIXED_MAP  = m(CO_6_MIXED);
 const BTN_MIXED_MAP   = m(BTN_6_MIXED);
 const SB_6_MIXED_MAP  = m(SB_6_MIXED);
+
+// 4-max: combine 6-max base + extra edge hands for the wider 4-max ranges
+const UTG_4_MIXED_MAP = m({ ...CO_6_MIXED, ...UTG_4_EXTRA_MIXED });
+const BTN_4_MIXED_MAP = m({ ...BTN_6_MIXED, ...BTN_4_EXTRA_MIXED });
+
+// 7-max UTG has its own tight map
+const UTG_7_MIXED_MAP = m(UTG_7_MIXED);
+
 export const mixedRanges = {
-  4: { UTG: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
-  5: { UTG: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
+  // 4-max: UTG_4 = CO_6 + wider, BTN_4 = BTN_6 + wider, SB_4 = SB_6
+  4: { UTG: UTG_4_MIXED_MAP, BTN: BTN_4_MIXED_MAP, SB: SB_6_MIXED_MAP },
+  // 5-max: UTG_5 = HJ_6, CO_5 ≈ CO_6, BTN_5 = BTN_6, SB_5 = SB_6
+  5: { UTG: HJ_6_MIXED_MAP, CO: CO_6_MIXED_MAP, BTN: BTN_MIXED_MAP, SB: SB_6_MIXED_MAP },
   6: { UTG: UTG_6_MIXED_MAP, HJ: HJ_6_MIXED_MAP, CO: CO_6_MIXED_MAP, BTN: BTN_MIXED_MAP, SB: SB_6_MIXED_MAP },
-  7: { UTG: EMPTY, 'UTG+1': EMPTY, HJ: EMPTY, CO: EMPTY, BTN: BTN_MIXED_MAP, SB: EMPTY },
+  // 7-max: UTG_7 own map (tighter), UTG+1 = UTG_6, HJ/CO/BTN/SB alias 6-max
+  7: { UTG: UTG_7_MIXED_MAP, 'UTG+1': UTG_6_MIXED_MAP, HJ: HJ_6_MIXED_MAP, CO: CO_6_MIXED_MAP, BTN: BTN_MIXED_MAP, SB: SB_6_MIXED_MAP },
 };
 
 // Standard open sizes (in BBs) per position

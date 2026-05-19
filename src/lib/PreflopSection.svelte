@@ -294,7 +294,7 @@
         Core hands like AA are 100% one action. Edge hands are <em>mixed</em> — solver opens them part of the time and folds the rest. We render mixed hands as a two-tone split cell (raise color on the left, fold color on the right) with the boundary at the raise frequency. Hover any cell for exact percentages where we have them.
       </p>
       <p class="callout-body" style="margin-top: 6px;">
-        <strong>Coverage:</strong> Mixed data is populated for all 5 positions in cash 6-max (UTG, HJ, CO, BTN, SB) at approximate solver-consensus frequencies. 4-max, 5-max, and 7-max still show pure raise/fold for most positions and will be backfilled over time.
+        <strong>Coverage:</strong> Mixed data is populated for all positions across 4-max, 5-max, 6-max, and 7-max RFI ranges. Frequencies are approximate solver consensus rounded to 5%. 6-max numbers are the most refined; 4-max and 7-max edge hands rely more on heuristic mixing markers since solver coverage for those formats is sparser.
       </p>
       <p class="callout-body" style="margin-top: 6px;">
         <strong>In practice:</strong> Pick one action for borderline hands and stick with it. The EV difference between, say, "open 98o 70%" and "open 98o always" is tiny. Focus on avoiding big mistakes over nailing exact frequencies.
