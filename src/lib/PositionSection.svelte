@@ -75,9 +75,11 @@
         </button>
       {/each}
     </div>
-    <button class="toggle-all-btn" onclick={toggleAll}>
-      {allOpen ? 'Close All' : 'Open All'}
-    </button>
+    {#if activeTab !== 'ev'}
+      <button class="toggle-all-btn" onclick={toggleAll}>
+        {allOpen ? 'Close All' : 'Open All'}
+      </button>
+    {/if}
   </div>
 
   <!-- ── BASICS ── -->

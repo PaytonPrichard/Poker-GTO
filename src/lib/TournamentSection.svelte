@@ -126,9 +126,11 @@
         </button>
       {/each}
     </div>
-    <button class="toggle-all-btn" onclick={toggleAll}>
-      {allOpen ? 'Close All' : 'Open All'}
-    </button>
+    {#if activeTab !== 'stageranges'}
+      <button class="toggle-all-btn" onclick={toggleAll}>
+        {allOpen ? 'Close All' : 'Open All'}
+      </button>
+    {/if}
   </div>
 
   <!-- ── FUNDAMENTALS ── -->
